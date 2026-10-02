@@ -1,16 +1,13 @@
 (function(){
   const form=document.querySelector("form");
+  FmsCase.fillForm(form,FmsCase.ext("wpi")?.answers);
   form.addEventListener("submit",e=>{
     e.preventDefault();
-    const fd=new FormData(form), data={};
-    for(const [k,v] of fd.entries()){
-      if(data[k]===undefined)data[k]=v;
-      else if(Array.isArray(data[k]))data[k].push(v);
-      else data[k]=[data[k],v];
-    }
-    const payload={type:document.body.dataset.type||document.title,data};
-    if(window.webkit?.messageHandlers?.saveForm) window.webkit.messageHandlers.saveForm.postMessage(payload);
-    else if(window.Android&&typeof window.Android.saveForm==="function") window.Android.saveForm(JSON.stringify(payload));
-    else console.log("[FS] save",payload);
+    const answers=FmsCase.readForm(form);
+    // 分数为疼痛部位个数（0～19），可以一个都不选。
+    FmsCase.run(form.querySelector('button[type="submit"]'),async()=>{
+      await FsScale.save("wpi",{finish:true,score:String(answers.painArea.length),result:"",answers});
+      FmsCase.back("fs.html");
+    });
   });
 })();

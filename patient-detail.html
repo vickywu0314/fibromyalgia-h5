@@ -2,12 +2,12 @@
 
 <main>
 <section class="card patient-card"><div class="avatar" id="avatar">患</div><div class="pbody"><div class="pname" id="pname">患者</div><div class="pid" id="pid">研究编号</div></div><div class="history" id="history">随访记录 ›</div></section>
-<section class="card progress-card"><div class="progress-top"><div class="progress-title">资料完成度</div><div class="progress-num">1 / 7</div></div><div class="bar"><i></i></div></section>
+<section class="card progress-card"><div class="progress-top"><div class="progress-title">资料完成度</div><div class="progress-num" id="progressNum">0 / 7</div></div><div class="bar"><i id="progressBar"></i></div></section>
 
 <div class="group"><div class="group-title">基础资料</div><div class="module-card">
 
-<a class="module" href="fibromyalgia-basic-info/basic-info.html">
-  <span class="state done">✓</span>
+<a class="module" href="fibromyalgia-basic-info/basic-info.html" data-part="jbxx">
+  <span class="state">○</span>
   <span class="mbody">
     <span class="mname">基本信息</span>
     <span class="mdesc">姓名、身份证号及基础人口学信息</span>
@@ -19,8 +19,8 @@
 
 <div class="group"><div class="group-title">临床资料</div><div class="module-card">
 
-<a class="module" href="fibromyalgia-condition-history/condition-history.html">
-  <span class="state done">○</span>
+<a class="module" href="fibromyalgia-condition-history/condition-history.html" data-part="bsbq">
+  <span class="state">○</span>
   <span class="mbody">
     <span class="mname">病史病情</span>
     <span class="mdesc">主诉、病程与既往病史</span>
@@ -28,8 +28,8 @@
   <span class="chev">›</span>
 </a>
 
-<a class="module" href="fibromyalgia-syndrome-differentiation/syndrome-differentiation.html">
-  <span class="state done">○</span>
+<a class="module" href="fibromyalgia-syndrome-differentiation/syndrome-differentiation.html" data-part="zhpd">
+  <span class="state">○</span>
   <span class="mbody">
     <span class="mname">征候判断</span>
     <span class="mdesc">临床症状与相关判断</span>
@@ -37,8 +37,8 @@
   <span class="chev">›</span>
 </a>
 
-<a class="module" href="fibromyalgia-auxiliary-exam/auxiliary-exam.html">
-  <span class="state done">○</span>
+<a class="module" href="fibromyalgia-auxiliary-exam/auxiliary-exam.html" data-part="fzjc">
+  <span class="state">○</span>
   <span class="mbody">
     <span class="mname">辅助检查</span>
     <span class="mdesc">实验室、影像及其他检查</span>
@@ -46,8 +46,8 @@
   <span class="chev">›</span>
 </a>
 
-<a class="module" href="bingqing-pinggu/index.html">
-  <span class="state done">○</span>
+<a class="module" href="bingqing-pinggu/index.html" data-part="bqpg">
+  <span class="state">○</span>
   <span class="mbody">
     <span class="mname">病情评估</span>
     <span class="mdesc">量表与疾病状态评估</span>
@@ -59,8 +59,8 @@
 
 <div class="group"><div class="group-title">治疗记录</div><div class="module-card">
 
-<a class="module" href="zhiliao-fangan/index.html">
-  <span class="state done">○</span>
+<a class="module" href="zhiliao-fangan/index.html" data-part="zlfa">
+  <span class="state">○</span>
   <span class="mbody">
     <span class="mname">本次治疗方案</span>
     <span class="mdesc">药物及其他治疗方案</span>
@@ -68,8 +68,8 @@
   <span class="chev">›</span>
 </a>
 
-<a class="module" href="fibromyalgia-adverse-reaction/adverse-reaction.html">
-  <span class="state done">○</span>
+<a class="module" href="fibromyalgia-adverse-reaction/adverse-reaction.html" data-part="blsj">
+  <span class="state">○</span>
   <span class="mbody">
     <span class="mname">不良反应</span>
     <span class="mdesc">治疗相关不良事件记录</span>
@@ -80,4 +80,4 @@
 </div></div>
 </main>
 <div class="bottom"><button class="primary" id="finishBtn">完成本次资料录入</button></div><div class="toast" id="toast"></div>
-<script src="./js/patient-detail.js"></script></body></html>
+<script src="./js/fms-api.js"></script><script src="./js/fms-case.js"></script><script src="./js/patient-detail.js"></script></body></html>

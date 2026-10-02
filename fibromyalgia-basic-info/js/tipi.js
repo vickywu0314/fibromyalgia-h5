@@ -1,15 +1,13 @@
 (function(){
  const form=document.getElementById("tipiForm");
+ FmsCase.fillForm(form,FmsCase.ext("tipi")?.answers);
  form.addEventListener("submit",e=>{
    e.preventDefault();
-   const data=Object.fromEntries(new FormData(form).entries());
-   const payload={type:"tipi-c",data};
-   if(window.webkit?.messageHandlers?.saveForm){
-     window.webkit.messageHandlers.saveForm.postMessage(payload);
-   }else if(window.Android&&typeof window.Android.saveForm==="function"){
-     window.Android.saveForm(JSON.stringify(payload));
-   }else{
-     console.log("[TIPI-C] save",payload);
-   }
+   FmsCase.run(form.querySelector('button[type="submit"]'),async()=>{
+     const answers=FmsCase.readForm(form);
+     const finish=Object.values(answers).every(Boolean);
+     await FmsCase.saveExt("tipi",{finish,score:"",result:"",answers});
+     FmsCase.back("basic-info.html");
+   });
  });
 })();

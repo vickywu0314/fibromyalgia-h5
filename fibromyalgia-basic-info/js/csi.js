@@ -9,19 +9,19 @@
       const checked = form.querySelector('input[name="q'+i+'"]:checked');
       if(checked){ score += scoreMap[checked.value]; answered++; }
     }
-    result.textContent = answered === 9 ? (score > 18 ? "是" : "否") : "--";
+    const finish = answered === 9;
+    result.textContent = finish ? (score > 18 ? "是" : "否") : "--";
+    return {finish, score: finish ? String(score) : "", result: finish ? result.textContent : ""};
   }
 
+  FmsCase.fillForm(form, FmsCase.ext("csi9")?.answers);
+  calculate();
   form.addEventListener("change", calculate);
   form.addEventListener("submit", function(e){
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(form).entries());
-    if(window.webkit?.messageHandlers?.saveForm){
-      window.webkit.messageHandlers.saveForm.postMessage({type:"csi9",data:data});
-    }else if(window.Android && typeof window.Android.saveForm==="function"){
-      window.Android.saveForm(JSON.stringify({type:"csi9",data:data}));
-    }else{
-      console.log("[CSI-9] save",data);
-    }
+    FmsCase.run(form.querySelector('button[type="submit"]'), async () => {
+      await FmsCase.saveExt("csi9", {...calculate(), answers: FmsCase.readForm(form)});
+      FmsCase.back("basic-info.html");
+    });
   });
 })();

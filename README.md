@@ -28,4 +28,13 @@ npm run build
 也可直接发布根目录中的相同页面和资源目录。无需上传 reference-static、src、node_modules、docs 和工程配置。
 服务器必须配置同源 `/api` 反向代理到后端。直接用 file:// 打开无法调用接口。
 
+## 录入流程与保存
+
+患者列表 → 新增患者（查重后创建档案，新建患者接口待定，暂跳过）→ 患者资料 → 基本信息及其下“患者评估与病史”各子页面。
+
+- 本次录入的草稿存在 `localStorage.fms_case_current`（`js/fms-case.js`），页面之间互相回填。
+- 基本信息和各子页面点保存时，提交 `POST /api/fms/patient/case/add`，`part` 为 `part_jbxx`，子页面数据放在 `jbxx.ext` 中。首次保存后记住后端返回的病例 id，之后带 id 更新。
+- 量表除 `finish/score/result` 外另带 `answers`（原始作答），用于再次进入时回填。
+- 本病治疗史尚未接入。
+
 列表 success:false 暂按空列表显示，新增按钮一直保留。查重失败仍提示错误，不冒充查无患者。

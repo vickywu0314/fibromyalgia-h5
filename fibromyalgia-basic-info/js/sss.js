@@ -1,16 +1,16 @@
 (function(){
   const form=document.querySelector("form");
+  FmsCase.fillForm(form,FmsCase.ext("sss")?.answers);
   form.addEventListener("submit",e=>{
     e.preventDefault();
-    const fd=new FormData(form), data={};
-    for(const [k,v] of fd.entries()){
-      if(data[k]===undefined)data[k]=v;
-      else if(Array.isArray(data[k]))data[k].push(v);
-      else data[k]=[data[k],v];
-    }
-    const payload={type:document.body.dataset.type||document.title,data};
-    if(window.webkit?.messageHandlers?.saveForm) window.webkit.messageHandlers.saveForm.postMessage(payload);
-    else if(window.Android&&typeof window.Android.saveForm==="function") window.Android.saveForm(JSON.stringify(payload));
-    else console.log("[FS] save",payload);
+    const answers=FmsCase.readForm(form);
+    const values=Object.values(answers);
+    // 选项以分值开头，如“2（中度）”；第 1 部分 0～9 分，第 2 部分 0～3 分。
+    const finish=values.every(Boolean);
+    const score=values.reduce((sum,v)=>sum+(parseInt(v,10)||0),0);
+    FmsCase.run(form.querySelector('button[type="submit"]'),async()=>{
+      await FsScale.save("sss",{finish,score:finish?String(score):"",result:"",answers});
+      FmsCase.back("fs.html");
+    });
   });
 })();

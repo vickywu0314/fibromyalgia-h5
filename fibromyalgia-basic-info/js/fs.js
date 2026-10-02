@@ -1,25 +1,16 @@
 (function(){
-  document.querySelectorAll(".module-row").forEach(link=>{
-    link.addEventListener("click",e=>{
-      const page=link.dataset.page;
-      if(window.webkit?.messageHandlers?.openPage){
-        e.preventDefault();
-        window.webkit.messageHandlers.openPage.postMessage({page:page});
-      }else if(window.Android && typeof window.Android.openPage==="function"){
-        e.preventDefault();
-        window.Android.openPage(page);
-      }
-      // 浏览器预览时不拦截，直接使用 href 打开对应 HTML。
+  function render(){
+    const ext=FmsCase.state().jbxx.ext;
+    document.querySelectorAll(".module-row").forEach(link=>{
+      const status=FmsCase.status(ext[link.dataset.page]);
+      const tag=link.querySelector(".status");
+      tag.className="status "+(status==="done"?"done":"pending");
+      tag.textContent=FmsCase.statusText[status];
     });
-  });
+  }
+  render();
+  // 从 WPI / SSS 后退回来时页面可能来自缓存，需要重新读取状态。
+  addEventListener("pageshow",e=>{ if(e.persisted) render(); });
 
-  document.getElementById("backBtn").addEventListener("click",()=>{
-    if(window.webkit?.messageHandlers?.closePage){
-      window.webkit.messageHandlers.closePage.postMessage({});
-    }else if(window.Android && typeof window.Android.closePage==="function"){
-      window.Android.closePage();
-    }else{
-      history.back();
-    }
-  });
+  document.getElementById("backBtn").addEventListener("click",()=>FmsCase.back("basic-info.html"));
 })();

@@ -8,16 +8,25 @@ window.FmsApi = {
     }
     return ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname) ? '5065' : '';
   },
-  async get(path, params) {
+  async request(url, options) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 10000);
     try {
-      const response = await fetch(path + '?' + new URLSearchParams(params), {
-        credentials: 'include', signal: controller.signal,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      const response = await fetch(url, {
+        ...options, credentials: 'include', signal: controller.signal,
+        headers: { 'X-Requested-With': 'XMLHttpRequest', ...options.headers }
       });
       if (!response.ok) throw new Error('请求失败，请稍后重试');
       return await response.json();
     } finally { clearTimeout(timer); }
+  },
+  get(path, params) {
+    return this.request(path + '?' + new URLSearchParams(params), {});
+  },
+  post(path, body) {
+    return this.request(path, {
+      method: 'POST', body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };

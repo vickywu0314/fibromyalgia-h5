@@ -25,15 +25,25 @@
     if(zero) clearSection(q5);
   }
 
+  // 按跳题规则，可见的题目都答了才算完成。
+  function isFinished(data){
+    if(!data.q1||!data.q6) return false;
+    if(data.q1==="否") return true;
+    if(data.q2===""||data.q3===""||data.q4==="") return false;
+    return Number(data.q4)===0 || !!data.q5;
+  }
+
+  FmsCase.fillForm(form,FmsCase.ext("work")?.answers);
+  updateFlow();
   form.addEventListener("change",updateFlow);
   actualHours.addEventListener("input",updateFlow);
 
   form.addEventListener("submit",e=>{
     e.preventDefault();
-    const data=Object.fromEntries(new FormData(form).entries());
-    const payload={type:"work-productivity",data};
-    if(window.webkit?.messageHandlers?.saveForm) window.webkit.messageHandlers.saveForm.postMessage(payload);
-    else if(window.Android&&typeof window.Android.saveForm==="function") window.Android.saveForm(JSON.stringify(payload));
-    else console.log("[WORK] save",payload);
+    FmsCase.run(form.querySelector('button[type="submit"]'),async()=>{
+      const answers=FmsCase.readForm(form);
+      await FmsCase.saveExt("work",{finish:isFinished(answers),score:"",result:"",answers});
+      FmsCase.back("basic-info.html");
+    });
   });
 })();

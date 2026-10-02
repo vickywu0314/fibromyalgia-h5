@@ -12,11 +12,16 @@ async function loadPatients() {
   const current = ++requestId;
   showState('正在加载患者列表...');
   try {
-    const doctorId = FmsApi.getDoctorId();
-    if (!doctorId) throw new Error('未取得医生身份，请在 App 内打开');
-    const result = await FmsApi.get('/api/fms/patient/list', {
-      pageNo: 1, pageSize: 100, doctorId, keyword: searchInput.value.trim(), researchType: 12
-    });
+    const params = { pageNo: 1, pageSize: 100, researchType: 12 };
+    // 调试用：地址栏 ?doctorId=xxx 指定医生，?doctorId= 留空则不按医生过滤。
+    const query = new URLSearchParams(location.search);
+    const doctorId = query.has('doctorId') ? query.get('doctorId').trim() : FmsApi.getDoctorId();
+    if (doctorId) params.doctorId = doctorId;
+    else if (!query.has('doctorId')) throw new Error('未取得医生身份，请在 App 内打开');
+    const keyword = searchInput.value.trim();
+    if (keyword) params.keyword = keyword;
+    const result = await FmsApi.get('/api/fms/patient/list', params);
+    console.log('[patient/list]', params, result);
     if (current !== requestId) return;
     const data = result.data;
     const rows = result.success === false ? [] : [data, data?.list, data?.records, result.list, result.records].find(Array.isArray) || [];

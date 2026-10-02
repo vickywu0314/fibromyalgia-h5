@@ -1,0 +1,90 @@
+/* 基本信息页：患者评估与病史子模块区域 */
+.submodule-section{
+  margin:8px -16px 26px;
+  padding:20px 16px 0;
+  background:#f5f6f7;
+}
+.submodule-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:16px;
+  padding:0 2px 14px;
+}
+.submodule-heading h2{
+  margin:0 0 5px;
+  font-size:17px;
+  font-weight:600;
+}
+.submodule-heading p{
+  margin:0;
+  color:#7a818b;
+  font-size:13px;
+}
+.submodule-count{
+  flex:none;
+  padding-top:2px;
+  color:#7a818b;
+  font-size:13px;
+  white-space:nowrap;
+}
+.submodule-count strong{
+  color:#168bdd;
+  font-weight:600;
+}
+.submodule-list{
+  overflow:hidden;
+  border-radius:9px 9px 0 0;
+  background:#fff;
+}
+.submodule-row.menu-row{
+  min-height:66px;
+  padding:13px 14px;
+  border:0;
+  border-bottom:1px solid #eceef1;
+  background:#fff;
+}
+.submodule-row.menu-row:last-child{border-bottom:0}
+.submodule-copy{
+  min-width:0;
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+}
+.submodule-copy strong{
+  font-size:15px;
+  font-weight:500;
+  line-height:1.45;
+  text-align:left;
+}
+.status{
+  display:inline-flex;
+  align-items:center;
+  min-height:20px;
+  padding:2px 8px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:400;
+}
+.status.pending{
+  color:#858b94;
+  background:#f1f2f4;
+}
+.status.done{
+  color:#1677b8;
+  background:#eaf5fc;
+}
+.chevron{
+  flex:none;
+  margin-left:8px;
+  color:#9aa0a8;
+  font-size:26px;
+  font-weight:300;
+  line-height:1;
+}
+@media(max-width:360px){
+  .submodule-section{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
+  .submodule-heading{gap:8px}
+}

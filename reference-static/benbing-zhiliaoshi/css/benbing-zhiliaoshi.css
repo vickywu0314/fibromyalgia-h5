@@ -1,0 +1,23 @@
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Arial, sans-serif; color: #222; background: #fff; }
+    body { margin: 0; background: #fff; font-size: 16px; }
+    button, a { font: inherit; }
+    button { cursor: pointer; }
+    .page { width: 100%; max-width: 720px; min-height: 100vh; min-height: 100dvh; margin: 0 auto; padding: 16px 16px calc(28px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+    .progress-block { margin-bottom: 24px; }
+    .progress { height: 24px; background: #d8d8d8; overflow: hidden; }
+    .progress span { display: block; width: 30%; height: 100%; background: #168bdd; }
+    .progress-text { margin: 6px 0 0; font-size: 14px; }
+    h1 { margin: 0 0 4px; font-size: 18px; line-height: 1.55; font-weight: 600; }
+    .subtitle { margin: 0 0 20px; color: #7a818b; font-size: 13px; line-height: 1.5; }
+    .treatment-list { list-style: none; margin: 0; padding: 0; border-top: 8px solid #f5f6f7; }
+    .treatment-list li { border-bottom: 1px solid #eceef1; }
+    .treatment-list a { display: flex; align-items: center; justify-content: space-between; min-height: 66px; padding: 12px 4px; color: #222; text-decoration: none; font-size: 15px; line-height: 1.45; }
+    .treatment-list a:active { background: #f7f8fa; }
+    .chevron { color: #9aa0a8; font-size: 27px; font-weight: 300; line-height: 1; }
+    .actions { margin-top: auto; padding-top: 30px; display: grid; gap: 12px; }
+    .action { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; border-radius: 4px; text-align: center; text-decoration: none; font-size: 16px; }
+    .action-primary { border: 1px solid #168bdd; background: #168bdd; color: #fff; }
+    .action-secondary { border: 1px solid #b8c6d1; background: #fff; color: #376b8c; }
+    .treatment-list a:focus-visible, .action:focus-visible { outline: 2px solid #168bdd; outline-offset: 2px; }
+    @media (max-width: 360px) { .page { padding-left: 12px; padding-right: 12px; } }

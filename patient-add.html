@@ -1,0 +1,11 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ffffff"><title>新增患者</title><link rel="stylesheet" href="./css/common.css"></head><body>
+
+<main>
+<div class="eyebrow">患者建档</div><div class="lead">建立患者档案</div><div class="sub">填写患者姓名与身份证号，创建档案后继续录入患者的临床资料。</div>
+<section class="card form-card">
+ <div class="field"><div class="label">患者姓名 <span class="req">*</span></div><input class="input" id="name" placeholder="请输入患者姓名" autocomplete="name"><div class="error-text" id="nameErr">请输入患者姓名</div></div>
+ <div class="field"><div class="label">身份证号 <span class="req">*</span></div><input class="input" id="idno" placeholder="请输入18位身份证号码" maxlength="18" inputmode="text"><div class="hint">18 位身份证号：前 17 位为数字，最后 1 位为数字或 X。</div><div class="error-text" id="idErr">身份证号码格式不正确</div></div>
+</section>
+</main>
+<div class="bottom"><button class="primary" id="createBtn">下一步</button></div>
+<script src="./js/fms-api.js"></script><script src="./js/patient-add.js"></script></body></html>

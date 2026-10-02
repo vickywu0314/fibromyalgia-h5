@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>纤维肌痛症状量表（FS）</title>
+  <link rel="stylesheet" href="css/fs.css">
+</head>
+<body>
+  <!-- App WebView 页面：不设置 H5 顶部导航，由原生 App 统一提供 -->
+  <main class="page">
+    <section class="progress-block" aria-label="填写进度">
+      <div class="progress"><span style="width:30%"></span></div>
+      <p>已完成30%</p>
+    </section>
+
+    <section class="module-section">
+      <div class="module-heading">
+        <h1>纤维肌痛症状量表（FS）</h1>
+        <p>请逐项完善量表内容</p>
+      </div>
+
+      <div class="module-list">
+        <a class="module-row" data-page="wpi" href="wpi.html">
+          <span class="module-copy">
+            <strong>普遍疼痛指数（WPI）</strong>
+            <small class="status pending">未填写</small>
+          </span>
+          <span class="chevron">›</span>
+        </a>
+
+        <a class="module-row" data-page="sss" href="sss.html">
+          <span class="module-copy">
+            <strong>症状严重性量表（SSS）</strong>
+            <small class="status pending">未填写</small>
+          </span>
+          <span class="chevron">›</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="bottom-action">
+      <button type="button" id="backBtn">返回</button>
+    </div>
+  </main>
+
+  <script src="js/fs.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>研究平台</title>
+<link rel="stylesheet" href="./css/common.css">
+</head>
+<body>
+
+
+
+
+
+
+
+<main>
+ <div class="sub" style="margin-top:0">输入研究序列号进入对应研究；没有序列号也可以直接选择下方数据库。</div>
+
+ <section class="entry-card">
+  <div class="entry-title">研究序列号</div>
+  <div class="entry-note">已有研究序列号时，可快速定位并进入对应研究项目。</div>
+  <div class="input-row"><input id="serial" placeholder="请输入研究序列号" autocomplete="off"><button class="enter" id="enterBtn">进入</button></div>
+  <div class="skip"><span>●</span><span>没有序列号？可直接从下方选择数据库</span></div>
+ </section>
+
+ <section class="section">
+  <div class="section-head"><div class="section-title">数据库快捷入口</div><div class="section-note">选择研究类型</div></div>
+  <div class="platform-list">
+   <button class="platform" data-name="RA研究数据平台"><span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M8 3h8v4l3 3v9a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9l3-3V3Z"/><path d="M9 13h6M12 10v6"/></svg></span><span class="pbody"><span class="pname">RA 研究数据平台</span><span class="pdesc">Rheumatoid Arthritis · 类风湿关节炎</span></span><span class="chev">›</span></button>
+   <button class="platform" data-name="AS研究数据平台"><span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3v18M8 5h8M7 9h10M7 13h10M8 17h8"/></svg></span><span class="pbody"><span class="pname">AS 研究数据平台</span><span class="pdesc">Ankylosing Spondylitis · 强直性脊柱炎</span></span><span class="chev">›</span></button>
+   <button class="platform" data-name="SS研究数据平台"><span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="3"/><path d="M6 20c.5-5 2.5-7 6-7s5.5 2 6 7M4 8h2M18 8h2M12 2v2"/></svg></span><span class="pbody"><span class="pname">SS 研究数据平台</span><span class="pdesc">Sjögren's Syndrome · 干燥综合征</span></span><span class="chev">›</span></button>
+   <button class="platform" data-name="RA-ILD研究数据平台"><span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M11 5v14c-3 2-7 0-7-4 0-5 3-8 7-10ZM13 5v14c3 2 7 0 7-4 0-5-3-8-7-10Z"/></svg></span><span class="pbody"><span class="pname">RA-ILD 研究数据平台</span><span class="pdesc">RA-associated Interstitial Lung Disease</span></span><span class="chev">›</span></button>
+   <button class="platform" data-name="RA肌少症研究数据平台"><span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="5" r="2"/><path d="M8 10c1-2 2-3 4-3s3 1 4 3l2 4-3 1-1-3v8h-4v-8l-1 3-3-1 2-4Z"/></svg></span><span class="pbody"><span class="pname">RA 肌少症研究数据平台</span><span class="pdesc">Rheumatoid Arthritis & Sarcopenia</span></span><span class="chev">›</span></button>
+   <button class="platform" data-name="纤维肌痛研究数据平台" id="fibroPlatform"><span class="picon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M5 12c3-5 5-7 7-7s4 2 7 7c-3 5-5 7-7 7s-4-2-7-7Z"/><path d="M9 12h6"/></svg></span><span class="pbody"><span class="pname">纤维肌痛研究数据平台</span><span class="pdesc">Fibromyalgia Research Database</span></span><span class="chev">›</span></button>
+  </div>
+ </section>
+</main>
+<div class="toast" id="toast"></div>
+<script src="./js/research-platform.js"></script>
+</body></html>

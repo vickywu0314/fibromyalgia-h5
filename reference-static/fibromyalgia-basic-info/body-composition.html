@@ -1,0 +1,13 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><title>人体成分分析</title><link rel="stylesheet" href="css/body-composition.css"></head><body>
+<main class="page"><section class="progress-block"><div class="progress"><span></span></div><p>已完成30%</p></section>
+<form id="form"><h1>人体成分分析</h1><section class="form-list">
+<label class="field"><span>体脂百分比</span><span class="unit"><input type="number" name="bodyFatPercentage" step="0.01" inputmode="decimal"><b>%</b></span></label>
+<label class="field"><span>体脂量/体脂肪量</span><span class="unit"><input type="number" name="bodyFatMass" step="0.01" inputmode="decimal"><b>Kg</b></span></label>
+<label class="field"><span>骨骼肌量</span><span class="unit"><input type="number" name="skeletalMuscleMass" step="0.01" inputmode="decimal"><b>Kg</b></span></label>
+<label class="field"><span>骨骼肌指数</span><span class="unit"><input type="number" name="skeletalMuscleIndex" step="0.01" inputmode="decimal"><b>Kg</b></span></label>
+<label class="field"><span>去脂体重/瘦体质量</span><span class="unit"><input type="number" name="leanBodyMass" step="0.01" inputmode="decimal"><b>Kg</b></span></label>
+<label class="field"><span>内脏脂肪等级</span><select name="visceralFatLevel"><option>1级</option><option>2级</option><option>3级</option><option>4级</option><option>5级</option><option>6级</option><option>7级</option><option>8级</option><option>9级</option><option>10级</option><option>11级</option><option>12级</option><option>13级</option><option>14级</option><option>15级</option><option>16级</option></select></label>
+<label class="field"><span>腰臀比</span><span class="ratio"><b>0.</b><input name="ratio1" maxlength="1" inputmode="numeric"><input name="ratio2" maxlength="1" inputmode="numeric"></span></label>
+</section>
+<section class="upload"><h2>上传检验</h2><label class="upload-box" for="file"><strong>＋</strong><span>上传图片</span></label><input id="file" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><p>支持 jpg、png、gif 格式，文件大小不超过5M</p><div id="preview" hidden><img id="previewImg"><button type="button" id="remove">删除图片</button></div></section>
+<div class="bottom"><button type="submit">保存并返回</button></div></form></main><script src="js/body-composition.js"></script></body></html>

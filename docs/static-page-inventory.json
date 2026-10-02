@@ -1,0 +1,404 @@
+[
+  {
+    "source": "benbing-zhiliaoshi/add-fei-yaowu-liaofa.html",
+    "title": "非药物疗法",
+    "route": "/legacy/benbing-zhiliaoshi/add-fei-yaowu-liaofa",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/add-xiyao.html",
+    "title": "口服西药",
+    "route": "/legacy/benbing-zhiliaoshi/add-xiyao",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/add-zhongchengyao.html",
+    "title": "口服中成药",
+    "route": "/legacy/benbing-zhiliaoshi/add-zhongchengyao",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/add-zhongyao-tangji.html",
+    "title": "口服中药汤剂",
+    "route": "/legacy/benbing-zhiliaoshi/add-zhongyao-tangji",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/benbing-zhiliaoshi.html",
+    "title": "本病治疗史",
+    "route": "/legacy/benbing-zhiliaoshi/benbing-zhiliaoshi",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/fei-yaowu-liaofa.html",
+    "title": "非药物疗法",
+    "route": "/legacy/benbing-zhiliaoshi/fei-yaowu-liaofa",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/kaiyao-huizong.html",
+    "title": "查看开药汇总",
+    "route": "/legacy/benbing-zhiliaoshi/kaiyao-huizong",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/xiyao.html",
+    "title": "西药",
+    "route": "/legacy/benbing-zhiliaoshi/xiyao",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/zhongchengyao.html",
+    "title": "中成药",
+    "route": "/legacy/benbing-zhiliaoshi/zhongchengyao",
+    "status": "pending"
+  },
+  {
+    "source": "benbing-zhiliaoshi/zhongyao-tangji.html",
+    "title": "中药汤剂",
+    "route": "/legacy/benbing-zhiliaoshi/zhongyao-tangji",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/cfq.html",
+    "title": "认知问卷：认知失败问卷（CFQ）",
+    "route": "/legacy/bingqing-pinggu/cfq",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/fiqr.html",
+    "title": "整体病情评估：修订版纤维肌痛影响问卷（FIQR）",
+    "route": "/legacy/bingqing-pinggu/fiqr",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/had.html",
+    "title": "焦虑抑郁评估：医院焦虑抑郁调查量表（HAD）",
+    "route": "/legacy/bingqing-pinggu/had",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/index.html",
+    "title": "病情评估",
+    "route": "/legacy/bingqing-pinggu/index",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/mfi20.html",
+    "title": "疲劳评估：多维疲劳评价量表（MFI-20）",
+    "route": "/legacy/bingqing-pinggu/mfi20",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/pain-detect.html",
+    "title": "神经病理性疼痛评估：pain DETECT量表",
+    "route": "/legacy/bingqing-pinggu/pain-detect",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/pcs.html",
+    "title": "疼痛灾难化评估：疼痛灾难化量表（PCS）",
+    "route": "/legacy/bingqing-pinggu/pcs",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/psqi.html",
+    "title": "睡眠评估：匹兹堡睡眠质量量表（PSQI）",
+    "route": "/legacy/bingqing-pinggu/psqi",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/sf12.html",
+    "title": "生活质量评估：健康调查12条简表（SF-12）",
+    "route": "/legacy/bingqing-pinggu/sf12",
+    "status": "pending"
+  },
+  {
+    "source": "bingqing-pinggu/vas.html",
+    "title": "疼痛评估",
+    "route": "/legacy/bingqing-pinggu/vas",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-adverse-reaction/adverse-reaction.html",
+    "title": "不良反应",
+    "route": "/legacy/fibromyalgia-adverse-reaction/adverse-reaction",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-auxiliary-exam/auxiliary-exam.html",
+    "title": "辅助检查",
+    "route": "/legacy/fibromyalgia-auxiliary-exam/auxiliary-exam",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/basic-info.html",
+    "title": "基本信息",
+    "route": "/legacy/fibromyalgia-basic-info/basic-info",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/body-composition.html",
+    "title": "人体成分分析",
+    "route": "/legacy/fibromyalgia-basic-info/body-composition",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/csi.html",
+    "title": "中枢敏化程度",
+    "route": "/legacy/fibromyalgia-basic-info/csi",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/fs.html",
+    "title": "纤维肌痛症状量表（FS）",
+    "route": "/legacy/fibromyalgia-basic-info/fs",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/sffq.html",
+    "title": "膳食摄入评估：半定量膳食频率问卷（SFFQ）",
+    "route": "/legacy/fibromyalgia-basic-info/sffq",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/sss.html",
+    "title": "症状严重性量表（SSS）",
+    "route": "/legacy/fibromyalgia-basic-info/sss",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/tipi.html",
+    "title": "人格评估：中国版10项目大五人格量表（TIPI-C）",
+    "route": "/legacy/fibromyalgia-basic-info/tipi",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/tpc.html",
+    "title": "压痛点（TPC）",
+    "route": "/legacy/fibromyalgia-basic-info/tpc",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/work.html",
+    "title": "间接成本评估",
+    "route": "/legacy/fibromyalgia-basic-info/work",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-basic-info/wpi.html",
+    "title": "普遍疼痛指数（WPI）",
+    "route": "/legacy/fibromyalgia-basic-info/wpi",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-condition-history/condition-history.html",
+    "title": "病史病情",
+    "route": "/legacy/fibromyalgia-condition-history/condition-history",
+    "status": "pending"
+  },
+  {
+    "source": "fibromyalgia-syndrome-differentiation/syndrome-differentiation.html",
+    "title": "证候判断",
+    "route": "/legacy/fibromyalgia-syndrome-differentiation/syndrome-differentiation",
+    "status": "pending"
+  },
+  {
+    "source": "follow-up-list.html",
+    "title": "随访记录",
+    "route": "/legacy/follow-up-list",
+    "status": "pending"
+  },
+  {
+    "source": "hebing-yaowu/add.html",
+    "title": "添加合并药物",
+    "route": "/legacy/hebing-yaowu/add",
+    "status": "pending"
+  },
+  {
+    "source": "hebing-yaowu/index.html",
+    "title": "合并药物",
+    "route": "/legacy/hebing-yaowu/index",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/choose.html",
+    "title": "选择疾病类别",
+    "route": "/legacy/jiwang-bingshi/choose",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/fengshi.html",
+    "title": "风湿性疾病",
+    "route": "/legacy/jiwang-bingshi/fengshi",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/guke.html",
+    "title": "骨科系统",
+    "route": "/legacy/jiwang-bingshi/guke",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/huxi.html",
+    "title": "呼吸系统疾病",
+    "route": "/legacy/jiwang-bingshi/huxi",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/index.html",
+    "title": "既往疾病史",
+    "route": "/legacy/jiwang-bingshi/index",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/neifenmi.html",
+    "title": "内分泌和代谢性疾病",
+    "route": "/legacy/jiwang-bingshi/neifenmi",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/shen.html",
+    "title": "肾病系统",
+    "route": "/legacy/jiwang-bingshi/shen",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/shengzhi.html",
+    "title": "生殖系统",
+    "route": "/legacy/jiwang-bingshi/shengzhi",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/tengtong.html",
+    "title": "慢性重叠疼痛综合征",
+    "route": "/legacy/jiwang-bingshi/tengtong",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/xiaohua.html",
+    "title": "消化系统疾病",
+    "route": "/legacy/jiwang-bingshi/xiaohua",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/xinli.html",
+    "title": "精神心理疾病",
+    "route": "/legacy/jiwang-bingshi/xinli",
+    "status": "pending"
+  },
+  {
+    "source": "jiwang-bingshi/xunhuan.html",
+    "title": "循环系统疾病",
+    "route": "/legacy/jiwang-bingshi/xunhuan",
+    "status": "pending"
+  },
+  {
+    "source": "patient-add.html",
+    "title": "新增患者",
+    "route": "/legacy/patient-add",
+    "status": "pending"
+  },
+  {
+    "source": "patient-detail.html",
+    "title": "患者资料",
+    "route": "/legacy/patient-detail",
+    "status": "pending"
+  },
+  {
+    "source": "patient-list.html",
+    "title": "纤维肌痛数据库",
+    "route": "/patients",
+    "status": "migrated"
+  },
+  {
+    "source": "research-platform.html",
+    "title": "研究平台",
+    "route": "/legacy/research-platform",
+    "status": "pending"
+  },
+  {
+    "source": "shanshi-pinggu/index.html",
+    "title": "膳食摄入评估：半定量膳食频率问卷（SFFQ）",
+    "route": "/legacy/shanshi-pinggu/index",
+    "status": "pending"
+  },
+  {
+    "source": "shanshi-pinggu（全）/followup.html",
+    "title": "膳食摄入评估 · 后续问卷",
+    "route": "/legacy/shanshi-pinggu-全/followup",
+    "status": "pending"
+  },
+  {
+    "source": "shanshi-pinggu（全）/index.html",
+    "title": "膳食摄入评估：半定量膳食频率问卷（SFFQ）",
+    "route": "/legacy/shanshi-pinggu-全/index",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/add-fei-yaowu.html",
+    "title": "非药物疗法",
+    "route": "/legacy/zhiliao-fangan/add-fei-yaowu",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/add-xiyao.html",
+    "title": "口服西药",
+    "route": "/legacy/zhiliao-fangan/add-xiyao",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/add-zhongchengyao.html",
+    "title": "口服中成药",
+    "route": "/legacy/zhiliao-fangan/add-zhongchengyao",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/add-zhongyao-tangji.html",
+    "title": "口服中药汤剂",
+    "route": "/legacy/zhiliao-fangan/add-zhongyao-tangji",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/add-zhongyao-yinpian.html",
+    "title": "中药饮片",
+    "route": "/legacy/zhiliao-fangan/add-zhongyao-yinpian",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/fei-yaowu.html",
+    "title": "非药物疗法",
+    "route": "/legacy/zhiliao-fangan/fei-yaowu",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/huizong.html",
+    "title": "查看开药汇总",
+    "route": "/legacy/zhiliao-fangan/huizong",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/index.html",
+    "title": "治疗方案",
+    "route": "/legacy/zhiliao-fangan/index",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/xiyao.html",
+    "title": "西药",
+    "route": "/legacy/zhiliao-fangan/xiyao",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/zhongchengyao.html",
+    "title": "中成药",
+    "route": "/legacy/zhiliao-fangan/zhongchengyao",
+    "status": "pending"
+  },
+  {
+    "source": "zhiliao-fangan/zhongyao-yinpian.html",
+    "title": "中药饮片",
+    "route": "/legacy/zhiliao-fangan/zhongyao-yinpian",
+    "status": "pending"
+  }
+]

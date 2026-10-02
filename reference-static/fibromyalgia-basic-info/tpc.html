@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>压痛点（TPC）</title>
+  <link rel="stylesheet" href="css/tpc.css">
+</head>
+<body>
+  <!-- App WebView 页面：不设置 H5 顶部导航，由原生 App 统一提供 -->
+  <main class="page">
+    <section class="progress-block" aria-label="填写进度">
+      <div class="progress"><span style="width:30%"></span></div>
+      <p>已完成30%</p>
+    </section>
+
+    <form id="tpcForm">
+      <section class="questionnaire">
+        <h1>压痛点（TPC）</h1>
+
+        <fieldset class="question">
+          <legend>1. 枕骨下肌肉附着处</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q1" value="左">左</label>
+            <label><input type="checkbox" name="q1" value="右">右</label>
+            <label><input type="checkbox" name="q1" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>2. 斜方肌上缘中点</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q2" value="左">左</label>
+            <label><input type="checkbox" name="q2" value="右">右</label>
+            <label><input type="checkbox" name="q2" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>3. 第5～7颈椎横突间隙的前面</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q3" value="左">左</label>
+            <label><input type="checkbox" name="q3" value="右">右</label>
+            <label><input type="checkbox" name="q3" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>4. 冈上肌起始部，肩胛棘上方近内侧缘上方</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q4" value="左">左</label>
+            <label><input type="checkbox" name="q4" value="右">右</label>
+            <label><input type="checkbox" name="q4" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>5. 肱骨外上髁远端2cm处</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q5" value="左">左</label>
+            <label><input type="checkbox" name="q5" value="右">右</label>
+            <label><input type="checkbox" name="q5" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>6. 第2肋骨与软骨交界处</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q6" value="左">左</label>
+            <label><input type="checkbox" name="q6" value="右">右</label>
+            <label><input type="checkbox" name="q6" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>7. 臀外上象限，臀肌前皱褶处</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q7" value="左">左</label>
+            <label><input type="checkbox" name="q7" value="右">右</label>
+            <label><input type="checkbox" name="q7" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>8. 转子隆起的后方</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q8" value="左">左</label>
+            <label><input type="checkbox" name="q8" value="右">右</label>
+            <label><input type="checkbox" name="q8" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+
+        <fieldset class="question">
+          <legend>9. 膝内侧脂肪垫关节折皱线的近侧</legend>
+          <div class="options">
+            <label><input type="checkbox" name="q9" value="左">左</label>
+            <label><input type="checkbox" name="q9" value="右">右</label>
+            <label><input type="checkbox" name="q9" value="无" data-none>无</label>
+          </div>
+        </fieldset>
+      </section>
+
+      <div class="bottom-action">
+        <button type="submit">保存并返回</button>
+      </div>
+    </form>
+  </main>
+
+  <script src="js/tpc.js"></script>
+</body>
+</html>

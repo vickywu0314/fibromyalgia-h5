@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>病史病情</title>
+<link rel="stylesheet" href="css/condition-history.css">
+</head>
+<body>
+<main class="page">
+  <section class="progress-block"><div class="progress"><span></span></div><p>已完成30%</p></section>
+  <form id="conditionForm">
+    <section class="section">
+      <h2>1.全身症状</h2>
+
+      <div class="branch">
+        <label class="check parent"><input type="checkbox" name="systemic[]" value="肝郁气滞">肝郁气滞</label>
+        <div class="children">
+          <label class="check"><input type="checkbox" name="systemic[]" value="焦虑易怒">焦虑易怒</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="胸胁胀闷或刺">胸胁胀闷或刺</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="寐差多梦">寐差多梦</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="脘闷嗳气">脘闷嗳气</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="腹痛">腹痛</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="不思饮食">不思饮食</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="疲乏无力">疲乏无力</label>
+        </div>
+      </div>
+
+      <div class="branch">
+        <label class="check parent"><input type="checkbox" name="systemic[]" value="寒湿痹阻">寒湿痹阻</label>
+        <div class="children">
+          <label class="check"><input type="checkbox" name="systemic[]" value="四肢重着无力">四肢重着无力</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="每遇寒则冷痛">每遇寒则冷痛，</label>
+        </div>
+      </div>
+
+      <div class="branch">
+        <label class="check parent"><input type="checkbox" name="systemic[]" value="痰热扰心">痰热扰心</label>
+        <div class="children">
+          <label class="check"><input type="checkbox" name="systemic[]" value="惊悸不安">惊悸不安</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="口苦心烦">口苦心烦</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="头痛失眠">头痛失眠</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="渴喜冷饮">渴喜冷饮</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="性情急躁">性情急躁</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="反复梦魇">反复梦魇</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="恶心纳呆">恶心纳呆</label>
+        </div>
+      </div>
+
+      <div class="branch">
+        <label class="check parent"><input type="checkbox" name="systemic[]" value="肝肾不足">肝肾不足</label>
+        <div class="children">
+          <label class="check"><input type="checkbox" name="systemic[]" value="肌肉无力">肌肉无力</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="腰膝酸软，劳累加重">腰膝酸软，劳累加重</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="筋缩，手足不遂">筋缩，手足不遂</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="畏寒肢冷">畏寒肢冷</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="肢体麻木">肢体麻木</label>
+          <label class="check"><input type="checkbox" name="systemic[]" value="失眠健忘">失眠健忘</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>2.二便</h2>
+      <h3>大便</h3>
+      <div class="radios">
+        <label><input type="radio" name="stool" value="稀溏">稀溏</label>
+        <label><input type="radio" name="stool" value="便秘">便秘</label>
+        <label><input type="radio" name="stool" value="粘滞">粘滞</label>
+        <label><input type="radio" name="stool" value="无力">无力</label>
+        <label><input type="radio" name="stool" value="正常">正常</label>
+      </div>
+      <h3>小便</h3>
+      <div class="radios">
+        <label><input type="radio" name="urine" value="黄">黄</label>
+        <label><input type="radio" name="urine" value="热">热</label>
+        <label><input type="radio" name="urine" value="清长">清长</label>
+        <label><input type="radio" name="urine" value="夜尿频">夜尿频</label>
+        <label><input type="radio" name="urine" value="无力">无力</label>
+        <label><input type="radio" name="urine" value="正常">正常</label>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>3.舌象</h2>
+      <h3>舌质</h3>
+      <h4>舌色</h4>
+      <div class="radios">
+        <label><input type="radio" name="tongueColor" value="淡红">淡红</label><label><input type="radio" name="tongueColor" value="淡白">淡白</label><label><input type="radio" name="tongueColor" value="红">红</label><label><input type="radio" name="tongueColor" value="绛">绛</label><label><input type="radio" name="tongueColor" value="紫">紫</label><label><input type="radio" name="tongueColor" value="暗">暗</label>
+      </div>
+      <h4>舌形</h4>
+      <div class="radios">
+        <label><input type="radio" name="tongueShape" value="苍老">苍老</label><label><input type="radio" name="tongueShape" value="娇嫩">娇嫩</label><label><input type="radio" name="tongueShape" value="胖大">胖大</label><label><input type="radio" name="tongueShape" value="瘦薄">瘦薄</label><label><input type="radio" name="tongueShape" value="芒刺">芒刺</label><label><input type="radio" name="tongueShape" value="裂纹">裂纹</label><label><input type="radio" name="tongueShape" value="齿痕">齿痕</label><label><input type="radio" name="tongueShape" value="正常">正常</label>
+      </div>
+      <h3>舌苔</h3>
+      <h4>苔色</h4>
+      <div class="radios">
+        <label><input type="radio" name="coatColor" value="白">白</label><label><input type="radio" name="coatColor" value="黄">黄</label><label><input type="radio" name="coatColor" value="灰">灰</label><label><input type="radio" name="coatColor" value="黑">黑</label><label><input type="radio" name="coatColor" value="黄白相间">黄白相间</label>
+      </div>
+      <h4>舌形</h4>
+      <div class="radios">
+        <label><input type="radio" name="coatShape" value="厚">厚</label><label><input type="radio" name="coatShape" value="薄">薄</label><label><input type="radio" name="coatShape" value="润">润</label><label><input type="radio" name="coatShape" value="滑">滑</label><label><input type="radio" name="coatShape" value="燥">燥</label><label><input type="radio" name="coatShape" value="腐">腐</label><label><input type="radio" name="coatShape" value="腻">腻</label><label><input type="radio" name="coatShape" value="剥">剥</label><label><input type="radio" name="coatShape" value="无">无</label>
+      </div>
+    </section>
+
+    <section class="section menstruation" id="menstruationSection">
+      <h2>4.月经情况</h2>
+      <div class="radios top-level">
+        <label><input type="radio" name="menstrualStage" value="分绝经期">分绝经期</label>
+        <label><input type="radio" name="menstrualStage" value="围绝经期">围绝经期</label>
+        <label><input type="radio" name="menstrualStage" value="育龄期">育龄期</label>
+      </div>
+      <div class="subgroup"><label class="check"><input type="checkbox" name="menstrualItems[]" value="经期">经期</label><div class="radios nested"><label><input type="radio" name="periodTiming" value="月经先期">月经先期</label><label><input type="radio" name="periodTiming" value="月经后期">月经后期</label><label><input type="radio" name="periodTiming" value="月经先后不定期">月经先后不定期</label><label><input type="radio" name="periodTiming" value="经期延长">经期延长</label><label><input type="radio" name="periodTiming" value="正常">正常</label></div></div>
+      <div class="subgroup"><label class="check"><input type="checkbox" name="menstrualItems[]" value="经色">经色</label><div class="radios nested"><label><input type="radio" name="periodColor" value="淡红">淡红</label><label><input type="radio" name="periodColor" value="深红">深红</label><label><input type="radio" name="periodColor" value="紫暗">紫暗</label><label><input type="radio" name="periodColor" value="正常">正常</label></div></div>
+      <div class="subgroup"><label class="check"><input type="checkbox" name="menstrualItems[]" value="经量">经量</label><div class="radios nested"><label><input type="radio" name="periodAmount" value="月经过多">月经过多</label><label><input type="radio" name="periodAmount" value="月经过少">月经过少</label><label><input type="radio" name="periodAmount" value="正常">正常</label></div></div>
+      <div class="subgroup"><label class="check"><input type="checkbox" name="menstrualItems[]" value="痛经">痛经</label><div class="radios nested"><label><input type="radio" name="dysmenorrhea" value="有">有</label><label><input type="radio" name="dysmenorrhea" value="无">无</label></div></div>
+    </section>
+
+    <div class="bottom"><button type="submit">保存并返回</button></div>
+  </form>
+</main>
+<script src="js/condition-history.js"></script>
+</body></html>

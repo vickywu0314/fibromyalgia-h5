@@ -1,0 +1,31 @@
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#222;background:#fff}
+body{margin:0;background:#fff;font-size:16px}
+button,input{font:inherit;color:inherit}
+.page{width:100%;max-width:720px;margin:0 auto;padding:16px 16px calc(28px + env(safe-area-inset-bottom))}
+.progress-block{margin-bottom:24px}
+.progress{height:24px;background:#d8d8d8;overflow:hidden}
+.progress span{display:block;height:100%;background:#168bdd}
+.progress-block p{margin:6px 0 0;font-size:14px}
+.questionnaire h1{margin:0 0 12px;font-size:18px;font-weight:600;line-height:1.5}
+.question{margin:0;padding:20px 0;border:0;border-bottom:1px solid #e7e9ec}
+.question legend{width:100%;padding:0 0 12px;font-size:15px;line-height:1.6;font-weight:500}
+.options{display:flex;flex-direction:column;gap:2px}
+.options label{position:relative;display:flex;align-items:center;min-height:42px;padding:7px 4px;font-size:15px;line-height:1.4;cursor:pointer}
+.options input[type="radio"]{
+  position:static;
+  opacity:1;
+  pointer-events:auto;
+  width:19px;
+  height:19px;
+  margin:0 11px 0 0;
+  accent-color:#168bdd;
+  flex:none;
+}
+.result{display:flex;align-items:center;gap:8px;margin:22px 0 6px;padding:15px 14px;border-radius:7px;background:#f6f8fa;font-size:15px}
+.result strong{color:#168bdd}
+.bottom-action{padding-top:18px}
+.bottom-action button{width:100%;min-height:46px;border:0;border-radius:4px;background:#168bdd;color:#fff}
+@media(max-width:360px){
+  .page{padding-left:12px;padding-right:12px}
+}

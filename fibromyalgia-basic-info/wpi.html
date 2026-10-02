@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>普遍疼痛指数（WPI）</title>
+  <link rel="stylesheet" href="css/wpi.css">
+</head>
+<body>
+<main class="page">
+  <section class="progress-block" aria-label="填写进度">
+    <div class="progress"><span style="width:30%"></span></div>
+    <p>已完成30%</p>
+  </section>
+
+  <form id="wpiForm">
+    <h1>普遍疼痛指数（WPI）</h1>
+    <p class="instruction">标记出过去一周中患者出现疼痛的部位，共有多少部位疼过？</p>
+
+    <section class="group">
+      <h2>左上部位</h2>
+      <label><input type="checkbox" name="painArea" value="左下颌">左下颌</label>
+      <label><input type="checkbox" name="painArea" value="左肩胛带区">左肩胛带区</label>
+      <label><input type="checkbox" name="painArea" value="左上臂">左上臂</label>
+      <label><input type="checkbox" name="painArea" value="左前臂">左前臂</label>
+    </section>
+
+    <section class="group">
+      <h2>右上部位</h2>
+      <label><input type="checkbox" name="painArea" value="右下颌">右下颌</label>
+      <label><input type="checkbox" name="painArea" value="右肩胛带区">右肩胛带区</label>
+      <label><input type="checkbox" name="painArea" value="右上臂">右上臂</label>
+      <label><input type="checkbox" name="painArea" value="右前臂">右前臂</label>
+    </section>
+
+    <section class="group">
+      <h2>左下部位</h2>
+      <label><input type="checkbox" name="painArea" value="左髋部（臀区，大转子）">左髋部（臀区，大转子）</label>
+      <label><input type="checkbox" name="painArea" value="左大腿">左大腿</label>
+      <label><input type="checkbox" name="painArea" value="左小腿">左小腿</label>
+    </section>
+
+    <section class="group">
+      <h2>右下部位</h2>
+      <label><input type="checkbox" name="painArea" value="右髋部（臀区，大转子）">右髋部（臀区，大转子）</label>
+      <label><input type="checkbox" name="painArea" value="右大腿">右大腿</label>
+      <label><input type="checkbox" name="painArea" value="右小腿">右小腿</label>
+    </section>
+
+    <section class="group">
+      <h2>中轴部位</h2>
+      <label><input type="checkbox" name="painArea" value="颈部">颈部</label>
+      <label><input type="checkbox" name="painArea" value="背部">背部</label>
+      <label><input type="checkbox" name="painArea" value="腰部">腰部</label>
+      <label><input type="checkbox" name="painArea" value="胸部">胸部</label>
+      <label><input type="checkbox" name="painArea" value="腹部">腹部</label>
+    </section>
+
+    <div class="bottom-action"><button type="submit">保存并返回</button></div>
+  </form>
+</main>
+<script src="js/wpi.js"></script>
+</body>
+</html>

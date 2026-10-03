@@ -94,11 +94,12 @@ window.CaseView = {
         }
       });
     });
-    // 联动脚本可能重新启用控件，回显后再锁一次。
-    this.lock(form, this.keep);
+    // 查看模式下联动脚本可能重新启用控件，回显后再锁一次。
+    if (this.locked) this.lock(form, this.keep);
   },
 
   lock(form, keep) {
+    this.locked = true;
     this.keep = keep;
     form.querySelectorAll('input,select,textarea,button').forEach(control => {
       if (keep && control.matches(keep)) return;

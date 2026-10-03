@@ -12,7 +12,9 @@
  if(edit>=0&&edit<records.length&&records[edit].category===category){var saved=records[edit],radio=[...form.querySelectorAll('input[name="disease"]')].find(function(input){return input.value===saved.name;});chosen.value=radio?saved.name:'其他';form.elements.otherName.value=radio?'':saved.name;form.elements.years.value=saved.years||'';}
  function refresh(){other.hidden=chosen.value!=='其他';}form.addEventListener('change',refresh);refresh();
  form.addEventListener('submit',function(event){event.preventDefault();error.textContent='';var name=chosen.value==='其他'?form.elements.otherName.value.trim():chosen.value,years=form.elements.years.value.trim();if(!name){error.textContent='请选择疾病名称';return;}if(years&&(+years<0||+years>120)){error.textContent='病程年数应在0到120之间';return;}
-  var record={category:category,categoryLabel:document.title,name:name,years:years};if(edit>=0&&edit<records.length&&records[edit].category===category)records[edit]=record;else records.push(record);
-  try{localStorage.setItem(key,JSON.stringify(records));location.href='index.html';}catch(e){error.textContent='保存失败，请检查浏览器存储设置';}
+  var record={category:category,categoryLabel:document.title,name:name,years:years===''?null:Number(years)};if(edit>=0&&edit<records.length&&records[edit].category===category)records[edit]=record;else records.push(record);
+  try{localStorage.setItem(key,JSON.stringify(records));}catch(e){error.textContent='保存失败，请检查浏览器存储设置';return;}
+  // 录入流程中整组提交到服务端（jbxx.diseaseHistory），成功再返回列表。
+  if(window.CaseEdit)CaseEdit.commitThen(key,function(){location.href='index.html';},function(m){error.textContent=m;});else location.href='index.html';
  });
 })();

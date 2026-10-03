@@ -33,4 +33,15 @@
 <div class="upload"><h3>上传检验报告</h3><p>图片格式:jpg、png、gif<br>图片大小:不超过5M</p><label class="upload-box" for="ecgReport"><span>＋</span><small>上传图片</small></label><input id="ecgReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="ecgPreview" class="preview" hidden><img></div></div>
 </section>
 <div class="bottom"><button type="submit">保存并返回</button></div>
-</form></main><script src="js/auxiliary-exam.js"></script><script src="../js/fms-api.js"></script><script src="../js/case-view.js"></script><script>CaseView.init(document.getElementById('examForm'), 'fzjc', { onData: d => { const ups = document.querySelectorAll('.upload'); CaseView.images(ups[0], '检验报告', d.labReportImages); CaseView.images(ups[1], '心电图报告', d.ecgReportImages); } });</script></body></html>
+</form></main><script src="js/auxiliary-exam.js"></script><script src="../js/fms-api.js"></script><script src="../js/case-view.js"></script><script>CaseView.init(document.getElementById('examForm'), 'fzjc', { onData: d => { const ups = document.querySelectorAll('.upload'); CaseView.images(ups[0], '检验报告', d.labReportImages); CaseView.images(ups[1], '心电图报告', d.ecgReportImages); } });</script>
+<script src="../js/case-edit.js"></script>
+<script>
+if (!CaseView.context().isView) {
+  const lab = CaseEdit.imageField(document.getElementById('labReport'), document.getElementById('labPreview'));
+  const ecg = CaseEdit.imageField(document.getElementById('ecgReport'), document.getElementById('ecgPreview'));
+  CaseEdit.bindForm(document.getElementById('examForm'), 'fzjc', {
+    onLoad: saved => { lab.set(saved.labReportImages); ecg.set(saved.ecgReportImages); },
+    build: data => ({ ...data, labReportImages: lab.urls, ecgReportImages: ecg.urls })
+  });
+}
+</script></body></html>

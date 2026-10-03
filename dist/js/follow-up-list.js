@@ -37,4 +37,7 @@ PagedList({
   emptyText: () => '暂无随访记录，可点击下方按钮新增'
 }).reload();
 
-document.getElementById('addVisit').onclick = () => tip('为 ' + displayName + ' 新增随访记录');
+// 新增随访：进入录入入口，t 标识这一次录入。
+document.getElementById('addVisit').onclick = () => {
+  location.href = './patient-detail.html?' + new URLSearchParams({ patientId, name: displayName, t: 'new:' + Date.now() });
+};

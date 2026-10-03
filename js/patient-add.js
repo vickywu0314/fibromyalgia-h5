@@ -41,7 +41,8 @@ createBtn.addEventListener("click", async function () {
       existed, patient: existed ? result.data : {},
       entered: { name: patientName, cardNo: patientId.toUpperCase() }
     }));
-    window.location.href = './patient-detail.html';
+    // t 标识这一次录入；老患者带上患者 ID，新患者由保存基本信息时建档。
+    window.location.href = './patient-detail.html?' + new URLSearchParams({ t: 'add:' + Date.now(), ...(existed && result.data.id ? { patientId: result.data.id } : {}), name: existed ? (result.data.name || patientName) : patientName });
   } catch (error) {
     window.alert(error.name === 'AbortError' ? '查询超时，请稍后重试' : error.message);
   } finally {

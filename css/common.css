@@ -143,3 +143,7 @@ a.module:hover {
 .list-footer{padding:16px 0 calc(48px + env(safe-area-inset-bottom));text-align:center;color:#8a93a3;font-size:12px}
 /* 页面底部有固定按钮栏时，给内容留出按钮栏高度 */
 .with-fabbar{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+/* 底部两个按钮并排 */
+.fabbar-two{display:flex;gap:10px}
+.fabbar-two .primary{flex:1.4;margin:0}
+.secondary-btn{flex:1;height:46px;border:1px solid #c9d6ea;border-radius:9px;background:#fff;color:#1257c4;font-weight:650;cursor:pointer}

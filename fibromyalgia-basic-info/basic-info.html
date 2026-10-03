@@ -83,6 +83,7 @@
         <div class="field">
           <label for="education">教育程度</label>
           <select id="education" name="education">
+            <option value="">请选择</option>
             <option>未上过学</option>
             <option>小学</option>
             <option>初中</option>
@@ -96,6 +97,7 @@
         <div class="field">
           <label for="workStatus">工作情况</label>
           <select id="workStatus" name="workStatus">
+            <option value="">请选择</option>
             <option>在职人员</option>
             <option>退休人员</option>
             <option>家庭主妇</option>
@@ -223,7 +225,31 @@
   <script src="js/basic-info-bridge.js"></script>
   <script src="../js/fms-api.js"></script>
 <script src="../js/case-view.js"></script>
+<script src="../js/case-edit.js"></script>
 <script src="js/basic-info.js"></script>
 <script>CaseView.init(document.getElementById('basicInfoForm'), 'jbxx', { keep: '.menu-row', onData: basicInfoSubStatus });</script>
+<script>
+CaseEdit.bindForm(document.getElementById('basicInfoForm'), 'jbxx', {
+  onLoad: saved => {
+    // 新患者：带入新增患者页填写的姓名和身份证号。
+    const fresh = CaseEdit.context().newPatient;
+    const form = document.getElementById('basicInfoForm');
+    if (fresh && !saved.name) { form.elements.name.value = fresh.name || ''; form.elements.idCard.value = fresh.idCard || ''; }
+    basicInfoSubStatus(saved);
+  },
+  build: data => {
+    const id = (data.idCard || '').trim();
+    if (id && !(/^\d{15}$/.test(id) || /^\d{17}[\dXx]$/.test(id))) { document.getElementById('idCardError').hidden = false; return false; }
+    if (!data.name || !id) return false;
+    data.idCard = id.toUpperCase();
+    return data;
+  },
+  invalidMessage: '请填写姓名和正确的身份证号'
+});
+// 从子模块返回时刷新子模块完成情况。
+window.addEventListener('pageshow', event => {
+  if (event.persisted && CaseEdit.active()) CaseEdit.load('jbxx').then(d => d && basicInfoSubStatus(d)).catch(() => {});
+});
+</script>
 </body>
 </html>

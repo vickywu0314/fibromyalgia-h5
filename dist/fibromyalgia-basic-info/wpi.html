@@ -65,5 +65,9 @@
   <script src="../js/fms-api.js"></script>
   <script src="../js/case-view.js"></script>
   <script>CaseView.init(document.getElementById('wpiForm'), 'jbxx.fs.wpi');</script>
+<script src="../js/case-edit.js"></script>
+<script>
+CaseEdit.bindForm(document.getElementById('wpiForm'), 'jbxx.fs', { nested: 'wpi' });
+</script>
 </body>
 </html>

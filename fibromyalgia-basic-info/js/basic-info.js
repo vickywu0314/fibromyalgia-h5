@@ -34,10 +34,25 @@
     "tpc": ["tpc", "tpc.html"],
     "fs": ["fs", "fs.html"]
   };
+  // 录入流程（新增 / 修改）中子模块打开的 H5 填写页。
+  const SUB_EDITS = {
+    "treatment-history": "../benbing-zhiliaoshi/benbing-zhiliaoshi.html",
+    "disease-history": "../jiwang-bingshi/index.html",
+    "concomitant-medication": "../hebing-yaowu/index.html",
+    "csi": "csi.html", "work": "work.html", "body": "body-composition.html", "tipi": "tipi.html",
+    "sffq": "sffq.html", "tpc": "tpc.html", "fs": "fs.html"
+  };
   const viewing = window.CaseView && CaseView.context().isView;
+  const editing = window.CaseEdit && CaseEdit.active();
 
   document.querySelectorAll(".menu-row").forEach(btn => {
     btn.addEventListener("click", () => {
+      if (editing) {
+        // 新患者需先保存基本信息（后端据此建档）后才能填写子模块。
+        if (!CaseEdit.context().patientId) return window.alert("新患者请先填写并保存基本信息");
+        location.href = SUB_EDITS[btn.dataset.page];
+        return;
+      }
       if (!viewing) return NativeBridge.openPage(btn.dataset.page);
       const [key, url] = SUB_VIEWS[btn.dataset.page];
       CaseView.openView(url, "jbxx." + key, CaseView.data ? (CaseView.data[key] ?? {}) : undefined);

@@ -135,5 +135,21 @@
   <script src="../js/fms-api.js"></script>
   <script src="../js/case-view.js"></script>
   <script>CaseView.init(document.getElementById('csiForm'), 'jbxx.csi');</script>
+<script src="../js/case-edit.js"></script>
+<script>
+CaseEdit.bindForm(document.getElementById('csiForm'), 'jbxx.csi', {
+  // 9 题都作答时计算总分，总分 > 18 判定为中枢敏化（与页面显示一致）。
+  build: data => {
+    const scoreMap = { '从不': 0, '很少': 1, '有时': 2, '经常': 3, '总是': 4 };
+    const answers = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => data['q' + i]).filter(v => v in scoreMap);
+    if (answers.length === 9) {
+      const score = answers.reduce((sum, v) => sum + scoreMap[v], 0);
+      data.score = score;
+      data.result = score > 18 ? '是' : '否';
+    }
+    return data;
+  }
+});
+</script>
 </body>
 </html>

@@ -28,6 +28,6 @@ npm run build
 也可直接发布根目录中的相同页面和资源目录。无需上传 reference-static、src、node_modules、docs 和工程配置。
 服务器必须配置同源 `/api` 反向代理到后端。直接用 file:// 打开无法调用接口。
 
-接口说明见 docs/api/（patient-list.md 患者列表、follow-up-list.md 随诊列表、case-detail.md 随诊详情查看与随诊病历、basic-info-submodules.md 基本信息子模块）。列表 success:false 暂按空列表显示，新增按钮一直保留。查重失败仍提示错误，不冒充查无患者。
+接口说明见 docs/api/（patient-list.md 患者列表、follow-up-list.md 随诊列表、case-detail.md 随诊详情查看与随诊病历、basic-info-submodules.md 基本信息子模块、case-add.md 随诊录入保存）。列表 success:false 暂按空列表显示，新增按钮一直保留。查重失败仍提示错误，不冒充查无患者。
 
 随诊病历页的字段题目和选项文字由 `node scripts/extract-case-schema.mjs` 从各模块填写页生成到 `js/case-record-schema.js`（需要 playwright）；模块页题目改动后重新运行。

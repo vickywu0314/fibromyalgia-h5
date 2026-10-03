@@ -87,5 +87,9 @@
   <script src="../js/fms-api.js"></script>
   <script src="../js/case-view.js"></script>
   <script>CaseView.init(document.getElementById('sssForm'), 'jbxx.fs.sss');</script>
+<script src="../js/case-edit.js"></script>
+<script>
+CaseEdit.bindForm(document.getElementById('sssForm'), 'jbxx.fs', { nested: 'sss' });
+</script>
 </body>
 </html>

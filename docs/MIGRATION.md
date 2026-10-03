@@ -75,4 +75,4 @@
 - `patient-add.html`: migrated to Vue.
 - Before entering patient detail, calls `GET /api/fms/patient/get/cardno` with `name`, `cardno`, `doctorId`.
 - Existing patient payload is kept in `sessionStorage.fms_patient_prefill` for later prefill work; sensitive patient data is not placed in the URL.
-- If no patient is returned, the flow continues as a new patient. POST `/api/fms/patient/case/add` is intentionally not wired yet.
+- If no patient is returned, the flow continues as a new patient: saving 基本信息 calls POST `/api/fms/patient/case/add` with an empty patientId, and the backend creates the patient (see docs/api/case-add.md).

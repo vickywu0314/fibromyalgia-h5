@@ -11,6 +11,8 @@
  if(Number.isInteger(edit)&&edit>=0&&edit<items.length)form.elements.name.value=items[edit];
  form.addEventListener('submit',function(event){event.preventDefault();var name=form.elements.name.value.trim(),error=document.getElementById('error');if(!name){error.textContent='请输入药物名称';return;}
   if(Number.isInteger(edit)&&edit>=0&&edit<items.length)items[edit]=name;else items.push(name);
-  try{localStorage.setItem(storageKey,JSON.stringify(items));location.href='index.html';}catch(e){error.textContent='保存失败，请检查浏览器存储设置';}
+  try{localStorage.setItem(storageKey,JSON.stringify(items));}catch(e){error.textContent='保存失败，请检查浏览器存储设置';return;}
+  // 录入流程中整组提交到服务端（jbxx.concomitantMedication），成功再返回列表。
+  if(window.CaseEdit)CaseEdit.commitThen(storageKey,function(){location.href='index.html';},function(m){error.textContent=m;});else location.href='index.html';
  });
 })();

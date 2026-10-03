@@ -43,7 +43,9 @@ if(page.dataset.page==='summary'){
 if(page.dataset.page!=='form')return;
 const form=document.getElementById('planForm'),field=n=>form.elements.namedItem(n),value=n=>field(n)?.value||'',error=document.getElementById('error'),records=read(kind),index=Number(new URLSearchParams(location.search).get('edit')),editing=new URLSearchParams(location.search).has('edit')&&Number.isInteger(index)&&index>=0&&index<records.length;
 const set=(n,v)=>{if(!v||!field(n))return;const inputs=[...form.querySelectorAll(`[name="${n}"]`)];const radio=inputs.find(x=>x.type==='radio'&&x.value===v);if(radio)radio.checked=true;else if(inputs[0]?.type!=='radio')inputs[0].value=v};
-const save=item=>{if(editing)records[index]=item;else records.push(item);try{write(kind,records);location.href=`${kind}.html`}catch{error.textContent='本地存储空间不足，请更换小一些的图片'}};
+// 录入流程中保存后把该类列表整组提交到服务端（zlfa.{类别}），成功再返回列表。
+const done=()=>{const go=()=>{location.href=`${kind}.html`};if(window.CaseEdit)CaseEdit.commitThen(key(kind),go,m=>{error.textContent=m});else go()};
+const save=item=>{if(editing)records[index]=item;else records.push(item);try{write(kind,records)}catch{error.textContent='本地存储空间不足，请更换小一些的图片';return}done()};
 if(kind==='zhongyao-yinpian'){
  const selected=n=>form.querySelector(`[name="${n}"]:checked`)?.value||'',prescription=field('prescription'),upload=document.getElementById('treatmentPhoto'),camera=document.getElementById('cameraPhoto'),preview=document.getElementById('photoPreview'),container=document.getElementById('photoContainer'),status=document.getElementById('photoStatus');
  const recipes=window.DECOCTIONS||{};
@@ -67,7 +69,10 @@ if(kind==='zhongyao-yinpian'){
   };reader.readAsDataURL(f)
  };
  upload.addEventListener('change',()=>handleImage(upload));camera.addEventListener('change',()=>handleImage(camera));
- form.addEventListener('submit',e=>{e.preventDefault();const syndrome=selected('中医证型')||selected('主要中医证型');if(!syndrome){error.textContent='请选择中医证型';return}const recipe=selected('处方类型');save({name:recipe||'口服中药汤剂',syndrome,recipe,prescription:prescription?.value.trim()||'',image:container&&!container.hidden?preview.src:''})});return;
+ form.addEventListener('submit',e=>{e.preventDefault();const syndrome=selected('中医证型')||selected('主要中医证型');if(!syndrome){error.textContent='请选择中医证型';return}const recipe=selected('处方类型');const item={name:recipe||'口服中药汤剂',syndrome,recipe,prescription:prescription?.value.trim()||'',image:container&&!container.hidden?preview.src:''};
+ // 录入流程中处方图片上传后保存图片 URL，不保存 base64。
+ if(window.CaseEdit&&CaseEdit.active()&&item.image.startsWith('data:')){status.textContent='正在上传处方图片…';CaseEdit.uploadDataUrl(item.image,'prescription.jpg').then(url=>{item.image=url;save(item)}).catch(e=>{error.textContent=e.message;status.textContent='图片上传失败'});return}
+ save(item)});return;
 }
 const details=document.getElementById('details'),adjust=document.getElementById('adjustDetails'),custom=field('customName');
 let renderDrugs=()=>{};
@@ -81,7 +86,7 @@ if(kind==='xiyao'&&window.WESTERN_CATALOG){
 const sync=()=>{details.hidden=value('是否使用')!=='有';if(adjust)adjust.hidden=value('是否调整')!=='是';if(custom)custom.hidden=kind==='xiyao'?value('category')!=='其他':value('name')!=='其他'};
 if(editing){const v=records[index];set('是否使用','有');for(const n of ['category','frequency','duration','instructions','是否调整','调整内容','调整原因'])set(n,{'是否调整':v.adjust,'调整内容':v.adjustment,'调整原因':v.reason}[n]||v[n]);if(kind==='xiyao'){renderDrugs(v.name);set('药物名称',v.name);set('dose',v.dose);if(field('customDose'))field('customDose').value=v.dose||'';if(v.category==='其他'&&custom)custom.value=v.name}else if(field('name')){const names=[...field('name').options].map(o=>o.value);set('name',names.includes(v.name)?v.name:'其他');if(!names.includes(v.name)&&custom)custom.value=v.name;set('dose',v.dose)}}
 form.addEventListener('change',sync);sync();
-form.addEventListener('submit',e=>{e.preventDefault();error.textContent='';if(!value('是否使用')){error.textContent='请选择“无”或“有”';return}if(value('是否使用')==='无'){write(kind,[]);location.href=`${kind}.html`;return}
+form.addEventListener('submit',e=>{e.preventDefault();error.textContent='';if(!value('是否使用')){error.textContent='请选择“无”或“有”';return}if(value('是否使用')==='无'){write(kind,[]);done();return}
  const name=kind==='xiyao'&&value('category')==='其他'?custom?.value.trim():value('药物名称')||(value('name')==='其他'?custom?.value.trim():value('name'));
  if(!name){error.textContent='请选择或填写名称';return}
  const dose=kind==='xiyao'&&value('category')==='其他'?value('customDose'):value('dose');

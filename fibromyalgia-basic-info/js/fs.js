@@ -1,10 +1,9 @@
 (function(){
   // 查看模式（URL 带 mode=view）：数据为 jbxx.fs，含 wpi、sss 两部分，点击带数据打开对应查看页。
   const viewing=window.CaseView&&CaseView.context().isView;
+  const editing=window.CaseEdit&&CaseEdit.active();
   let fsData;
-  if(viewing){
-    document.body.classList.add("is-view");
-    CaseView.load("jbxx.fs").then(data=>{
+  const markStatus=data=>{
       fsData=data;
       document.querySelectorAll(".module-row").forEach(link=>{
         const filled=!CaseView.isEmpty(data[link.dataset.page]);
@@ -13,7 +12,15 @@
         status.classList.toggle("pending",!filled);
         status.classList.toggle("done",filled);
       });
-    }).catch(error=>CaseView.notice(error.message));
+  };
+  if(viewing){
+    document.body.classList.add("is-view");
+    CaseView.load("jbxx.fs").then(markStatus).catch(error=>CaseView.notice(error.message));
+  }else if(editing){
+    // 录入流程：显示 WPI、SSS 是否已保存，返回本页时刷新。
+    const refresh=()=>CaseEdit.load("jbxx.fs").then(d=>markStatus(d||{})).catch(()=>{});
+    refresh();
+    window.addEventListener("pageshow",e=>{if(e.persisted)refresh();});
   }
 
   document.querySelectorAll(".module-row").forEach(link=>{
@@ -24,6 +31,7 @@
         CaseView.openView(link.getAttribute("href"),"jbxx.fs."+page,fsData?(fsData[page]??{}):undefined);
         return;
       }
+      if(editing)return; // 录入流程中直接打开 H5 填写页
       if(window.webkit?.messageHandlers?.openPage){
         e.preventDefault();
         window.webkit.messageHandlers.openPage.postMessage({page:page});

@@ -63,6 +63,7 @@ GET /api/fms/patient/case/detail?patientId={患者ID}&doctorId={医生ID}&caseId
 - `data` 中以模块代码为 key，只返回请求的模块。
 - `success` 不为 `true` 时，页面显示 `message`（没有则显示「随诊详情加载失败，请稍后重试」）。
 - 该随诊尚未填写某模块时，返回空对象 `{}` 或不返回该 key，页面显示空表单。
+- 数据结构与保存接口 [case-add.md](case-add.md) 的提交结构一致；保存时带上的 `finish`（及 CSI 的 `score`、`result`）原样返回。
 
 ### 字段约定（所有模块通用）
 

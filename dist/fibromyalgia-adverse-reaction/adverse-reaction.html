@@ -79,4 +79,11 @@
   </form>
 </main>
 <script src="js/adverse-reaction.js"></script><script src="../js/fms-api.js"></script><script src="../js/case-view.js"></script><script>CaseView.init(document.getElementById('adverseForm'), 'blsj');</script>
+<script src="../js/case-edit.js"></script>
+<script>
+CaseEdit.bindForm(document.getElementById('adverseForm'), 'blsj', {
+  // 选「无」时不提交不良事件明细。
+  build: data => data.hasAdverseEvent === '无' ? { hasAdverseEvent: '无' } : data
+});
+</script>
 </body></html>

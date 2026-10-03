@@ -36,3 +36,9 @@ document.getElementById('viewRecord').onclick = async () => {
   location.href = './case-record.html?' + new URLSearchParams({ patientId, caseId, name: displayName, date });
   opening = false;
 };
+
+// 修改本次随诊：进入录入入口（带随诊 ID），保存走同一个新增/修改接口。
+document.getElementById('editCase').onclick = () => {
+  if (!patientId || !caseId) return tip('缺少随诊信息，请从随访记录进入');
+  location.href = './patient-detail.html?' + new URLSearchParams({ patientId, caseId, name: displayName, t: 'edit:' + caseId + ':' + Date.now() });
+};

@@ -21,6 +21,36 @@ window.FmsApi = {
     } finally { clearTimeout(timer); }
   },
 
+  // POST JSON，接口说明见 docs/api/case-add.md。
+  async post(path, body) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await fetch(path, {
+        method: 'POST', credentials: 'include', signal: controller.signal,
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify(body)
+      });
+      if (!response.ok) throw new Error('请求失败，请稍后重试');
+      return await response.json();
+    } finally { clearTimeout(timer); }
+  },
+
+  // 上传图片（multipart，字段名 file），返回图片 URL。
+  async upload(file) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 30000);
+    try {
+      const form = new FormData();
+      form.append('file', file, file.name || 'image.jpg');
+      const response = await fetch('/api/fms/file/upload', { method: 'POST', credentials: 'include', signal: controller.signal, body: form });
+      if (!response.ok) throw new Error('图片上传失败，请稍后重试');
+      const result = await response.json();
+      if (!result || result.success !== true || !result.data || !result.data.url) throw new Error((result && result.message) || '图片上传失败，请稍后重试');
+      return result.data.url;
+    } finally { clearTimeout(timer); }
+  },
+
   // 患者列表（分页），接口说明见 docs/api/patient-list.md。
   // 返回 { patients, pageNo, hasMore, totalCount }；success 不为 true 时按空页处理。
   PATIENT_PAGE_SIZE: 20,

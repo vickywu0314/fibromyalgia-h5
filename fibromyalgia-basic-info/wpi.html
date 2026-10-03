@@ -6,6 +6,7 @@
   <meta name="format-detection" content="telephone=no">
   <title>普遍疼痛指数（WPI）</title>
   <link rel="stylesheet" href="css/wpi.css">
+  <link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
 <main class="page">
@@ -61,5 +62,8 @@
   </form>
 </main>
 <script src="js/wpi.js"></script>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/case-view.js"></script>
+  <script>CaseView.init(document.getElementById('wpiForm'), 'jbxx.fs.wpi');</script>
 </body>
 </html>

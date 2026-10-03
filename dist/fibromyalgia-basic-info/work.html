@@ -6,6 +6,7 @@
   <meta name="format-detection" content="telephone=no">
   <title>间接成本评估</title>
   <link rel="stylesheet" href="css/work.css">
+  <link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
   <!-- App WebView 页面：不设置 H5 顶部导航，由原生 App 统一提供 -->
@@ -77,5 +78,8 @@
     </form>
   </main>
   <script src="js/work.js"></script>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/case-view.js"></script>
+  <script>CaseView.init(document.getElementById('workForm'), 'jbxx.work');</script>
 </body>
 </html>

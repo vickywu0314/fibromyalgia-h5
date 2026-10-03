@@ -6,6 +6,7 @@
 <meta name="format-detection" content="telephone=no">
 <title>人格评估：中国版10项目大五人格量表（TIPI-C）</title>
 <link rel="stylesheet" href="css/tipi.css">
+  <link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
 <main class="page">
@@ -111,5 +112,8 @@
   </form>
 </main>
 <script src="js/tipi.js"></script>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/case-view.js"></script>
+  <script>CaseView.init(document.getElementById('tipiForm'), 'jbxx.tipi');</script>
 </body>
 </html>

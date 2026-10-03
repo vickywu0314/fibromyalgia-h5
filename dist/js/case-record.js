@@ -70,12 +70,70 @@ function section(title) {
 function renderSchemaPart(part, data) {
   const box = section(SCHEMA[part].title);
   const count = renderFields(box, SCHEMA[part].fields, data || {}, SCHEMA[part].title);
+  if (part === 'jbxx' && data) renderBasicSubs(box, data);
   // 辅助检查报告图片
   if (part === 'fzjc') {
     if (!isEmpty(data?.labReportImages)) box.append(images('检验报告', data.labReportImages));
     if (!isEmpty(data?.ecgReportImages)) box.append(images('心电图报告', data.ecgReportImages));
   }
-  if (!count && !box.querySelector('img')) box.append(el('p', 'record-empty', '未填写'));
+  if (!count && box.children.length === 1) box.append(el('p', 'record-empty', '未填写'));
+}
+
+// 基本信息下的「患者评估与病史」10 个子模块，顺序同基本信息页。
+const TREATMENT_HISTORY = [
+  ['xiyao', '西药', v => [v.frequency, v.dose ? `单次${v.dose}${v.unit || '片/粒'}` : ''].filter(Boolean).join('，')],
+  ['zhongyaoTangji', '中药汤剂', () => ''],
+  ['feiYaowuLiaofa', '非药物疗法', v => [v.frequency, v.duration ? `单次${v.duration}分钟` : ''].filter(Boolean).join('，')],
+  ['zhongchengyao', '中成药', v => [v.frequency, v.dose ? `单次${v.dose}${v.unit || '片/粒'}` : ''].filter(Boolean).join('，')]
+];
+const period = v => [v.startDate ? '开始：' + v.startDate : '', v.ongoing === '是' ? '沿用至今' : '', v.ongoing !== '是' && v.endDate ? '结束：' + v.endDate : '', v.ongoing !== '是' && v.reason ? '停用原因：' + v.reason : ''].filter(Boolean).join('，');
+function listItem(title, lines) {
+  const item = el('div', 'record-item');
+  item.append(el('strong', '', title));
+  lines.filter(Boolean).forEach(line => item.append(el('p', '', line)));
+  return item;
+}
+function renderBasicSubs(box, data) {
+  const block = el('div', 'record-scale');
+  block.append(el('h3', '', '患者评估与病史'));
+  let filled = 0;
+  const sub = (title, render) => { const part = el('div'); part.append(el('div', 'record-group', title)); if (render(part)) { block.append(part); filled++; } };
+  sub('本病治疗史', part => {
+    let n = 0;
+    TREATMENT_HISTORY.forEach(([key, title, describe]) => (data.treatmentHistory?.[key] || []).forEach(v => {
+      part.append(listItem(`${title}：${v.medication || v.name || ''}`, [describe(v), period(v)])); n++;
+    }));
+    return n;
+  });
+  sub('既往疾病史', part => {
+    (data.diseaseHistory || []).forEach(v => part.append(listItem(v.name, [[v.categoryLabel, v.years != null && v.years !== '' ? `病程${v.years}年` : ''].filter(Boolean).join('，')])));
+    return (data.diseaseHistory || []).length;
+  });
+  sub('合并药物', part => {
+    const items = data.concomitantMedication || [];
+    if (items.length) part.append(row('药物名称', items.map(v => typeof v === 'string' ? v : v.name).join('、')));
+    return items.length;
+  });
+  const subs = SCHEMA.jbxx.subs;
+  [['csi', 'csi'], ['work', 'work'], ['bodyComposition', 'bodyComposition'], ['tipi', 'tipi'], ['sffq', 'sffq'], ['tpc', 'tpc']].forEach(([key, schemaKey]) => {
+    let value = data[key];
+    // 腰臀比页面拆成两位小数输入，合并为 0.xy 显示。
+    if (key === 'bodyComposition' && value && (value.ratio1 != null || value.ratio2 != null)) value = { ...value, ratio1: `0.${value.ratio1 ?? ''}${value.ratio2 ?? ''}`, ratio2: null };
+    sub(subs[schemaKey].title, part => !isEmpty(value) && renderFields(part, subs[schemaKey].fields, value, subs[schemaKey].title));
+  });
+  sub('纤维肌痛症状量表（FS）', part => {
+    let n = 0;
+    [['wpi', 'fs.wpi'], ['sss', 'fs.sss']].forEach(([key, schemaKey]) => {
+      const value = data.fs?.[key];
+      if (isEmpty(value)) return;
+      const inner = el('div');
+      inner.append(el('div', 'record-label', subs[schemaKey].title));
+      if (renderFields(inner, subs[schemaKey].fields, value, subs[schemaKey].title)) { part.append(inner); n++; }
+    });
+    return n;
+  });
+  if (!isEmpty(data.bodyComposition?.reportImages)) block.append(images('人体成分分析报告', data.bodyComposition.reportImages));
+  if (filled) box.append(block);
 }
 
 function renderAssessment(data) {

@@ -1,4 +1,5 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><title>膳食摄入评估：半定量膳食频率问卷（SFFQ）</title><link rel="stylesheet" href="css/sffq.css"></head><body>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><title>膳食摄入评估：半定量膳食频率问卷（SFFQ）</title><link rel="stylesheet" href="css/sffq.css">
+  <link rel="stylesheet" href="../css/case-view.css"></head><body>
 <main class="page"><section class="progress-block"><div class="progress"><span></span></div><p>已完成30%</p></section>
 <form id="sffqForm"><h1>膳食摄入评估：半定量膳食频率问卷（SFFQ）</h1>
 <section class="section"><h2>1. 食用油</h2>
@@ -98,4 +99,7 @@
           <div class="sub"><h4>每次食用量</h4><div class="options"><label><input type="radio" name="s7_3_amt" value="半两及以下（25g）"><span>半两及以下（25g）</span></label><label><input type="radio" name="s7_3_amt" value="1两（50g）"><span>1两（50g）</span></label><label><input type="radio" name="s7_3_amt" value="1-2两（50-100g）"><span>1-2两（50-100g）</span></label><label><input type="radio" name="s7_3_amt" value="2-4两（100-200g）"><span>2-4两（100-200g）</span></label><label><input type="radio" name="s7_3_amt" value="5两以上（请填入两数）"><span>5两以上（请填入两数）</span></label></div>
           <label class="extra" data-for="s7_3_amt"><span>5两以上，请填入两数</span><input type="number" name="s7_3_extra" min="0" step="0.1" inputmode="decimal"><b>两</b></label></div>
         </div></section>
-<div class="bottom"><button type="submit">下一页</button></div></form></main><script src="js/sffq.js"></script></body></html>
+<div class="bottom"><button type="submit">下一页</button></div></form></main><script src="js/sffq.js"></script>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/case-view.js"></script>
+  <script>CaseView.init(document.getElementById('sffqForm'), 'jbxx.sffq');</script></body></html>

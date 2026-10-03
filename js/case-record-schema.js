@@ -128,7 +128,808 @@ window.CASE_RECORD_SCHEMA = {
     "type": "single",
     "group": ""
    }
-  ]
+  ],
+  "subs": {
+   "csi": {
+    "title": "中枢敏化程度",
+    "fields": [
+     {
+      "key": "q1",
+      "label": "1. 我晨起后仍觉疲惫且没精神",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q2",
+      "label": "2. 我感到肌肉僵硬且疼痛",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q3",
+      "label": "3. 我感觉浑身疼痛",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q4",
+      "label": "4. 我头痛",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q5",
+      "label": "5. 我睡觉不好",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q6",
+      "label": "6. 我很难集中注意力",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q7",
+      "label": "7. 精神压力导致我的身体症状恶化",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q8",
+      "label": "8. 我的颈部和肩部肌肉紧张",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q9",
+      "label": "9. 我记性差",
+      "type": "single",
+      "group": ""
+     }
+    ]
+   },
+   "work": {
+    "title": "间接成本评估",
+    "fields": [
+     {
+      "key": "q1",
+      "label": "1. 您现在有没有带收入的工作？",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q2",
+      "label": "因健康问题缺勤小时数",
+      "type": "text",
+      "group": "",
+      "unit": "小时"
+     },
+     {
+      "key": "q3",
+      "label": "因其他原因缺勤小时数",
+      "type": "text",
+      "group": "",
+      "unit": "小时"
+     },
+     {
+      "key": "q4",
+      "label": "实际工作小时数",
+      "type": "text",
+      "group": "",
+      "unit": "小时"
+     },
+     {
+      "key": "q5",
+      "label": "5. 过去7天内，健康问题在多大程度上影响了您工作时的工作效率？",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "q6",
+      "label": "6. 过去7天内，健康问题在多大程度上影响了您进行日常活动的能力（不包括有偿工作）？",
+      "type": "single",
+      "group": ""
+     }
+    ]
+   },
+   "bodyComposition": {
+    "title": "人体成分分析",
+    "fields": [
+     {
+      "key": "bodyFatPercentage",
+      "label": "体脂百分比",
+      "type": "text",
+      "group": "",
+      "unit": "%"
+     },
+     {
+      "key": "bodyFatMass",
+      "label": "体脂量/体脂肪量",
+      "type": "text",
+      "group": "",
+      "unit": "Kg"
+     },
+     {
+      "key": "skeletalMuscleMass",
+      "label": "骨骼肌量",
+      "type": "text",
+      "group": "",
+      "unit": "Kg"
+     },
+     {
+      "key": "skeletalMuscleIndex",
+      "label": "骨骼肌指数",
+      "type": "text",
+      "group": "",
+      "unit": "Kg"
+     },
+     {
+      "key": "leanBodyMass",
+      "label": "去脂体重/瘦体质量",
+      "type": "text",
+      "group": "",
+      "unit": "Kg"
+     },
+     {
+      "key": "visceralFatLevel",
+      "label": "内脏脂肪等级",
+      "type": "single",
+      "group": ""
+     },
+     {
+      "key": "ratio1",
+      "label": "腰臀比",
+      "type": "text",
+      "group": ""
+     },
+     {
+      "key": "ratio2",
+      "label": "腰臀比",
+      "type": "text",
+      "group": ""
+     }
+    ]
+   },
+   "tipi": {
+    "title": "人格评估：中国版10项目大五人格量表（TIPI-C）",
+    "fields": [
+     {
+      "key": "q1",
+      "label": "1. 外向的，精力充沛的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q2",
+      "label": "2. 爱批判人的，爱争论的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q3",
+      "label": "3. 可信赖的，自律的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q4",
+      "label": "4. 忧虑的，易心烦的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q5",
+      "label": "5. 经验开放的，常有新想法的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q6",
+      "label": "6. 内向的，安静的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q7",
+      "label": "7. 招人喜爱的，友善的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q8",
+      "label": "8. 散漫的，粗心的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q9",
+      "label": "9. 冷静的，情绪稳定的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     },
+     {
+      "key": "q10",
+      "label": "10. 遵循常规的，缺乏创造性的",
+      "type": "single",
+      "group": "",
+      "options": {
+       "1": "绝对不同意",
+       "2": "非常不同意",
+       "3": "基本不同意",
+       "4": "不确定",
+       "5": "基本同意",
+       "6": "非常同意",
+       "7": "绝对同意"
+      }
+     }
+    ]
+   },
+   "sffq": {
+    "title": "膳食摄入评估：半定量膳食频率问卷（SFFQ）",
+    "fields": [
+     {
+      "key": "oil",
+      "label": "食用油 · 请输入食用情况",
+      "type": "text",
+      "group": "1. 食用油"
+     },
+     {
+      "key": "s2_1_freq",
+      "label": "米饭 · 食用频率",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_1_amt",
+      "label": "米饭 · 每次食用量",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_1_extra",
+      "label": "米饭 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "2. 主食",
+      "unit": "两"
+     },
+     {
+      "key": "s2_2_freq",
+      "label": "粥 · 食用频率",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_2_amt",
+      "label": "粥 · 每次食用量",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_2_extra",
+      "label": "粥 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "2. 主食",
+      "unit": "两"
+     },
+     {
+      "key": "s2_3_freq",
+      "label": "面条 · 食用频率",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_3_amt",
+      "label": "面条 · 每次食用量",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_3_extra",
+      "label": "面条 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "2. 主食",
+      "unit": "两"
+     },
+     {
+      "key": "s2_4_freq",
+      "label": "馒头/包子/花卷 · 食用频率",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_4_amt",
+      "label": "馒头/包子/花卷 · 每次食用量",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_4_extra",
+      "label": "馒头/包子/花卷 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "2. 主食",
+      "unit": "两"
+     },
+     {
+      "key": "s2_5_freq",
+      "label": "饼类 · 食用频率",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_5_amt",
+      "label": "饼类 · 每次食用量",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_5_extra",
+      "label": "饼类 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "2. 主食",
+      "unit": "两"
+     },
+     {
+      "key": "s2_6_freq",
+      "label": "其他谷薯类 · 食用频率",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_6_amt",
+      "label": "其他谷薯类 · 每次食用量",
+      "type": "single",
+      "group": "2. 主食"
+     },
+     {
+      "key": "s2_6_extra",
+      "label": "其他谷薯类 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "2. 主食",
+      "unit": "两"
+     },
+     {
+      "key": "s3_1_freq",
+      "label": "大豆及豆制品 · 食用频率",
+      "type": "single",
+      "group": "3. 豆类及豆制品"
+     },
+     {
+      "key": "s3_1_amt",
+      "label": "大豆及豆制品 · 每次食用量",
+      "type": "single",
+      "group": "3. 豆类及豆制品"
+     },
+     {
+      "key": "s3_1_extra",
+      "label": "大豆及豆制品 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "3. 豆类及豆制品",
+      "unit": "两"
+     },
+     {
+      "key": "s3_2_freq",
+      "label": "杂豆类 · 食用频率",
+      "type": "single",
+      "group": "3. 豆类及豆制品"
+     },
+     {
+      "key": "s3_2_amt",
+      "label": "杂豆类 · 每次食用量",
+      "type": "single",
+      "group": "3. 豆类及豆制品"
+     },
+     {
+      "key": "s3_2_extra",
+      "label": "杂豆类 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "3. 豆类及豆制品",
+      "unit": "两"
+     },
+     {
+      "key": "s4_1_freq",
+      "label": "深色蔬菜 · 食用频率",
+      "type": "single",
+      "group": "4. 蔬菜"
+     },
+     {
+      "key": "s4_1_amt",
+      "label": "深色蔬菜 · 每次食用量",
+      "type": "single",
+      "group": "4. 蔬菜"
+     },
+     {
+      "key": "s4_1_extra",
+      "label": "深色蔬菜 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "4. 蔬菜",
+      "unit": "两"
+     },
+     {
+      "key": "s4_2_freq",
+      "label": "浅色蔬菜 · 食用频率",
+      "type": "single",
+      "group": "4. 蔬菜"
+     },
+     {
+      "key": "s4_2_amt",
+      "label": "浅色蔬菜 · 每次食用量",
+      "type": "single",
+      "group": "4. 蔬菜"
+     },
+     {
+      "key": "s4_2_extra",
+      "label": "浅色蔬菜 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "4. 蔬菜",
+      "unit": "两"
+     },
+     {
+      "key": "s4_3_freq",
+      "label": "菌藻类 · 食用频率",
+      "type": "single",
+      "group": "4. 蔬菜"
+     },
+     {
+      "key": "s4_3_amt",
+      "label": "菌藻类 · 每次食用量",
+      "type": "single",
+      "group": "4. 蔬菜"
+     },
+     {
+      "key": "s4_3_extra",
+      "label": "菌藻类 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "4. 蔬菜",
+      "unit": "两"
+     },
+     {
+      "key": "s5_1_freq",
+      "label": "水果 · 食用频率",
+      "type": "single",
+      "group": "5. 水果"
+     },
+     {
+      "key": "s5_1_amt",
+      "label": "水果 · 每次食用量",
+      "type": "single",
+      "group": "5. 水果"
+     },
+     {
+      "key": "s5_1_extra",
+      "label": "水果 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "5. 水果",
+      "unit": "两"
+     },
+     {
+      "key": "s6_1_freq",
+      "label": "猪肉 · 食用频率",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_1_amt",
+      "label": "猪肉 · 每次食用量",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_1_extra",
+      "label": "猪肉 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "6. 肉类",
+      "unit": "两"
+     },
+     {
+      "key": "s6_2_freq",
+      "label": "牛羊肉 · 食用频率",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_2_amt",
+      "label": "牛羊肉 · 每次食用量",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_2_extra",
+      "label": "牛羊肉 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "6. 肉类",
+      "unit": "两"
+     },
+     {
+      "key": "s6_3_freq",
+      "label": "禽肉 · 食用频率",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_3_amt",
+      "label": "禽肉 · 每次食用量",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_3_extra",
+      "label": "禽肉 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "6. 肉类",
+      "unit": "两"
+     },
+     {
+      "key": "s6_4_freq",
+      "label": "动物内脏 · 食用频率",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_4_amt",
+      "label": "动物内脏 · 每次食用量",
+      "type": "single",
+      "group": "6. 肉类"
+     },
+     {
+      "key": "s6_4_extra",
+      "label": "动物内脏 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "6. 肉类",
+      "unit": "两"
+     },
+     {
+      "key": "s7_1_freq",
+      "label": "鱼类 · 食用频率",
+      "type": "single",
+      "group": "7. 水产品"
+     },
+     {
+      "key": "s7_1_amt",
+      "label": "鱼类 · 每次食用量",
+      "type": "single",
+      "group": "7. 水产品"
+     },
+     {
+      "key": "s7_1_extra",
+      "label": "鱼类 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "7. 水产品",
+      "unit": "两"
+     },
+     {
+      "key": "s7_2_freq",
+      "label": "虾蟹类 · 食用频率",
+      "type": "single",
+      "group": "7. 水产品"
+     },
+     {
+      "key": "s7_2_amt",
+      "label": "虾蟹类 · 每次食用量",
+      "type": "single",
+      "group": "7. 水产品"
+     },
+     {
+      "key": "s7_2_extra",
+      "label": "虾蟹类 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "7. 水产品",
+      "unit": "两"
+     },
+     {
+      "key": "s7_3_freq",
+      "label": "贝类及其他水产品 · 食用频率",
+      "type": "single",
+      "group": "7. 水产品"
+     },
+     {
+      "key": "s7_3_amt",
+      "label": "贝类及其他水产品 · 每次食用量",
+      "type": "single",
+      "group": "7. 水产品"
+     },
+     {
+      "key": "s7_3_extra",
+      "label": "贝类及其他水产品 · 5两以上，请填入两数",
+      "type": "text",
+      "group": "7. 水产品",
+      "unit": "两"
+     }
+    ]
+   },
+   "tpc": {
+    "title": "压痛点（TPC）",
+    "fields": [
+     {
+      "key": "q1",
+      "label": "1. 枕骨下肌肉附着处",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q2",
+      "label": "2. 斜方肌上缘中点",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q3",
+      "label": "3. 第5～7颈椎横突间隙的前面",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q4",
+      "label": "4. 冈上肌起始部，肩胛棘上方近内侧缘上方",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q5",
+      "label": "5. 肱骨外上髁远端2cm处",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q6",
+      "label": "6. 第2肋骨与软骨交界处",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q7",
+      "label": "7. 臀外上象限，臀肌前皱褶处",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q8",
+      "label": "8. 转子隆起的后方",
+      "type": "multi",
+      "group": ""
+     },
+     {
+      "key": "q9",
+      "label": "9. 膝内侧脂肪垫关节折皱线的近侧",
+      "type": "multi",
+      "group": ""
+     }
+    ]
+   },
+   "fs.wpi": {
+    "title": "普遍疼痛指数（WPI）",
+    "fields": [
+     {
+      "key": "painArea",
+      "label": "疼痛部位",
+      "type": "multi",
+      "group": ""
+     }
+    ]
+   },
+   "fs.sss": {
+    "title": "症状严重性量表（SSS）",
+    "fields": [
+     {
+      "key": "q1_1",
+      "label": "（1）疲劳",
+      "type": "single",
+      "group": "1. 在过去一周中以下症状的严重程度"
+     },
+     {
+      "key": "q1_2",
+      "label": "（2）认知症状（注意力、记忆力下降）",
+      "type": "single",
+      "group": "1. 在过去一周中以下症状的严重程度"
+     },
+     {
+      "key": "q1_3",
+      "label": "（3）睡醒后仍觉得疲乏",
+      "type": "single",
+      "group": "1. 在过去一周中以下症状的严重程度"
+     },
+     {
+      "key": "q2_1",
+      "label": "（1）头痛",
+      "type": "single",
+      "group": "2. 在过去六个月是否曾受以下症状困扰"
+     },
+     {
+      "key": "q2_2",
+      "label": "（2）细分主题 5",
+      "type": "single",
+      "group": "2. 在过去六个月是否曾受以下症状困扰"
+     },
+     {
+      "key": "q2_3",
+      "label": "（3）细分主题 6",
+      "type": "single",
+      "group": "2. 在过去六个月是否曾受以下症状困扰"
+     }
+    ]
+   }
+  }
  },
  "bsbq": {
   "title": "病史病情",

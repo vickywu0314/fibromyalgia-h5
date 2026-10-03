@@ -20,7 +20,7 @@ follow-up-list.html 点击某条随访
 ```
 
 - 单模块查看由 URL 参数 `mode=view` 开启；不带该参数时模块页仍是原来的填写页。
-- 单模块查看已接入：基本信息、病史病情、证候判断、辅助检查、不良反应（单个表单的页面）。查看模式下隐藏填写进度条、「保存并返回」按钮和上传入口，输入框、单选、多选、下拉全部禁用。基本信息页的「患者评估与病史」子模块入口仍可点击。
+- 单模块查看已接入：基本信息（含 10 个子模块，见 basic-info-submodules.md）、病史病情、证候判断、辅助检查、不良反应。查看模式下隐藏填写进度条、「保存并返回」按钮和上传入口，输入框、单选、多选、下拉全部禁用。基本信息页的「患者评估与病史」子模块入口仍可点击。
 - 病情评估和治疗方案是「目录页 + 多个子页」结构，整次随诊的数据在随诊病历页查看。
 - 随诊病历页把选项值换成题目和选项文字显示，题目、选项和单位来自 `js/case-record-schema.js`。该文件由 `scripts/extract-case-schema.mjs` 从各模块填写页自动提取生成，页面题目改动后重新运行即可。
 - 公共实现：`js/case-view.js`（`CaseView.fetchParts / fetchPart / init / fill`），`css/case-view.css`；随诊病历页 `case-record.html`、`js/case-record.js`、`css/case-record.css`。
@@ -99,7 +99,7 @@ GET /api/fms/patient/case/detail?patientId={患者ID}&doctorId={医生ID}&caseId
 | diagnosisDate | string | 确诊时间 | yyyy-MM-dd，diagnosed 为「是」时 |
 | hospitalLevel | string | 确诊医疗机构级别 | 1级 / 2级 / 3级 / 无级别 |
 
-「患者评估与病史」10 个子模块和「患者知情同意签署」不在本表内，单独定义。
+「患者评估与病史」10 个子模块的数据也在 `data.jbxx` 里，见 [basic-info-submodules.md](basic-info-submodules.md)。「患者知情同意签署」另行定义。
 
 ## 4. bsbq 病史病情
 

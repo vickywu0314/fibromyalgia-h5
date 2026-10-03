@@ -221,9 +221,9 @@
   </main>
 
   <script src="js/basic-info-bridge.js"></script>
-  <script src="js/basic-info.js"></script>
-<script src="../js/fms-api.js"></script>
+  <script src="../js/fms-api.js"></script>
 <script src="../js/case-view.js"></script>
-<script>CaseView.init(document.getElementById('basicInfoForm'), 'jbxx', { keep: '.menu-row' });</script>
+<script src="js/basic-info.js"></script>
+<script>CaseView.init(document.getElementById('basicInfoForm'), 'jbxx', { keep: '.menu-row', onData: basicInfoSubStatus });</script>
 </body>
 </html>

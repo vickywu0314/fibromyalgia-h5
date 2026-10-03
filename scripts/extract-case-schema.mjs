@@ -10,6 +10,14 @@ catch { ({ chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwrigh
 
 const PAGES = [
   { part: 'jbxx', file: 'fibromyalgia-basic-info/basic-info.html', form: '#basicInfoForm' },
+  { part: 'jbxx', sub: 'csi', file: 'fibromyalgia-basic-info/csi.html', form: '#csiForm' },
+  { part: 'jbxx', sub: 'work', file: 'fibromyalgia-basic-info/work.html', form: '#workForm' },
+  { part: 'jbxx', sub: 'bodyComposition', file: 'fibromyalgia-basic-info/body-composition.html', form: '#form' },
+  { part: 'jbxx', sub: 'tipi', file: 'fibromyalgia-basic-info/tipi.html', form: '#tipiForm' },
+  { part: 'jbxx', sub: 'sffq', file: 'fibromyalgia-basic-info/sffq.html', form: '#sffqForm' },
+  { part: 'jbxx', sub: 'tpc', file: 'fibromyalgia-basic-info/tpc.html', form: '#tpcForm' },
+  { part: 'jbxx', sub: 'fs.wpi', file: 'fibromyalgia-basic-info/wpi.html', form: '#wpiForm' },
+  { part: 'jbxx', sub: 'fs.sss', file: 'fibromyalgia-basic-info/sss.html', form: '#sssForm' },
   { part: 'bsbq', file: 'fibromyalgia-condition-history/condition-history.html', form: '#conditionForm' },
   { part: 'zhpd', file: 'fibromyalgia-syndrome-differentiation/syndrome-differentiation.html', form: '#syndromeForm' },
   { part: 'fzjc', file: 'fibromyalgia-auxiliary-exam/auxiliary-exam.html', form: '#examForm' },
@@ -75,7 +83,7 @@ function extract(formSelector) {
   const unitOf = control => {
     if (control.type === 'radio' || control.type === 'checkbox') return '';
     const next = control.nextElementSibling;
-    if (next && next.tagName === 'SPAN' && !next.querySelector('input')) return clean(next.textContent);
+    if (next && (next.tagName === 'SPAN' || next.tagName === 'B') && !next.querySelector('input')) return clean(next.textContent);
     const wrap = control.closest('label.with-input,label.amount-line,.inline-fields');
     if (wrap) { const m = clean(wrap.textContent).match(/(年|ml|省)$/); if (m) return m[1]; }
     return '';
@@ -92,6 +100,9 @@ function extract(formSelector) {
       else if (control.type === 'range') field.type = 'number';
       else if (control.type === 'date') field.type = 'date';
       field.label = questionLabel(control) || headingBefore(control, 'h3,h4,.sub-label');
+      // 膳食问卷：同一食物下有多道题，题目前加上食物名称。
+      const food = control.closest('.food')?.querySelector('h3');
+      if (food && clean(food.textContent) !== field.label) field.label = clean(food.textContent).replace(/^\d+\.\s*/, '') + ' · ' + field.label;
       const unit = unitOf(control); if (unit) field.unit = unit;
       fields.push(field);
     }
@@ -114,6 +125,12 @@ const OVERRIDES = {
   fzjc: { ecg: { label: '心电图结果' } },
   blsj: { hasAdverseEvent: { label: '是否有不良事件' }, adverseEvents: { label: '不良事件' } },
   vas: { painNature: { label: '近期肌肉疼痛性质', group: '' } },
+  csi: { '*': { group: '' } },
+  work: { '*': { group: '' } },
+  bodyComposition: { '*': { group: '' } },
+  tipi: { '*': { group: '' } },
+  tpc: { '*': { group: '' } },
+  'fs.wpi': { painArea: { label: '疼痛部位', group: '' } },
   painDetect: { '*': { group: '' }, painRegions: { label: '1、疼痛主要部位' } },
   psqi: { psqi6: { group: '' }, psqi7: { group: '' }, psqi8: { group: '' }, psqi9: { group: '' } }
 };
@@ -129,7 +146,11 @@ const schema = {};
 for (const item of PAGES) {
   await page.goto(pathToFileURL(resolve(item.file)).href);
   const result = applyOverrides(item.scale || item.part, await page.evaluate(extract, item.form || 'form'));
-  if (item.scale) {
+  if (item.sub) {
+    // 基本信息下的「患者评估与病史」子模块
+    schema.jbxx.subs = schema.jbxx.subs || {};
+    schema.jbxx.subs[item.sub] = applyOverrides(item.sub, result);
+  } else if (item.scale) {
     schema.bqpg = schema.bqpg || { title: '病情评估', scales: {} };
     schema.bqpg.scales[item.scale] = result;
   } else {

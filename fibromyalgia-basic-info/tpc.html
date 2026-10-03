@@ -6,6 +6,7 @@
   <meta name="format-detection" content="telephone=no">
   <title>压痛点（TPC）</title>
   <link rel="stylesheet" href="css/tpc.css">
+  <link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
   <!-- App WebView 页面：不设置 H5 顶部导航，由原生 App 统一提供 -->
@@ -108,5 +109,8 @@
   </main>
 
   <script src="js/tpc.js"></script>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/case-view.js"></script>
+  <script>CaseView.init(document.getElementById('tpcForm'), 'jbxx.tpc');</script>
 </body>
 </html>

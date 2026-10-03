@@ -6,6 +6,7 @@
   <meta name="format-detection" content="telephone=no">
   <title>中枢敏化程度</title>
   <link rel="stylesheet" href="css/csi.css">
+  <link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
   <!-- App WebView 页面：不设置 H5 顶部导航，由原生 App 统一提供 -->
@@ -131,5 +132,8 @@
   </main>
 
   <script src="js/csi.js"></script>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/case-view.js"></script>
+  <script>CaseView.init(document.getElementById('csiForm'), 'jbxx.csi');</script>
 </body>
 </html>

@@ -6,6 +6,7 @@
   <meta name="format-detection" content="telephone=no">
   <title>症状严重性量表（SSS）</title>
   <link rel="stylesheet" href="css/sss.css">
+  <link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
 <main class="page">
@@ -83,5 +84,8 @@
   </form>
 </main>
 <script src="js/sss.js"></script>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/case-view.js"></script>
+  <script>CaseView.init(document.getElementById('sssForm'), 'jbxx.fs.sss');</script>
 </body>
 </html>

@@ -16,6 +16,12 @@ window.CaseView = {
     return (await this.fetchParts(patientId, caseId, [part]))[part] || {};
   },
 
+  // path 为模块代码，或「模块.子模块」形式（如 jbxx.csi、jbxx.fs.wpi），子模块数据嵌在模块数据里。
+  async fetchPath(patientId, caseId, path) {
+    const [part, ...rest] = path.split('.');
+    return rest.reduce((data, key) => (data && data[key]) || {}, await this.fetchPart(patientId, caseId, part));
+  },
+
   savePrefetch(caseId, part, data) {
     try { sessionStorage.setItem(this.PREFETCH_KEY, JSON.stringify({ caseId: String(caseId), part, savedAt: Date.now(), data })); } catch {}
   },
@@ -29,21 +35,44 @@ window.CaseView = {
     return null;
   },
 
-  // 模块页调用：URL 带 mode=view 时进入查看模式。options.keep 为查看时仍可点击的按钮选择器。
-  async init(form, part, options = {}) {
+  // 当前页面的查看参数：URL 带 mode=view 时为查看模式。
+  context() {
     const params = new URLSearchParams(location.search);
-    if (params.get('mode') !== 'view') return;
-    const patientId = params.get('patientId') || '';
-    const caseId = params.get('caseId') || '';
+    return { isView: params.get('mode') === 'view', patientId: params.get('patientId') || '', caseId: params.get('caseId') || '' };
+  },
+
+  // 查看页取数据：优先用上一页带过来的，没有则自己请求。
+  async load(path) {
+    const { patientId, caseId } = this.context();
+    if (!patientId || !caseId) throw new Error('缺少随诊信息，请从随访记录进入');
+    return this.takePrefetch(caseId, path) || await this.fetchPath(patientId, caseId, path);
+  },
+
+  // 带着子模块数据跳到子模块查看页（data 为 undefined 时不预取，由子页自己请求）。
+  openView(url, path, data) {
+    const { patientId, caseId } = this.context();
+    if (data !== undefined) this.savePrefetch(caseId, path, data);
+    location.href = url + (url.includes('?') ? '&' : '?') + new URLSearchParams({ patientId, caseId, mode: 'view' });
+  },
+
+  // 模块页调用：URL 带 mode=view 时进入查看模式。
+  // options.keep：查看时仍可点击的按钮选择器；options.onData(data)：数据回显后的回调。
+  async init(form, path, options = {}) {
+    if (!this.context().isView) return;
     document.body.classList.add('is-view');
     this.lock(form, options.keep);
-    if (!patientId || !caseId) return this.notice('缺少随诊信息，请从随访记录进入');
     try {
-      const data = this.takePrefetch(caseId, part) || await this.fetchPart(patientId, caseId, part);
+      const data = await this.load(path);
+      this.data = data;
       this.fill(form, data);
+      if (options.onData) options.onData(data);
     } catch (error) {
       this.notice(error.name === 'AbortError' ? '请求超时，请返回重试' : error.message);
     }
+  },
+
+  isEmpty(value) {
+    return value == null || value === '' || (Array.isArray(value) && !value.length) || (typeof value === 'object' && !Array.isArray(value) && !Object.keys(value).length);
   },
 
   // 按字段名回显：字段名与表单控件 name 一致，多选字段为数组（对应 name 或 name[]）。
@@ -75,6 +104,20 @@ window.CaseView = {
       if (keep && control.matches(keep)) return;
       control.disabled = true;
     });
+  },
+
+  // 查看模式下在 anchor 前显示已上传的图片（urls 为 URL 数组或单个 URL）。
+  images(anchor, title, urls) {
+    const list = (Array.isArray(urls) ? urls : [urls]).filter(Boolean);
+    if (!anchor || !list.length) return;
+    const box = document.createElement('section');
+    box.className = 'case-view-images';
+    const heading = document.createElement('h2');
+    heading.textContent = title;
+    const row = document.createElement('div');
+    list.forEach(src => { const img = document.createElement('img'); img.src = src; img.alt = title; row.append(img); });
+    box.append(heading, row);
+    anchor.before(box);
   },
 
   notice(message) {

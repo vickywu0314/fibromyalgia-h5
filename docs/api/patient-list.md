@@ -11,13 +11,13 @@
 ## 2. 接口定义
 
 ```
-GET /api/fms/patient/list?pageNo=1&pageSize=100&doctorId=5065&researchType=12
+GET /api/fms/patient/list?pageNo=1&pageSize=20&doctorId=5065&researchType=12
 ```
 
 | 参数 | 类型 | 必填 | 取值 | 说明 |
 |---|---|---|---|---|
-| pageNo | int | 是 | `1` | 页码，从 1 开始 |
-| pageSize | int | 是 | `100` | 每页条数，当前固定 100、只取第一页 |
+| pageNo | int | 是 | `1, 2, 3…` | 页码，从 1 开始，上拉滚动时递增 |
+| pageSize | int | 是 | `20` | 每页条数，前端常量 `FmsApi.PATIENT_PAGE_SIZE` |
 | doctorId | string | 是 | App 内 `WenwenClass.getUserId()`；localhost 开发为 `5065` | 当前医生 ID |
 | researchType | int | 是 | `12` | 研究类型，12 = 纤维肌痛 |
 
@@ -44,7 +44,7 @@ GET /api/fms/patient/list?pageNo=1&pageSize=100&doctorId=5065&researchType=12
 | data | array | 患者数组 |
 | data[].id | number | 患者 ID，跳转随访记录页时带上 |
 | data[].name | string | 患者姓名 |
-| data[].lastFollowUpDate | string / number / null | 上次随访（新增记录）日期 |
+| data[].lastFollowUpDate | string / number / null | 上次随访（新增记录）日期。字段名来自需求方给出的返回示例，示例值为 `null`，实际格式待后端确认 |
 | data[].followUpCount | number | 该患者累计随访次数 |
 | totalPages | number | 总页数 |
 | totalCount | number | 总条数 |
@@ -61,15 +61,22 @@ GET /api/fms/patient/list?pageNo=1&pageSize=100&doctorId=5065&researchType=12
 | 上次新增记录时间：YYYY-MM-DD | `lastFollowUpDate` | 统一转成 `年-月-日`；支持 `2020-11-04`、`2020-11-04 10:20:30`、ISO 字符串和毫秒时间戳。为 `null` 或无法解析时显示「暂无新增记录」 |
 | 已添加 N 条 | `followUpCount` | 为空或非数字时按 0 |
 
-4. 搜索：接口没有姓名搜索参数，搜索框在已取回的列表里按姓名做本地包含匹配，不重新请求。
-5. 点击患者卡片跳转 `follow-up-list.html?id={id}&name={name}`。
+4. 分页（上拉加载更多，即滚动到底部加载下一页）：
+   - 进入页面加载第 1 页；列表底部提示栏进入可视区（提前 200px）时请求下一页，结果追加到列表末尾。
+   - 是否还有下一页：有 `totalPages` 时按 `pageNo < totalPages`；没有时按「本页条数 = pageSize」判断。`success` 不为 true 时视为没有下一页。
+   - 底部提示：`上拉加载更多` / `正在加载...` / `没有更多了` / `加载失败，点击重试`（点击只重试当前这一页，已加载的数据保留）。
+   - 第 1 页不足一屏时自动继续加载下一页。
+   - 按 `id` 去重，避免翻页期间新增患者导致前后页重复。
+   - 第 1 页请求失败显示整页错误和「重新加载」按钮。
+5. 搜索：接口没有姓名搜索参数，搜索框在已加载的患者里按姓名做本地包含匹配，不重新请求；还有下一页时继续上拉会加载更多数据参与匹配。
+6. 点击患者卡片跳转 `follow-up-list.html?id={id}&name={name}`。
 
 ## 4. 进入页面的流程（预取 + 跳转）
 
 ```
 research-platform.html
   └─ 点击「纤维肌痛研究数据平台」
-       ├─ 调用 /api/fms/patient/list
+       ├─ 调用 /api/fms/patient/list（第 1 页）
        ├─ 成功：把解析后的列表写入 sessionStorage.fms_patient_list_prefetch
        │       { doctorId, savedAt, list }
        └─ 无论成功失败都跳转 patient-list.html
@@ -84,6 +91,6 @@ patient-list.html
 
 ## 5. 已知限制 / 待确认
 
-- 只取第一页 100 条；`totalCount > 100` 时超出部分不会显示，需要时再加分页或滚动加载。
+- 搜索只覆盖已加载的页；如需要全量搜索，需后端增加姓名参数（如 `name`）。
 - 示例响应中 `success` 为 `false` 但带有数据，需要和后端确认成功时是否返回 `true`；前端目前严格按 `success === true` 解析。
 - `lastFollowUpDate` 的具体格式需要后端确认，前端已兼容常见格式。

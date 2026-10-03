@@ -139,3 +139,5 @@ a.module:hover {
   color: #111827;
   text-decoration: none;
 }
+/* 底部留出固定「新增患者资料」按钮栏的高度，避免遮住加载提示 */
+.list-footer{padding:16px 0 calc(48px + env(safe-area-inset-bottom));text-align:center;color:#8a93a3;font-size:12px}

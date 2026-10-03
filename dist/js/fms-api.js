@@ -21,13 +21,15 @@ window.FmsApi = {
     } finally { clearTimeout(timer); }
   },
 
-  // 患者列表，接口说明见 docs/api/patient-list.md。
-  // 返回 { patients, totalCount, totalPages }；success 不为 true 时按空列表处理。
-  async fetchPatientList(doctorId) {
-    const result = await this.get('/api/fms/patient/list', {
-      pageNo: 1, pageSize: 100, doctorId, researchType: 12
-    });
-    const rows = result && result.success === true && Array.isArray(result.data) ? result.data : [];
+  // 患者列表（分页），接口说明见 docs/api/patient-list.md。
+  // 返回 { patients, pageNo, hasMore, totalCount }；success 不为 true 时按空页处理。
+  PATIENT_PAGE_SIZE: 20,
+  async fetchPatientList(doctorId, pageNo = 1) {
+    const pageSize = this.PATIENT_PAGE_SIZE;
+    const result = await this.get('/api/fms/patient/list', { pageNo, pageSize, doctorId, researchType: 12 });
+    const ok = result && result.success === true && Array.isArray(result.data);
+    const rows = ok ? result.data : [];
+    const totalPages = Number(result && result.totalPages);
     return {
       patients: rows.map(row => ({
         id: row.id,
@@ -35,8 +37,10 @@ window.FmsApi = {
         lastFollowUpDate: this.formatDate(row.lastFollowUpDate),
         followUpCount: Number(row.followUpCount) || 0
       })),
-      totalCount: Number(result && result.totalCount) || rows.length,
-      totalPages: Number(result && result.totalPages) || 1
+      pageNo,
+      // 优先用 totalPages 判断；后端没给时，本页取满说明可能还有下一页。
+      hasMore: ok && (totalPages > 0 ? pageNo < totalPages : rows.length >= pageSize),
+      totalCount: Number(result && result.totalCount) || 0
     };
   },
 
@@ -50,7 +54,7 @@ window.FmsApi = {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   },
 
-  // 上一页预取的列表通过 sessionStorage 带到列表页，一次性使用，60 秒内且同一医生才有效。
+  // 上一页预取的第 1 页列表通过 sessionStorage 带到列表页，一次性使用，60 秒内且同一医生才有效。
   PREFETCH_KEY: 'fms_patient_list_prefetch',
   savePatientListPrefetch(doctorId, list) {
     try { sessionStorage.setItem(this.PREFETCH_KEY, JSON.stringify({ doctorId, savedAt: Date.now(), list })); } catch {}

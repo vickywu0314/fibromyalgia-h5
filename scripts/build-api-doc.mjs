@@ -166,7 +166,7 @@ const models = {
 
 // ---------- 接口 ----------
 const DOCTOR = { name: 'doctorId', in: 'query', type: 'long', required: true, desc: '医生 ID。App 内 WenwenClass.getUserId()；localhost 开发为 5065' };
-const RESEARCH = { name: 'researchType', in: 'query', type: 'int', required: true, desc: '研究平台，固定 12（纤维肌痛）' };
+const RESEARCH = { name: 'researchType', in: 'query', type: 'long', required: true, desc: '研究平台，固定 12（纤维肌痛）' };
 const endpoints = [
   { method: 'GET', path: '/api/fms/patient/list', summary: '查询患者列表', pages: 'research-platform.html（预取第 1 页）→ patient-list.html',
     desc: '医生名下纤维肌痛研究的患者，分页。列表页滚动到底部加载下一页；搜索在已加载的患者中按姓名本地过滤。success 不为 true 时按空列表处理。',
@@ -219,7 +219,7 @@ const endpoints = [
       { key: 'id', type: 'long / null', desc: '随诊 ID；空 = 新增' },
       { key: 'patientId', type: 'long / null', desc: '患者 ID；新患者第一次保存时为空' },
       { key: 'doctorId', type: 'long', desc: '医生 ID' },
-      { key: 'researchType', type: 'int', desc: '固定 12', values: '12' },
+      { key: 'researchType', type: 'long', desc: '固定 12', values: '12' },
       { key: 'visitDate', type: 'string', desc: '本次随诊日期（保存基本信息时取 jbxx.visitDate，新随诊默认当天）', values: 'yyyy-MM-dd' },
       { key: 'part', type: 'string', desc: '本次保存的模块代码', values: 'jbxx / bsbq / zhpd / fzjc / bqpg / zlfa / blsj' },
       { key: '{part}', ...ref('CaseDetailData'), desc: '该模块数据，key 与 part 相同（模型见 CaseDetailData 中对应模块）' }
@@ -242,6 +242,154 @@ const endpoints = [
       { key: 'data', type: 'object / null', desc: '已存在时为患者信息；页面使用 id、name、researchNo（研究编号，或 patientNo）' }
     ], example: { success: true, data: { id: 10001, name: '张三', researchNo: 'FM-0001' } } } }
 ];
+
+
+// ---------- 与原接口定义（需求截图 / 示例）的差异 ----------
+// 原定义来源：patient/list 为需求文字中的请求地址和返回示例；followup/list、case/detail 为 Swagger 截图；
+// case/add 为需求中给出的请求体示例。kind：changed 变更 / added 新增 / removed 删除。
+const SOURCES = {
+  '/api/fms/patient/list': '需求文字中的请求地址和返回示例',
+  '/api/fms/patient/followup/list': 'Swagger 截图（查询患者随诊列表）',
+  '/api/fms/patient/case/detail': 'Swagger 截图（查询患者随诊详情，截图仅显示 data.blsj 部分）',
+  '/api/fms/patient/case/add': '需求中给出的请求体示例 JSON',
+  '/api/fms/patient/get/cardno': '无截图，沿用页面已有调用，无差异'
+};
+// 接口级差异：[接口, 区域(params/body/response), key, kind, 原定义, 原因]
+const OP_DIFFS = [
+  ['/api/fms/patient/list', 'params', 'pageSize', 'changed', '100', '手机端改为滚动分页加载，每页 20 条'],
+  ['/api/fms/patient/list', 'response', 'success', 'changed', '示例为 false', '约定 true 表示成功；示例中的 false 视为占位'],
+  ['/api/fms/patient/list', 'response', 'message', 'added', '无', '失败时页面提示原因'],
+  ['/api/fms/patient/list', 'response', 'data', 'changed', 'lastFollowUpDate 示例为 null，未定义格式', 'lastFollowUpDate 定为 yyyy-MM-dd，无随访时为 null'],
+  ['/api/fms/patient/followup/list', 'response', 'data', 'changed', 'data: {}（对象，未定义字段）', '后端返回 List，定为数组，元素为 FollowUpItem（id、followUpDate），按 followUpDate 倒序'],
+  ['/api/fms/patient/followup/list', 'response', 'totalPages', 'added', '无', '分页需要判断是否还有下一页'],
+  ['/api/fms/patient/followup/list', 'response', 'totalCount', 'added', '无', '与患者列表接口保持一致'],
+  ['/api/fms/patient/case/detail', 'response', 'data', 'changed', '截图仅有 data.blsj 部分字段', '补全 7 个模块；结构与 case/add 请求体一致，模块内字段差异见各 Model'],
+  ['/api/fms/patient/case/add', 'body', 'part', 'changed', '"part_bsbq"', '取值改为模块代码 "bsbq"，与 case/detail 的 parts 一致'],
+  ['/api/fms/patient/case/add', 'body', 'page', 'removed', 'page: 1', '与保存无关'],
+  ['/api/fms/patient/case/add', 'body', 'id', 'changed', 'id: 20001（未说明）', '补充规则：为空表示新增随诊，有值表示修改'],
+  ['/api/fms/patient/case/add', 'body', 'patientId', 'changed', 'patientId: 10001（未说明）', '补充规则：新患者为空，第一次保存 jbxx 时后端用 name、idCard 建档'],
+  ['/api/fms/patient/case/add', 'response', 'data', 'added', '未给出返回结构', '返回 CaseAddResult（id、patientId），页面用于后续保存']
+];
+// 模型字段级差异：模型 → key → [kind, 原定义, 原因]
+const MODEL_DIFFS = {
+  'jbxx': {
+    idCard: ['changed', 'cardNo', '与页面字段名一致'],
+    phone: ['changed', 'mobile', '与页面字段名一致'],
+    marriage: ['changed', 'marry', '与页面字段名一致'],
+    visitDate: ['added', '仅顶层有 visitDate', '页面「本次就诊时间」'],
+    hospitalLevel: ['changed', '示例值「三级甲等」', '取页面选项：1级 / 2级 / 3级 / 无级别'],
+    workStatus: ['changed', '示例值「在职」', '取页面选项：在职人员 / 退休人员 / 家庭主妇 / 无业人员 / 其他'],
+    smokingYears: ['changed', 'string（"5"）', '数字输入框，改为 number'],
+    drinkingYears: ['changed', 'string（"3"）', '数字输入框，改为 number'],
+    drinkAmount: ['changed', 'string（"100"）', '数字输入框，改为 number'],
+    treatmentHistory: ['changed', 'ext.benbingTreatment（缺西药）', '去掉 ext 一层；补充 xiyao'],
+    diseaseHistory: ['changed', 'ext.pastDiseases', '去掉 ext 一层，与查看接口一致'],
+    concomitantMedication: ['changed', 'ext.concomitantDrugs: ["…"]', '改为 [{ name }]，便于后续扩展'],
+    csi: ['changed', 'ext.csi9，仅 finish/result/score', '改名 csi；提交 q1–q9 全部答案'],
+    work: ['changed', 'ext.work，仅 finish/result/score', '提交全部题目答案'],
+    bodyComposition: ['changed', 'ext.bodyComposition（height/weight/bmi/waist/hip…）', '改为页面实际字段'],
+    tipi: ['changed', 'ext.tipi，仅 finish/result/score', '提交全部题目答案'],
+    sffq: ['changed', 'ext.sffq，仅 finish/result/score', '提交全部题目答案'],
+    tpc: ['changed', 'ext.tpc，仅 finish/result/score', '提交全部题目答案'],
+    fs: ['changed', 'ext.fs、ext.wpi、ext.sss 三个平级对象', 'WPI、SSS 归入 fs.wpi、fs.sss'],
+    'ext': ['removed', 'jbxx.ext', '子模块直接放在 jbxx 下，与查看接口一致'],
+    'id': ['removed', 'jbxx.id: 10001', '随诊 ID 只在顶层 id 传递']
+  },
+  'jbxx.treatmentHistory': {
+    xiyao: ['added', '无西药分类', '页面有「西药」类别']
+  },
+  'TreatmentHistoryItem': {
+    medication: ['added', '无', '西药名称字段（与页面一致）'],
+    unit: ['added', '无', '用量单位']
+  },
+  'DiseaseHistoryItem': {
+    years: ['changed', 'string（"2"）', '改为 number']
+  },
+  'ConcomitantMedicationItem': {
+    name: ['changed', '字符串数组元素 "string"', '改为对象 { name }']
+  },
+  'jbxx.csi': {
+    score: ['changed', 'string（"22"）', '改为 number，9 题全答时页面计算'],
+    _note: ['changed', 'ext.csi9，仅 finish/result/score', '提交 q1–q9 全部答案（查看页需要回显），score 改为 number']
+  },
+  'jbxx.bodyComposition': {
+    reportImages: ['changed', 'imageUrl（string）', '改为 URL 数组'],
+    bodyFatPercentage: ['added', '无', '页面字段'], bodyFatMass: ['added', '无', '页面字段'],
+    skeletalMuscleMass: ['added', '无', '页面字段'], skeletalMuscleIndex: ['added', '无', '页面字段'],
+    leanBodyMass: ['added', '无', '页面字段'], visceralFatLevel: ['added', '无', '页面字段'],
+    'height / weight / bmi / waist / hip / waistHipRatio': ['removed', '示例字段', '页面没有这些项']
+  },
+  'jbxx.fs': {
+    wpi: ['changed', 'ext.wpi（与 fs 平级）', '归入 fs'],
+    sss: ['changed', 'ext.sss（与 fs 平级）', '归入 fs']
+  },
+  'bsbq': {
+    systemic: ['changed', 'systemic[]', '多选 key 去掉 []'],
+    menstrualItems: ['changed', 'menstrualItems[]', '多选 key 去掉 []']
+  },
+  'fzjc': {
+    labReportImages: ['changed', 'lab_report_url（string）', '改为 URL 数组，可上传多张'],
+    ecgReportImages: ['changed', 'ecg_report_url（string）', '改为 URL 数组，可上传多张']
+  },
+  'bqpg': Object.fromEntries(Object.keys(SCHEMA.bqpg.scales).map(k => [k, ['changed', '仅 finish/result/score', '提交全部题目答案，查看页需要回显']])),
+  'zlfa': {
+    xiyao: ['changed', 'chengyaoList（category=西药）', '按类别拆分'],
+    zhongchengyao: ['changed', 'chengyaoList（中成药）', '按类别拆分'],
+    zhongyaoYinpian: ['changed', 'tjList', '改名'],
+    feiYaowu: ['changed', 'fywlfTxtList', '改名']
+  },
+  'ZlfaDrugItem': {
+    name: ['changed', 'drugName', '与页面字段一致'],
+    dose: ['changed', 'dosis', '与页面字段一致'],
+    unit: ['changed', 'dosisUnit', '与页面字段一致'],
+    frequency: ['changed', 'drugFreq / cureFreq', '与页面字段一致'],
+    instructions: ['added', '无', '用法说明'],
+    adjust: ['added', '无', '页面「是否调整」'],
+    adjustment: ['added', '无', '页面「调整内容」'],
+    reason: ['added', '无', '页面「调整原因」（原 stopReason 为停用原因，语义不同）'],
+    'company / drugDelivery / drugExternal / drugWay / goodsName / startTime / endTime / stopReason / fromId / id / partOther / parts': ['removed', '示例字段', '页面没有这些项，不提交']
+  },
+  'ZlfaYinpianItem': {
+    syndrome: ['changed', 'zhengName', '与页面字段一致'],
+    recipe: ['changed', 'chuFangList（数组）', '页面为单选处方类型'],
+    image: ['changed', 'imgs（数组）', '页面为单张处方图片'],
+    'chuFangListQt / fromId / id': ['removed', '示例字段', '页面没有这些项']
+  },
+  'CaseAddResult': {
+    id: ['added', '未给出', '保存后返回随诊 ID'],
+    patientId: ['added', '未给出', '新患者建档后返回']
+  }
+};
+// 量表模型：原示例只有 finish/result/score，题目答案均为新增
+Object.keys(SCHEMA.bqpg.scales).forEach(k => { MODEL_DIFFS['bqpg.' + k] = { _note: ['changed', '仅 finish/result/score', '提交全部题目答案（下表除 finish 外均为新增）'] }; });
+['jbxx.work', 'jbxx.tipi', 'jbxx.sffq', 'jbxx.tpc', 'jbxx.fs.wpi', 'jbxx.fs.sss'].forEach(m => { MODEL_DIFFS[m] = { ...(MODEL_DIFFS[m] || {}), _note: ['changed', '仅 finish/result/score', '提交全部题目答案（下表除 finish 外均为新增）'] }; });
+
+// 应用差异：字段上加 diff，删除的字段追加为划线行，并汇总
+const ALL_DIFFS = [];
+OP_DIFFS.forEach(([path, area, key, kind, original, reason]) => {
+  const op = endpoints.find(e => e.path === path);
+  const list = area === 'params' ? op.params : op[area].fields;
+  const field = list.find(f => (f.key || f.name) === key);
+  const diff = { kind, original, reason };
+  if (field) field.diff = diff;
+  else list.push({ key, name: key, type: '', desc: '', diff, in: '', removedRow: true });
+  (op.diffs = op.diffs || []).push({ key, ...diff });
+  ALL_DIFFS.push({ where: path, anchor: 'op-' + endpoints.indexOf(op), area: { params: '请求参数', body: '请求体', response: '返回' }[area], key, ...diff });
+});
+endpoints.forEach(op => { op.source = SOURCES[op.path]; });
+Object.entries(MODEL_DIFFS).forEach(([name, keys]) => {
+  const model = models[name];
+  Object.entries(keys).forEach(([key, [kind, original, reason]]) => {
+    const diff = { kind, original, reason };
+    if (key === '_note') model.diffNote = diff;
+    else {
+      const field = model.fields.find(f => f.key === key);
+      if (field && kind !== 'removed') field.diff = diff;
+      else model.fields.push({ key, type: '', desc: '', diff: { ...diff, kind: 'removed' }, removedRow: true });
+    }
+    ALL_DIFFS.push({ where: 'Model ' + name, anchor: 'model-' + name, area: '字段', key: key === '_note' ? '（全部题目）' : key, ...diff });
+  });
+});
 
 const html = `<!doctype html>
 <html lang="zh-CN">
@@ -279,7 +427,7 @@ table{border-collapse:collapse;width:100%;font-size:13px}
 th,td{text-align:left;vertical-align:top;padding:7px 10px;border-bottom:1px solid var(--line)}
 th{background:var(--code);font-weight:600;white-space:nowrap}
 tr:last-child td{border-bottom:0}
-td.key{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;white-space:nowrap}
+td.key{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600;white-space:normal;min-width:9em;max-width:22em}
 td.type{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--accent);white-space:nowrap}
 td.values{white-space:pre-line;color:var(--muted);min-width:180px}
 .req{color:#d14343;font-weight:700}
@@ -290,12 +438,33 @@ pre{background:var(--code);border-radius:6px;padding:10px 12px;overflow-x:auto;f
 .count{font-size:12px;color:var(--muted)}
 .rules{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px}
 .rules li{margin:4px 0}
+/* 差异标注 */
+:root{--chg:#b45309;--chg-bg:#fff7e6;--add:#15803d;--add-bg:#ecfdf3;--del:#b91c1c;--del-bg:#fef2f2}
+@media (prefers-color-scheme:dark){:root{--chg:#f5b544;--chg-bg:#2e2412;--add:#5ad08a;--add-bg:#13291c;--del:#f37b7b;--del-bg:#2e1616}}
+.badge{display:inline-block;white-space:nowrap;font-size:11px;font-weight:700;border-radius:4px;padding:0 5px;margin-left:6px;vertical-align:1px;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+.badge.changed{color:var(--chg);background:var(--chg-bg);border:1px solid var(--chg)}
+.badge.added{color:var(--add);background:var(--add-bg);border:1px solid var(--add)}
+.badge.removed{color:var(--del);background:var(--del-bg);border:1px solid var(--del)}
+tr.diff-changed td{background:var(--chg-bg)}tr.diff-added td{background:var(--add-bg)}tr.diff-removed td{background:var(--del-bg)}
+tr.diff-removed td.key{text-decoration:line-through;color:var(--del)}
+.diff-note{display:block;margin-top:3px;font-size:12px;color:var(--chg)}
+tr.diff-added .diff-note{color:var(--add)}tr.diff-removed .diff-note{color:var(--del)}
+.diff-box{border:1px solid var(--chg);background:var(--chg-bg);border-radius:6px;padding:8px 12px;margin:10px 0}
+.diff-box h4{margin:0 0 4px;font-size:13px;color:var(--chg)}
+.diff-box ul{margin:0;padding-left:18px}.diff-box li{margin:2px 0;font-size:13px}
+.source{font-size:12px;color:var(--muted)}
+.diff-count{font-size:11px;font-weight:700;color:var(--chg);border:1px solid var(--chg);border-radius:999px;padding:0 7px}
+.filter{display:flex;align-items:center;gap:6px;margin:8px 0 0;font-size:13px;color:var(--muted)}
+body.only-diff tbody tr:not([class*="diff-"]){display:none}
+body.only-diff details:not(.has-diff){display:none}
 </style>
 </head>
 <body>
 <header>
   <h1>纤维肌痛 H5 接口文档</h1>
   <p>共 ${endpoints.length} 个接口 · 生成自 scripts/build-api-doc.mjs，字段题目和取值来自各模块页面（js/case-record-schema.js）</p>
+  <p>与原接口定义（需求截图 / 示例）不同的地方共 <a href="#diffs"><strong>${ALL_DIFFS.length} 处</strong></a>，已在下方用 <span class="badge changed">变更</span><span class="badge added">新增</span><span class="badge removed">删除</span> 标出。</p>
+  <label class="filter"><input type="checkbox" id="onlyDiff"> 只看有差异的接口、模型和字段</label>
 </header>
 <nav class="toc" id="toc"></nav>
 <main>
@@ -306,6 +475,9 @@ pre{background:var(--code);border-radius:6px;padding:10px 12px;overflow-x:auto;f
     <li>模块字段名与页面表单控件 <code>name</code> 一致；单选 / 下拉为选项值，多选为字符串数组（key 不带 <code>[]</code>），日期 <code>yyyy-MM-dd</code>，数字输入为 number，图片为 URL 数组，未填写的字段不返回 / 不提交。</li>
     <li>模块代码：jbxx 基本信息、bsbq 病史病情、zhpd 证候判断、fzjc 辅助检查、bqpg 病情评估、zlfa 本次治疗方案、blsj 不良反应。</li>
   </ul>
+  <h2 class="section" id="diffs">与原定义的差异汇总</h2>
+  <p class="source">原定义来源：patient/list 为需求文字中的请求地址和返回示例；followup/list、case/detail 为 Swagger 截图；case/add 为需求中给出的请求体示例；get/cardno 无截图。字段级差异在各接口、模型中用颜色标出，并注明原写法和原因。</p>
+  <div class="table-wrap"><table id="diffTable"><thead><tr><th>位置</th><th>区域</th><th>key</th><th>变化</th><th>原定义</th><th>现定义 / 原因</th></tr></thead><tbody></tbody></table></div>
   <h2 class="section">接口</h2>
   <div id="ops"></div>
   <h2 class="section">数据模型（Models）</h2>
@@ -314,6 +486,10 @@ pre{background:var(--code);border-radius:6px;padding:10px 12px;overflow-x:auto;f
 <script>
 const ENDPOINTS = ${JSON.stringify(endpoints)};
 const MODELS = ${JSON.stringify(models)};
+const ALL_DIFFS = ${JSON.stringify(ALL_DIFFS)};
+const KIND = { changed: '变更', added: '新增', removed: '删除' };
+const badge = kind => el('span', { class: 'badge ' + kind }, KIND[kind]);
+const diffNote = d => el('span', { class: 'diff-note' }, (d.kind === 'removed' ? '已删除：' : '原：') + d.original + (d.reason ? '（' + d.reason + '）' : ''));
 const el = (tag, attrs = {}, ...kids) => { const n = document.createElement(tag); Object.entries(attrs).forEach(([k, v]) => k === 'class' ? n.className = v : k === 'html' ? n.innerHTML = v : n.setAttribute(k, v)); kids.flat().forEach(k => n.append(k)); return n; };
 const typeCell = f => {
   const td = el('td', { class: 'type' });
@@ -323,7 +499,9 @@ const typeCell = f => {
 };
 const fieldTable = fields => el('div', { class: 'table-wrap' }, el('table', {},
   el('thead', {}, el('tr', {}, el('th', {}, 'key'), el('th', {}, '类型'), el('th', {}, '说明'), el('th', {}, '取值 value'))),
-  el('tbody', {}, fields.map(f => el('tr', {}, el('td', { class: 'key' }, f.key), typeCell(f), el('td', {}, f.desc || ''), el('td', { class: 'values' }, f.values || ''))))));
+  el('tbody', {}, fields.map(f => el('tr', f.diff ? { class: 'diff-' + f.diff.kind } : {},
+    el('td', { class: 'key' }, f.key, f.diff ? badge(f.diff.kind) : ''), typeCell(f),
+    el('td', {}, f.desc || '', f.diff ? diffNote(f.diff) : ''), el('td', { class: 'values' }, f.values || ''))))));
 const toc = document.getElementById('toc');
 ENDPOINTS.forEach((op, i) => {
   const id = 'op-' + i;
@@ -334,20 +512,35 @@ ENDPOINTS.forEach((op, i) => {
     el('h3', {}, '请求参数'),
     el('div', { class: 'table-wrap' }, el('table', {},
       el('thead', {}, el('tr', {}, el('th', {}, '参数'), el('th', {}, '位置'), el('th', {}, '类型'), el('th', {}, '必填'), el('th', {}, '说明'))),
-      el('tbody', {}, op.params.map(p => el('tr', {}, el('td', { class: 'key' }, p.name), el('td', {}, p.in), el('td', { class: 'type' }, p.type), el('td', {}, p.required ? el('span', { class: 'req' }, '是') : '否'), el('td', {}, p.desc)))))));
+      el('tbody', {}, op.params.map(p => el('tr', p.diff ? { class: 'diff-' + p.diff.kind } : {}, el('td', { class: 'key' }, p.name, p.diff ? badge(p.diff.kind) : ''), el('td', {}, p.in), el('td', { class: 'type' }, p.type), el('td', {}, p.removedRow ? '' : p.required ? el('span', { class: 'req' }, '是') : '否'), el('td', {}, p.desc, p.diff ? diffNote(p.diff) : '')))))));
+  // 原定义来源 + 差异清单
+  body.prepend(el('p', { class: 'source' }, '原定义来源：' + op.source));
+  if (op.diffs) body.insertBefore(el('div', { class: 'diff-box' }, el('h4', {}, '与原定义的差异（' + op.diffs.length + ' 处）'),
+    el('ul', {}, op.diffs.map(d => el('li', {}, badge(d.kind), ' ', el('code', {}, d.key), '：原 ', d.original, ' → ', d.reason)))), body.children[3]);
   if (op.body) body.append(el('h3', {}, '请求体（application/json）'), fieldTable(op.body.fields), el('h3', {}, '请求示例'), el('pre', {}, JSON.stringify(op.body.example, null, 2)));
   body.append(el('h3', {}, '返回（200）'), fieldTable(op.response.fields), el('h3', {}, '返回示例'), el('pre', {}, JSON.stringify(op.response.example, null, 2)));
-  document.getElementById('ops').append(el('details', { class: 'op ' + op.method, id, open: '' },
-    el('summary', {}, el('span', { class: 'method' }, op.method), el('span', { class: 'path' }, op.path), el('span', { class: 'summary' }, op.summary)), body));
+  document.getElementById('ops').append(el('details', { class: 'op ' + op.method + (op.diffs ? ' has-diff' : ''), id, open: '' },
+    el('summary', {}, el('span', { class: 'method' }, op.method), el('span', { class: 'path' }, op.path), op.diffs ? el('span', { class: 'diff-count' }, op.diffs.length + ' 处差异') : '', el('span', { class: 'summary' }, op.summary)), body));
 });
 toc.append(el('a', { href: '#models' }, 'Models'));
 Object.entries(MODELS).forEach(([name, model]) => {
   const body = el('div', { class: 'body' });
   if (model.page) body.append(el('p', { class: 'meta' }, '对应页面：' + model.page));
   if (model.note) body.append(el('p', { class: 'desc' }, model.note));
+  if (model.diffNote) body.append(el('div', { class: 'diff-box' }, el('h4', {}, '与原定义的差异'), el('p', { class: 'desc' }, '原：' + model.diffNote.original + ' → ' + model.diffNote.reason)));
   body.append(fieldTable(model.fields));
-  document.getElementById('models').append(el('details', { class: 'model', id: 'model-' + name },
-    el('summary', {}, el('span', { class: 'name' }, name), el('span', { class: 'title' }, model.title), el('span', { class: 'count' }, model.fields.length + ' 个字段')), body));
+  const diffCount = model.fields.filter(f => f.diff).length + (model.diffNote ? 1 : 0);
+  document.getElementById('models').append(el('details', { class: 'model' + (diffCount ? ' has-diff' : ''), id: 'model-' + name },
+    el('summary', {}, el('span', { class: 'name' }, name), el('span', { class: 'title' }, model.title), el('span', { class: 'count' }, model.fields.length + ' 个字段'), diffCount ? el('span', { class: 'diff-count' }, diffCount + ' 处差异') : ''), body));
+});
+// 差异汇总表
+document.querySelector('#diffTable tbody').append(...ALL_DIFFS.map(d => el('tr', { class: 'diff-' + d.kind },
+  el('td', {}, el('a', { class: 'ref', href: '#' + d.anchor }, d.where)), el('td', {}, d.area), el('td', { class: 'key' }, d.key),
+  el('td', {}, badge(d.kind)), el('td', {}, d.original), el('td', {}, d.reason))));
+// 只看差异：隐藏没有差异的接口、模型和字段行，并展开有差异的模型
+document.getElementById('onlyDiff').addEventListener('change', e => {
+  document.body.classList.toggle('only-diff', e.target.checked);
+  if (e.target.checked) document.querySelectorAll('details.has-diff').forEach(d => { d.open = true; });
 });
 // 点击模型链接时展开目标模型
 function openTarget() { const t = location.hash && document.getElementById(location.hash.slice(1)); if (t && t.tagName === 'DETAILS') { t.open = true; t.scrollIntoView(); } }

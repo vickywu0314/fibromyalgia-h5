@@ -28,4 +28,4 @@ npm run build
 也可直接发布根目录中的相同页面和资源目录。无需上传 reference-static、src、node_modules、docs 和工程配置。
 服务器必须配置同源 `/api` 反向代理到后端。直接用 file:// 打开无法调用接口。
 
-列表 success:false 暂按空列表显示，新增按钮一直保留。查重失败仍提示错误，不冒充查无患者。
+患者列表接口说明见 docs/api/patient-list.md。列表 success:false 暂按空列表显示，新增按钮一直保留。查重失败仍提示错误，不冒充查无患者。

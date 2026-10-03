@@ -31,3 +31,5 @@ npm run build
 接口说明见 docs/api/（patient-list.md 患者列表、follow-up-list.md 随诊列表、case-detail.md 随诊详情查看与随诊病历、basic-info-submodules.md 基本信息子模块、case-add.md 随诊录入保存）。列表 success:false 暂按空列表显示，新增按钮一直保留。查重失败仍提示错误，不冒充查无患者。
 
 随诊病历页的字段题目和选项文字由 `node scripts/extract-case-schema.mjs` 从各模块填写页生成到 `js/case-record-schema.js`（需要 playwright）；模块页题目改动后重新运行。
+
+接口文档汇总页（Swagger 风格）：`docs/api/index.html`，浏览器直接打开。由 `node scripts/build-api-doc.mjs` 生成，字段题目和取值来自 `js/case-record-schema.js`；页面或接口改动后先运行 `scripts/extract-case-schema.mjs`，再运行本脚本。

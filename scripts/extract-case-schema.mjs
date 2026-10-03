@@ -99,6 +99,7 @@ function extract(formSelector) {
       else if (control.type === 'radio' || control.tagName === 'SELECT') field.type = 'single';
       else if (control.type === 'range') field.type = 'number';
       else if (control.type === 'date') field.type = 'date';
+      else if (control.type === 'number') field.numeric = true; // 数字输入框，提交为 number
       field.label = questionLabel(control) || headingBefore(control, 'h3,h4,.sub-label');
       // 膳食问卷：同一食物下有多道题，题目前加上食物名称。
       const food = control.closest('.food')?.querySelector('h3');
@@ -107,11 +108,18 @@ function extract(formSelector) {
       fields.push(field);
     }
     if (control.type === 'radio' || control.type === 'checkbox') {
+      field.values = field.values || [];
+      if (!field.values.includes(control.value)) field.values.push(control.value);
       const text = optionText(control) || control.value;
       field.options = field.options || {};
       // 选项文字和值相同时不必重复存储。
       if (text !== control.value) field.options[control.value] = text;
     }
+  });
+  // 下拉的全部选项值（空值除外）
+  form.querySelectorAll('select[name]').forEach(select => {
+    const field = byKey[select.name.replace(/\[\]$/, '')];
+    if (field) field.values = [...select.options].map(o => o.value).filter(Boolean);
   });
   fields.forEach(f => { if (f.options && !Object.keys(f.options).length) delete f.options; });
   return { title: document.title, fields };

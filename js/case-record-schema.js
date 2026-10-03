@@ -32,76 +32,159 @@ window.CASE_RECORD_SCHEMA = {
     "key": "gender",
     "label": "3. 性别",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "男",
+     "女"
+    ]
    },
    {
     "key": "province",
     "label": "17. 常住地",
     "type": "single",
     "group": "",
-    "unit": "省"
+    "unit": "省",
+    "values": [
+     "北京市",
+     "天津市",
+     "河北省",
+     "山西省",
+     "内蒙古自治区",
+     "辽宁省",
+     "吉林省",
+     "黑龙江省",
+     "上海市",
+     "江苏省",
+     "浙江省",
+     "安徽省",
+     "福建省",
+     "江西省",
+     "山东省",
+     "河南省",
+     "湖北省",
+     "湖南省",
+     "广东省",
+     "广西壮族自治区",
+     "海南省",
+     "重庆市",
+     "四川省",
+     "贵州省",
+     "云南省",
+     "西藏自治区",
+     "陕西省",
+     "甘肃省",
+     "青海省",
+     "宁夏回族自治区",
+     "新疆维吾尔自治区",
+     "香港特别行政区",
+     "澳门特别行政区",
+     "台湾省"
+    ]
    },
    {
     "key": "marriage",
     "label": "9. 婚姻",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "已婚",
+     "未婚",
+     "离婚",
+     "丧偶"
+    ]
    },
    {
     "key": "education",
     "label": "教育程度",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "未上过学",
+     "小学",
+     "初中",
+     "高中/中专",
+     "大专",
+     "本科",
+     "硕士及以上"
+    ]
    },
    {
     "key": "workStatus",
     "label": "工作情况",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "在职人员",
+     "退休人员",
+     "家庭主妇",
+     "无业人员",
+     "其他"
+    ]
    },
    {
     "key": "smoking",
     "label": "吸烟史",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "无或偶尔有",
+     "经常有"
+    ]
    },
    {
     "key": "smokingYears",
     "label": "吸烟年数",
     "type": "text",
     "group": "",
+    "numeric": true,
     "unit": "年"
    },
    {
     "key": "smokingAmount",
     "label": "每日吸烟量",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "10支以下",
+     "10-20支",
+     "20支及以上"
+    ]
    },
    {
     "key": "drinking",
     "label": "饮酒史",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "无或偶尔有",
+     "经常有"
+    ]
    },
    {
     "key": "drinkingYears",
     "label": "饮酒年数",
     "type": "text",
     "group": "",
+    "numeric": true,
     "unit": "年"
    },
    {
     "key": "drinkType",
     "label": "每日饮酒种类",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "白酒",
+     "啤酒",
+     "红酒"
+    ]
    },
    {
     "key": "drinkAmount",
     "label": "每天饮酒用量",
     "type": "text",
     "group": "",
+    "numeric": true,
     "unit": "ml"
    },
    {
@@ -114,7 +197,11 @@ window.CASE_RECORD_SCHEMA = {
     "key": "diagnosed",
     "label": "是否曾确诊纤维肌痛综合征",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "是",
+     "否"
+    ]
    },
    {
     "key": "diagnosisDate",
@@ -126,7 +213,13 @@ window.CASE_RECORD_SCHEMA = {
     "key": "hospitalLevel",
     "label": "确诊医疗机构级别",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "1级",
+     "2级",
+     "3级",
+     "无级别"
+    ]
    }
   ],
   "subs": {
@@ -137,55 +230,118 @@ window.CASE_RECORD_SCHEMA = {
       "key": "q1",
       "label": "1. 我晨起后仍觉疲惫且没精神",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q2",
       "label": "2. 我感到肌肉僵硬且疼痛",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q3",
       "label": "3. 我感觉浑身疼痛",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q4",
       "label": "4. 我头痛",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q5",
       "label": "5. 我睡觉不好",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q6",
       "label": "6. 我很难集中注意力",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q7",
       "label": "7. 精神压力导致我的身体症状恶化",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q8",
       "label": "8. 我的颈部和肩部肌肉紧张",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      },
      {
       "key": "q9",
       "label": "9. 我记性差",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "从不",
+       "很少",
+       "有时",
+       "经常",
+       "总是"
+      ]
      }
     ]
    },
@@ -196,13 +352,18 @@ window.CASE_RECORD_SCHEMA = {
       "key": "q1",
       "label": "1. 您现在有没有带收入的工作？",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "是",
+       "否"
+      ]
      },
      {
       "key": "q2",
       "label": "因健康问题缺勤小时数",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "小时"
      },
      {
@@ -210,6 +371,7 @@ window.CASE_RECORD_SCHEMA = {
       "label": "因其他原因缺勤小时数",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "小时"
      },
      {
@@ -217,6 +379,7 @@ window.CASE_RECORD_SCHEMA = {
       "label": "实际工作小时数",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "小时"
      },
      {
@@ -224,6 +387,19 @@ window.CASE_RECORD_SCHEMA = {
       "label": "5. 过去7天内，健康问题在多大程度上影响了您工作时的工作效率？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7",
+       "8",
+       "9",
+       "10"
+      ],
       "options": {
        "0": "0（没有影响）",
        "10": "10（完全无法工作）"
@@ -234,6 +410,19 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6. 过去7天内，健康问题在多大程度上影响了您进行日常活动的能力（不包括有偿工作）？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7",
+       "8",
+       "9",
+       "10"
+      ],
       "options": {
        "0": "0（没有影响）",
        "10": "10（完全无法进行日常活动）"
@@ -249,6 +438,7 @@ window.CASE_RECORD_SCHEMA = {
       "label": "体脂百分比",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "%"
      },
      {
@@ -256,6 +446,7 @@ window.CASE_RECORD_SCHEMA = {
       "label": "体脂量/体脂肪量",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "Kg"
      },
      {
@@ -263,6 +454,7 @@ window.CASE_RECORD_SCHEMA = {
       "label": "骨骼肌量",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "Kg"
      },
      {
@@ -270,6 +462,7 @@ window.CASE_RECORD_SCHEMA = {
       "label": "骨骼肌指数",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "Kg"
      },
      {
@@ -277,13 +470,32 @@ window.CASE_RECORD_SCHEMA = {
       "label": "去脂体重/瘦体质量",
       "type": "text",
       "group": "",
+      "numeric": true,
       "unit": "Kg"
      },
      {
       "key": "visceralFatLevel",
       "label": "内脏脂肪等级",
       "type": "single",
-      "group": ""
+      "group": "",
+      "values": [
+       "1级",
+       "2级",
+       "3级",
+       "4级",
+       "5级",
+       "6级",
+       "7级",
+       "8级",
+       "9级",
+       "10级",
+       "11级",
+       "12级",
+       "13级",
+       "14级",
+       "15级",
+       "16级"
+      ]
      },
      {
       "key": "ratio1",
@@ -307,6 +519,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "1. 外向的，精力充沛的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -322,6 +543,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "2. 爱批判人的，爱争论的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -337,6 +567,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "3. 可信赖的，自律的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -352,6 +591,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "4. 忧虑的，易心烦的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -367,6 +615,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "5. 经验开放的，常有新想法的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -382,6 +639,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6. 内向的，安静的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -397,6 +663,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "7. 招人喜爱的，友善的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -412,6 +687,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "8. 散漫的，粗心的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -427,6 +711,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "9. 冷静的，情绪稳定的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -442,6 +735,15 @@ window.CASE_RECORD_SCHEMA = {
       "label": "10. 遵循常规的，缺乏创造性的",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4",
+       "5",
+       "6",
+       "7"
+      ],
       "options": {
        "1": "绝对不同意",
        "2": "非常不同意",
@@ -467,361 +769,722 @@ window.CASE_RECORD_SCHEMA = {
       "key": "s2_1_freq",
       "label": "米饭 · 食用频率",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s2_1_amt",
       "label": "米饭 · 每次食用量",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "1两及以下",
+       "2两（如图所示半碗）",
+       "3两",
+       "4两（如图所示1碗）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s2_1_extra",
       "label": "米饭 · 5两以上，请填入两数",
       "type": "text",
       "group": "2. 主食",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s2_2_freq",
       "label": "粥 · 食用频率",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s2_2_amt",
       "label": "粥 · 每次食用量",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "1两及以下",
+       "2两（如图所示半碗）",
+       "3两",
+       "4两（如图所示1碗）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s2_2_extra",
       "label": "粥 · 5两以上，请填入两数",
       "type": "text",
       "group": "2. 主食",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s2_3_freq",
       "label": "面条 · 食用频率",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s2_3_amt",
       "label": "面条 · 每次食用量",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "1两及以下",
+       "2两（如图所示半碗）",
+       "3两",
+       "4两（如图所示1碗）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s2_3_extra",
       "label": "面条 · 5两以上，请填入两数",
       "type": "text",
       "group": "2. 主食",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s2_4_freq",
       "label": "馒头/包子/花卷 · 食用频率",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s2_4_amt",
       "label": "馒头/包子/花卷 · 每次食用量",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "1两及以下",
+       "2两（如图所示半碗）",
+       "3两",
+       "4两（如图所示1碗）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s2_4_extra",
       "label": "馒头/包子/花卷 · 5两以上，请填入两数",
       "type": "text",
       "group": "2. 主食",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s2_5_freq",
       "label": "饼类 · 食用频率",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s2_5_amt",
       "label": "饼类 · 每次食用量",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "1两及以下",
+       "2两（如图所示半碗）",
+       "3两",
+       "4两（如图所示1碗）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s2_5_extra",
       "label": "饼类 · 5两以上，请填入两数",
       "type": "text",
       "group": "2. 主食",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s2_6_freq",
       "label": "其他谷薯类 · 食用频率",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s2_6_amt",
       "label": "其他谷薯类 · 每次食用量",
       "type": "single",
-      "group": "2. 主食"
+      "group": "2. 主食",
+      "values": [
+       "1两及以下",
+       "2两（如图所示半碗）",
+       "3两",
+       "4两（如图所示1碗）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s2_6_extra",
       "label": "其他谷薯类 · 5两以上，请填入两数",
       "type": "text",
       "group": "2. 主食",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s3_1_freq",
       "label": "大豆及豆制品 · 食用频率",
       "type": "single",
-      "group": "3. 豆类及豆制品"
+      "group": "3. 豆类及豆制品",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s3_1_amt",
       "label": "大豆及豆制品 · 每次食用量",
       "type": "single",
-      "group": "3. 豆类及豆制品"
+      "group": "3. 豆类及豆制品",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s3_1_extra",
       "label": "大豆及豆制品 · 5两以上，请填入两数",
       "type": "text",
       "group": "3. 豆类及豆制品",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s3_2_freq",
       "label": "杂豆类 · 食用频率",
       "type": "single",
-      "group": "3. 豆类及豆制品"
+      "group": "3. 豆类及豆制品",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s3_2_amt",
       "label": "杂豆类 · 每次食用量",
       "type": "single",
-      "group": "3. 豆类及豆制品"
+      "group": "3. 豆类及豆制品",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s3_2_extra",
       "label": "杂豆类 · 5两以上，请填入两数",
       "type": "text",
       "group": "3. 豆类及豆制品",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s4_1_freq",
       "label": "深色蔬菜 · 食用频率",
       "type": "single",
-      "group": "4. 蔬菜"
+      "group": "4. 蔬菜",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s4_1_amt",
       "label": "深色蔬菜 · 每次食用量",
       "type": "single",
-      "group": "4. 蔬菜"
+      "group": "4. 蔬菜",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s4_1_extra",
       "label": "深色蔬菜 · 5两以上，请填入两数",
       "type": "text",
       "group": "4. 蔬菜",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s4_2_freq",
       "label": "浅色蔬菜 · 食用频率",
       "type": "single",
-      "group": "4. 蔬菜"
+      "group": "4. 蔬菜",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s4_2_amt",
       "label": "浅色蔬菜 · 每次食用量",
       "type": "single",
-      "group": "4. 蔬菜"
+      "group": "4. 蔬菜",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s4_2_extra",
       "label": "浅色蔬菜 · 5两以上，请填入两数",
       "type": "text",
       "group": "4. 蔬菜",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s4_3_freq",
       "label": "菌藻类 · 食用频率",
       "type": "single",
-      "group": "4. 蔬菜"
+      "group": "4. 蔬菜",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s4_3_amt",
       "label": "菌藻类 · 每次食用量",
       "type": "single",
-      "group": "4. 蔬菜"
+      "group": "4. 蔬菜",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s4_3_extra",
       "label": "菌藻类 · 5两以上，请填入两数",
       "type": "text",
       "group": "4. 蔬菜",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s5_1_freq",
       "label": "水果 · 食用频率",
       "type": "single",
-      "group": "5. 水果"
+      "group": "5. 水果",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s5_1_amt",
       "label": "水果 · 每次食用量",
       "type": "single",
-      "group": "5. 水果"
+      "group": "5. 水果",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s5_1_extra",
       "label": "水果 · 5两以上，请填入两数",
       "type": "text",
       "group": "5. 水果",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s6_1_freq",
       "label": "猪肉 · 食用频率",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s6_1_amt",
       "label": "猪肉 · 每次食用量",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s6_1_extra",
       "label": "猪肉 · 5两以上，请填入两数",
       "type": "text",
       "group": "6. 肉类",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s6_2_freq",
       "label": "牛羊肉 · 食用频率",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s6_2_amt",
       "label": "牛羊肉 · 每次食用量",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s6_2_extra",
       "label": "牛羊肉 · 5两以上，请填入两数",
       "type": "text",
       "group": "6. 肉类",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s6_3_freq",
       "label": "禽肉 · 食用频率",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s6_3_amt",
       "label": "禽肉 · 每次食用量",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s6_3_extra",
       "label": "禽肉 · 5两以上，请填入两数",
       "type": "text",
       "group": "6. 肉类",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s6_4_freq",
       "label": "动物内脏 · 食用频率",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s6_4_amt",
       "label": "动物内脏 · 每次食用量",
       "type": "single",
-      "group": "6. 肉类"
+      "group": "6. 肉类",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s6_4_extra",
       "label": "动物内脏 · 5两以上，请填入两数",
       "type": "text",
       "group": "6. 肉类",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s7_1_freq",
       "label": "鱼类 · 食用频率",
       "type": "single",
-      "group": "7. 水产品"
+      "group": "7. 水产品",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s7_1_amt",
       "label": "鱼类 · 每次食用量",
       "type": "single",
-      "group": "7. 水产品"
+      "group": "7. 水产品",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s7_1_extra",
       "label": "鱼类 · 5两以上，请填入两数",
       "type": "text",
       "group": "7. 水产品",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s7_2_freq",
       "label": "虾蟹类 · 食用频率",
       "type": "single",
-      "group": "7. 水产品"
+      "group": "7. 水产品",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s7_2_amt",
       "label": "虾蟹类 · 每次食用量",
       "type": "single",
-      "group": "7. 水产品"
+      "group": "7. 水产品",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s7_2_extra",
       "label": "虾蟹类 · 5两以上，请填入两数",
       "type": "text",
       "group": "7. 水产品",
+      "numeric": true,
       "unit": "两"
      },
      {
       "key": "s7_3_freq",
       "label": "贝类及其他水产品 · 食用频率",
       "type": "single",
-      "group": "7. 水产品"
+      "group": "7. 水产品",
+      "values": [
+       "从不",
+       "每月少于1次",
+       "每月1-3次",
+       "每周1-2次",
+       "每周3-4次",
+       "每周5-6次",
+       "每天1次",
+       "每天2次",
+       "每天3次以上"
+      ]
      },
      {
       "key": "s7_3_amt",
       "label": "贝类及其他水产品 · 每次食用量",
       "type": "single",
-      "group": "7. 水产品"
+      "group": "7. 水产品",
+      "values": [
+       "半两及以下（25g）",
+       "1两（50g）",
+       "1-2两（50-100g）",
+       "2-4两（100-200g）",
+       "5两以上（请填入两数）"
+      ]
      },
      {
       "key": "s7_3_extra",
       "label": "贝类及其他水产品 · 5两以上，请填入两数",
       "type": "text",
       "group": "7. 水产品",
+      "numeric": true,
       "unit": "两"
      }
     ]
@@ -833,55 +1496,100 @@ window.CASE_RECORD_SCHEMA = {
       "key": "q1",
       "label": "1. 枕骨下肌肉附着处",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q2",
       "label": "2. 斜方肌上缘中点",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q3",
       "label": "3. 第5～7颈椎横突间隙的前面",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q4",
       "label": "4. 冈上肌起始部，肩胛棘上方近内侧缘上方",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q5",
       "label": "5. 肱骨外上髁远端2cm处",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q6",
       "label": "6. 第2肋骨与软骨交界处",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q7",
       "label": "7. 臀外上象限，臀肌前皱褶处",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q8",
       "label": "8. 转子隆起的后方",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      },
      {
       "key": "q9",
       "label": "9. 膝内侧脂肪垫关节折皱线的近侧",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左",
+       "右",
+       "无"
+      ]
      }
     ]
    },
@@ -892,7 +1600,28 @@ window.CASE_RECORD_SCHEMA = {
       "key": "painArea",
       "label": "疼痛部位",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "左下颌",
+       "左肩胛带区",
+       "左上臂",
+       "左前臂",
+       "右下颌",
+       "右肩胛带区",
+       "右上臂",
+       "右前臂",
+       "左髋部（臀区，大转子）",
+       "左大腿",
+       "左小腿",
+       "右髋部（臀区，大转子）",
+       "右大腿",
+       "右小腿",
+       "颈部",
+       "背部",
+       "腰部",
+       "胸部",
+       "腹部"
+      ]
      }
     ]
    },
@@ -903,37 +1632,67 @@ window.CASE_RECORD_SCHEMA = {
       "key": "q1_1",
       "label": "（1）疲劳",
       "type": "single",
-      "group": "1. 在过去一周中以下症状的严重程度"
+      "group": "1. 在过去一周中以下症状的严重程度",
+      "values": [
+       "0（没有）",
+       "1（轻度）",
+       "2（中度）",
+       "3（重度）"
+      ]
      },
      {
       "key": "q1_2",
       "label": "（2）认知症状（注意力、记忆力下降）",
       "type": "single",
-      "group": "1. 在过去一周中以下症状的严重程度"
+      "group": "1. 在过去一周中以下症状的严重程度",
+      "values": [
+       "0（没有）",
+       "1（轻度）",
+       "2（中度）",
+       "3（重度）"
+      ]
      },
      {
       "key": "q1_3",
       "label": "（3）睡醒后仍觉得疲乏",
       "type": "single",
-      "group": "1. 在过去一周中以下症状的严重程度"
+      "group": "1. 在过去一周中以下症状的严重程度",
+      "values": [
+       "0（没有）",
+       "1（轻度）",
+       "2（中度）",
+       "3（重度）"
+      ]
      },
      {
       "key": "q2_1",
       "label": "（1）头痛",
       "type": "single",
-      "group": "2. 在过去六个月是否曾受以下症状困扰"
+      "group": "2. 在过去六个月是否曾受以下症状困扰",
+      "values": [
+       "0（没有）",
+       "1（曾经出现）"
+      ]
      },
      {
       "key": "q2_2",
       "label": "（2）下腹部疼痛或痉挛",
       "type": "single",
-      "group": "2. 在过去六个月是否曾受以下症状困扰"
+      "group": "2. 在过去六个月是否曾受以下症状困扰",
+      "values": [
+       "0（没有）",
+       "1（曾经出现）"
+      ]
      },
      {
       "key": "q2_3",
       "label": "（3）抑郁",
       "type": "single",
-      "group": "2. 在过去六个月是否曾受以下症状困扰"
+      "group": "2. 在过去六个月是否曾受以下症状困扰",
+      "values": [
+       "0（没有）",
+       "1（曾经出现）"
+      ]
      }
     ]
    }
@@ -947,6 +1706,34 @@ window.CASE_RECORD_SCHEMA = {
     "label": "全身症状",
     "type": "multi",
     "group": "1.全身症状",
+    "values": [
+     "肝郁气滞",
+     "焦虑易怒",
+     "胸胁胀闷或刺",
+     "寐差多梦",
+     "脘闷嗳气",
+     "腹痛",
+     "不思饮食",
+     "疲乏无力",
+     "寒湿痹阻",
+     "四肢重着无力",
+     "每遇寒则冷痛",
+     "痰热扰心",
+     "惊悸不安",
+     "口苦心烦",
+     "头痛失眠",
+     "渴喜冷饮",
+     "性情急躁",
+     "反复梦魇",
+     "恶心纳呆",
+     "肝肾不足",
+     "肌肉无力",
+     "腰膝酸软，劳累加重",
+     "筋缩，手足不遂",
+     "畏寒肢冷",
+     "肢体麻木",
+     "失眠健忘"
+    ],
     "options": {
      "每遇寒则冷痛": "每遇寒则冷痛，"
     }
@@ -955,73 +1742,157 @@ window.CASE_RECORD_SCHEMA = {
     "key": "stool",
     "label": "大便",
     "type": "single",
-    "group": "2.二便"
+    "group": "2.二便",
+    "values": [
+     "稀溏",
+     "便秘",
+     "粘滞",
+     "无力",
+     "正常"
+    ]
    },
    {
     "key": "urine",
     "label": "小便",
     "type": "single",
-    "group": "2.二便"
+    "group": "2.二便",
+    "values": [
+     "黄",
+     "热",
+     "清长",
+     "夜尿频",
+     "无力",
+     "正常"
+    ]
    },
    {
     "key": "tongueColor",
     "label": "舌色",
     "type": "single",
-    "group": "3.舌象"
+    "group": "3.舌象",
+    "values": [
+     "淡红",
+     "淡白",
+     "红",
+     "绛",
+     "紫",
+     "暗"
+    ]
    },
    {
     "key": "tongueShape",
     "label": "舌形",
     "type": "single",
-    "group": "3.舌象"
+    "group": "3.舌象",
+    "values": [
+     "苍老",
+     "娇嫩",
+     "胖大",
+     "瘦薄",
+     "芒刺",
+     "裂纹",
+     "齿痕",
+     "正常"
+    ]
    },
    {
     "key": "coatColor",
     "label": "苔色",
     "type": "single",
-    "group": "3.舌象"
+    "group": "3.舌象",
+    "values": [
+     "白",
+     "黄",
+     "灰",
+     "黑",
+     "黄白相间"
+    ]
    },
    {
     "key": "coatShape",
     "label": "苔质",
     "type": "single",
-    "group": "3.舌象"
+    "group": "3.舌象",
+    "values": [
+     "厚",
+     "薄",
+     "润",
+     "滑",
+     "燥",
+     "腐",
+     "腻",
+     "剥",
+     "无"
+    ]
    },
    {
     "key": "menstrualStage",
     "label": "月经分期",
     "type": "single",
-    "group": "4.月经情况"
+    "group": "4.月经情况",
+    "values": [
+     "分绝经期",
+     "围绝经期",
+     "育龄期"
+    ]
    },
    {
     "key": "menstrualItems",
     "label": "月经情况",
     "type": "multi",
-    "group": "4.月经情况"
+    "group": "4.月经情况",
+    "values": [
+     "经期",
+     "经色",
+     "经量",
+     "痛经"
+    ]
    },
    {
     "key": "periodTiming",
     "label": "经期",
     "type": "single",
-    "group": "4.月经情况"
+    "group": "4.月经情况",
+    "values": [
+     "月经先期",
+     "月经后期",
+     "月经先后不定期",
+     "经期延长",
+     "正常"
+    ]
    },
    {
     "key": "periodColor",
     "label": "经色",
     "type": "single",
-    "group": "4.月经情况"
+    "group": "4.月经情况",
+    "values": [
+     "淡红",
+     "深红",
+     "紫暗",
+     "正常"
+    ]
    },
    {
     "key": "periodAmount",
     "label": "经量",
     "type": "single",
-    "group": "4.月经情况"
+    "group": "4.月经情况",
+    "values": [
+     "月经过多",
+     "月经过少",
+     "正常"
+    ]
    },
    {
     "key": "dysmenorrhea",
     "label": "痛经",
     "type": "single",
-    "group": "4.月经情况"
+    "group": "4.月经情况",
+    "values": [
+     "有",
+     "无"
+    ]
    }
   ]
  },
@@ -1032,19 +1903,35 @@ window.CASE_RECORD_SCHEMA = {
     "key": "mainSyndrome",
     "label": "主证",
     "type": "single",
-    "group": "证候判断"
+    "group": "证候判断",
+    "values": [
+     "肝郁气滞证",
+     "寒湿痹阻证",
+     "痰热扰心证",
+     "肝肾不足证"
+    ]
    },
    {
     "key": "hasSecondary",
     "label": "是否有兼证",
     "type": "single",
-    "group": "证候判断"
+    "group": "证候判断",
+    "values": [
+     "是",
+     "否"
+    ]
    },
    {
     "key": "secondarySyndrome",
     "label": "兼证",
     "type": "single",
-    "group": "证候判断"
+    "group": "证候判断",
+    "values": [
+     "肝郁气滞证",
+     "寒湿痹阻证",
+     "痰热扰心证",
+     "肝肾不足证"
+    ]
    }
   ]
  },
@@ -1055,181 +1942,271 @@ window.CASE_RECORD_SCHEMA = {
     "key": "cbc_wbc_status",
     "label": "白细胞",
     "type": "single",
-    "group": "血常规"
+    "group": "血常规",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "cbc_wbc_value",
     "label": "白细胞数值",
     "type": "text",
     "group": "血常规",
+    "numeric": true,
     "unit": "× 10^9/L"
    },
    {
     "key": "cbc_rbc_status",
     "label": "红细胞",
     "type": "single",
-    "group": "血常规"
+    "group": "血常规",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "cbc_rbc_value",
     "label": "红细胞数值",
     "type": "text",
     "group": "血常规",
+    "numeric": true,
     "unit": "× 10^12/L"
    },
    {
     "key": "cbc_hgb_status",
     "label": "血红蛋白",
     "type": "single",
-    "group": "血常规"
+    "group": "血常规",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "cbc_hgb_value",
     "label": "血红蛋白数值",
     "type": "text",
     "group": "血常规",
+    "numeric": true,
     "unit": "g/L"
    },
    {
     "key": "urine_wbc_status",
     "label": "白细胞",
     "type": "single",
-    "group": "尿常规"
+    "group": "尿常规",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "urine_wbc_value",
     "label": "白细胞数值",
     "type": "text",
     "group": "尿常规",
+    "numeric": true,
     "unit": "leu/uL"
    },
    {
     "key": "urine_rbc_status",
     "label": "红细胞",
     "type": "single",
-    "group": "尿常规"
+    "group": "尿常规",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "urine_rbc_value",
     "label": "红细胞数值",
     "type": "text",
     "group": "尿常规",
+    "numeric": true,
     "unit": "/uL"
    },
    {
     "key": "urine_protein_status",
     "label": "尿蛋白",
     "type": "single",
-    "group": "尿常规"
+    "group": "尿常规",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "urine_protein_value",
     "label": "尿蛋白数值",
     "type": "text",
     "group": "尿常规",
+    "numeric": true,
     "unit": "g/L"
    },
    {
     "key": "urine_occult_status",
     "label": "尿潜血",
     "type": "single",
-    "group": "尿常规"
+    "group": "尿常规",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "urine_occult_value",
     "label": "尿潜血数值",
     "type": "text",
     "group": "尿常规",
+    "numeric": true,
     "unit": "ery/uL"
    },
    {
     "key": "stool_appearance",
     "label": "便外观性",
     "type": "single",
-    "group": "便常规+便潜血"
+    "group": "便常规+便潜血",
+    "values": [
+     "黏液便",
+     "脓血便",
+     "黑便",
+     "鲜红血便",
+     "陶土样便",
+     "正常",
+     "未查"
+    ]
    },
    {
     "key": "stool_wbc_status",
     "label": "白细胞",
     "type": "single",
-    "group": "便常规+便潜血"
+    "group": "便常规+便潜血",
+    "values": [
+     "正常",
+     "未查"
+    ]
    },
    {
     "key": "stool_wbc_value",
     "label": "白细胞数值",
     "type": "text",
     "group": "便常规+便潜血",
+    "numeric": true,
     "unit": "ul"
    },
    {
     "key": "stool_rbc_status",
     "label": "红细胞",
     "type": "single",
-    "group": "便常规+便潜血"
+    "group": "便常规+便潜血",
+    "values": [
+     "正常",
+     "未查"
+    ]
    },
    {
     "key": "stool_rbc_value",
     "label": "红细胞数值",
     "type": "text",
     "group": "便常规+便潜血",
+    "numeric": true,
     "unit": "ul"
    },
    {
     "key": "stool_occult",
     "label": "便潜血",
     "type": "single",
-    "group": "便常规+便潜血"
+    "group": "便常规+便潜血",
+    "values": [
+     "阳性",
+     "正常",
+     "未查"
+    ]
    },
    {
     "key": "alt_status",
     "label": "ALT",
     "type": "single",
-    "group": "肝功能"
+    "group": "肝功能",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "alt_value",
     "label": "ALT数值",
     "type": "text",
     "group": "肝功能",
+    "numeric": true,
     "unit": "U/L"
    },
    {
     "key": "ast_status",
     "label": "AST",
     "type": "single",
-    "group": "肝功能"
+    "group": "肝功能",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "ast_value",
     "label": "AST数值",
     "type": "text",
     "group": "肝功能",
+    "numeric": true,
     "unit": "U/L"
    },
    {
     "key": "bun_status",
     "label": "BUN",
     "type": "single",
-    "group": "肾功能"
+    "group": "肾功能",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "bun_value",
     "label": "BUN数值",
     "type": "text",
     "group": "肾功能",
+    "numeric": true,
     "unit": "mmol/L"
    },
    {
     "key": "cr_status",
     "label": "Cr",
     "type": "single",
-    "group": "肾功能"
+    "group": "肾功能",
+    "values": [
+     "未查",
+     "正常",
+     "异常"
+    ]
    },
    {
     "key": "cr_value",
     "label": "Cr数值",
     "type": "text",
     "group": "肾功能",
+    "numeric": true,
     "unit": "umol/L"
    },
    {
@@ -1237,6 +2214,7 @@ window.CASE_RECORD_SCHEMA = {
     "label": "胆固醇",
     "type": "text",
     "group": "血脂",
+    "numeric": true,
     "unit": "mmol/L"
    },
    {
@@ -1244,6 +2222,7 @@ window.CASE_RECORD_SCHEMA = {
     "label": "甘油三酯",
     "type": "text",
     "group": "血脂",
+    "numeric": true,
     "unit": "mmol/L"
    },
    {
@@ -1251,6 +2230,7 @@ window.CASE_RECORD_SCHEMA = {
     "label": "低密度脂蛋白胆固醇",
     "type": "text",
     "group": "血脂",
+    "numeric": true,
     "unit": "mmol/L"
    },
    {
@@ -1258,6 +2238,7 @@ window.CASE_RECORD_SCHEMA = {
     "label": "高密度脂蛋白胆固醇",
     "type": "text",
     "group": "血脂",
+    "numeric": true,
     "unit": "mmol/L"
    },
    {
@@ -1265,6 +2246,7 @@ window.CASE_RECORD_SCHEMA = {
     "label": "载脂蛋白B",
     "type": "text",
     "group": "血脂",
+    "numeric": true,
     "unit": "g/L"
    },
    {
@@ -1272,13 +2254,22 @@ window.CASE_RECORD_SCHEMA = {
     "label": "载脂蛋白A",
     "type": "text",
     "group": "血脂",
+    "numeric": true,
     "unit": "g/L"
    },
    {
     "key": "ecg",
     "label": "心电图结果",
     "type": "single",
-    "group": "心电图"
+    "group": "心电图",
+    "values": [
+     "正常",
+     "T波改变",
+     "ST改变",
+     "传导阻滞",
+     "心律失常",
+     "其他"
+    ]
    }
   ]
  },
@@ -1298,7 +2289,16 @@ window.CASE_RECORD_SCHEMA = {
       "key": "painNature",
       "label": "近期肌肉疼痛性质",
       "type": "multi",
-      "group": ""
+      "group": "",
+      "values": [
+       "酸痛",
+       "胀痛",
+       "冷痛",
+       "刺痛",
+       "钝痛",
+       "灼痛",
+       "窜痛"
+      ]
      },
      {
       "key": "pain1",
@@ -1489,6 +2489,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "1．我总是为疼痛会不会停止而忧心忡忡",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1502,6 +2509,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "2．我感觉自己撑不下去了",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1515,6 +2529,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "3．我感觉太难熬了，心想永远都不会好转了",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1528,6 +2549,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "4．我感到它比我更强大，这太可怕了",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1541,6 +2569,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "5．我想自己再也受不了这种痛苦了",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1554,6 +2589,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6．我害怕疼痛会变本加厉",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1567,6 +2609,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "7．我不停地回想另一些痛苦的经历",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1580,6 +2629,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "8．我焦虑地等待疼痛消失",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1593,6 +2649,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "9．我无法从疼痛上分散注意力",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1606,6 +2669,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "10．我忍不住的想：这可真是疼啊！",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1619,6 +2689,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "11．我忍不住的想：让疼痛赶快彻底消失吧！",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1632,6 +2709,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "12．我没有任何办法减轻痛楚",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1645,6 +2729,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "13．我怀疑这下自己要出大问题了",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "从来没有（0分）",
        "1": "偶尔（1分）",
@@ -1663,6 +2754,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "1．我感觉良好",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1676,6 +2774,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "2．我感觉只能做一点体力活动",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1689,6 +2794,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "3．我感觉很有活力",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1702,6 +2814,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "4．我愿做各种令我开心的事",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1715,6 +2834,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "5．我觉得疲惫",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1728,6 +2854,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6．我觉得我一天干很多的活",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1741,6 +2874,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "7．我能专心做事",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1754,6 +2894,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "8．在体力上我能做很多事",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1767,6 +2914,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "9．我害怕必须做事",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1780,6 +2934,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "10．我一天只能做很少的事",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1793,6 +2954,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "11．我能很好的集中精神",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1806,6 +2974,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "12．我一直在休息",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1819,6 +2994,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "13．我要很努力才能集中精神",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1832,6 +3014,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "14．我要很努力才能应对糟糕的处境",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1845,6 +3034,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "15．我有很多工作计划",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1858,6 +3054,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "16．我容易觉得疲劳",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1871,6 +3074,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "17．我几乎没做任何事",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1884,6 +3094,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "18．我不想做任何事",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1897,6 +3114,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "19．我容易走神",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1910,6 +3134,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "20．我感觉体力状况很好",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 不符合",
        "1": "2 有点符合",
@@ -1933,7 +3164,8 @@ window.CASE_RECORD_SCHEMA = {
       "key": "latency",
       "label": "2．近1个月，从上床到入睡通常需要多少分钟。",
       "type": "text",
-      "group": ""
+      "group": "",
+      "numeric": true
      },
      {
       "key": "waketime",
@@ -1945,13 +3177,20 @@ window.CASE_RECORD_SCHEMA = {
       "key": "hours",
       "label": "4．近1个月，每夜通常实际睡眠多少小时（不等于卧床时间）。",
       "type": "text",
-      "group": ""
+      "group": "",
+      "numeric": true
      },
      {
       "key": "psqi5_1",
       "label": "a．入睡困难（30分钟内不能入睡）",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -1964,6 +3203,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "b．夜间易醒或早醒",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -1976,6 +3221,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "c．夜间去厕所",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -1988,6 +3239,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "d．呼吸不畅",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2000,6 +3257,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "e．咳嗽或鼾声高",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2012,6 +3275,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "f．感觉冷",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2024,6 +3293,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "g．感觉热",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2036,6 +3311,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "h．做恶梦",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2048,6 +3329,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "i．疼痛不适",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2060,6 +3347,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "j．其它影响睡眠的事情",
       "type": "single",
       "group": "5．近1个月，因下列情况影响睡眠而烦恼，如有，请说明：",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2072,6 +3365,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6．近1个月，总的来说，您认为自己的睡眠质量",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)很好",
        "1": "(2)较好",
@@ -2084,6 +3383,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "7．近1个月，您用药物催眠的情况",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2096,6 +3401,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "8．近1个月，您常感到困倦吗",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)无",
        "1": "(2)＜1次/周",
@@ -2108,6 +3419,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "9．近1个月，您做事情的精力不足吗",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "(1)没有",
        "1": "(2)偶尔有",
@@ -2125,6 +3442,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我感到紧张（或痛苦）",
       "type": "single",
       "group": "焦虑部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "根本没有（0分）",
        "1": "有时候（1分）",
@@ -2137,6 +3460,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我感到有点害怕好像预感到什么可怕的事情要发生",
       "type": "single",
       "group": "焦虑部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "根本没有（0分）",
        "1": "有一点，但并不使我苦恼（1分）",
@@ -2149,6 +3478,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我的心中充满烦恼",
       "type": "single",
       "group": "焦虑部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "偶然如此（0分）",
        "1": "时时，但并不轻松（1分）",
@@ -2161,6 +3496,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我能够安闲而轻松地坐着",
       "type": "single",
       "group": "焦虑部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "肯定（0分）",
        "1": "经常（1分）",
@@ -2173,6 +3514,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我有点坐立不安，好像感到非要活动不可",
       "type": "single",
       "group": "焦虑部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "根本没有（0分）",
        "1": "并不，很少（1分）",
@@ -2185,6 +3532,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我突然发现有恐慌感",
       "type": "single",
       "group": "焦虑部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "根本没有（0分）",
        "1": "并非经常（1分）",
@@ -2197,6 +3550,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我感到有点害怕，好像某个内脏器官变化了",
       "type": "single",
       "group": "焦虑部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "根本没有（0分）",
        "1": "有时（1分）",
@@ -2209,6 +3568,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我对以往感兴趣的事情还是有兴趣",
       "type": "single",
       "group": "抑郁部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "肯定一样（0分）",
        "1": "不像以前那样多（1分）",
@@ -2221,6 +3586,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我能够哈哈大笑，并看到事物好的一面",
       "type": "single",
       "group": "抑郁部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "我经常这样（0分）",
        "1": "现在已经不太这样了（1分）",
@@ -2233,6 +3604,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我感到愉快",
       "type": "single",
       "group": "抑郁部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "大多数时间（0分）",
        "1": "有时（1分）",
@@ -2245,6 +3622,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我对自己的仪容失去兴趣",
       "type": "single",
       "group": "抑郁部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "根本没有（0分）",
        "1": "并不经常（1分）",
@@ -2257,6 +3640,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我对一切都是乐观地向前看",
       "type": "single",
       "group": "抑郁部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "差不多是这样（0分）",
        "1": "并不完全是这样（1分）",
@@ -2269,6 +3658,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我好像感到情绪在渐渐低落",
       "type": "single",
       "group": "抑郁部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "根本没有（0分）",
        "1": "有时（1分）",
@@ -2281,6 +3676,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "我能欣赏一本好书或意向好的广播或电视节目",
       "type": "single",
       "group": "抑郁部分",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3"
+      ],
       "options": {
        "0": "常常如此（0分）",
        "1": "有时（1分）",
@@ -2298,6 +3699,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "1．一般来说，您认为自己的健康状况是：",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 极好",
        "1": "2 很好",
@@ -2311,6 +3719,11 @@ window.CASE_RECORD_SCHEMA = {
       "label": "2．中等强度活动，例如移动桌子、推吸尘器",
       "type": "single",
       "group": "以下问题是关于您在日常生活中可能进行的活动。您目前的健康状况是否限制您进行这些活动？如果有限制，限制程度如何？",
+      "values": [
+       "0",
+       "1",
+       "2"
+      ],
       "options": {
        "0": "是，非常受限（1分）",
        "1": "是，稍受限（2分）",
@@ -2322,6 +3735,11 @@ window.CASE_RECORD_SCHEMA = {
       "label": "3．上数层楼梯",
       "type": "single",
       "group": "以下问题是关于您在日常生活中可能进行的活动。您目前的健康状况是否限制您进行这些活动？如果有限制，限制程度如何？",
+      "values": [
+       "0",
+       "1",
+       "2"
+      ],
       "options": {
        "0": "是，非常受限（1分）",
        "1": "是，稍受限（2分）",
@@ -2333,6 +3751,10 @@ window.CASE_RECORD_SCHEMA = {
       "label": "4．本来想要做的事情只能完成一部分",
       "type": "single",
       "group": "在过去4周内，由于身体健康原因，您在工作或其他日常活动中是否遇到以下问题？",
+      "values": [
+       "0",
+       "1"
+      ],
       "options": {
        "0": "是（1分）",
        "1": "否（2分）"
@@ -2343,6 +3765,10 @@ window.CASE_RECORD_SCHEMA = {
       "label": "5．工作或其他活动的种类受到限制",
       "type": "single",
       "group": "在过去4周内，由于身体健康原因，您在工作或其他日常活动中是否遇到以下问题？",
+      "values": [
+       "0",
+       "1"
+      ],
       "options": {
        "0": "是（1分）",
        "1": "否（2分）"
@@ -2353,6 +3779,10 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6．本来想要做的事情只能完成一部分",
       "type": "single",
       "group": "在过去4周内，由于任何情绪问题（例如感到抑郁或焦虑），您在工作或其他日常活动中是否遇到以下问题？",
+      "values": [
+       "0",
+       "1"
+      ],
       "options": {
        "0": "是（1分）",
        "1": "否（2分）"
@@ -2363,6 +3793,10 @@ window.CASE_RECORD_SCHEMA = {
       "label": "7．做工作或活动时不如平时仔细",
       "type": "single",
       "group": "在过去4周内，由于任何情绪问题（例如感到抑郁或焦虑），您在工作或其他日常活动中是否遇到以下问题？",
+      "values": [
+       "0",
+       "1"
+      ],
       "options": {
        "0": "是（1分）",
        "1": "否（2分）"
@@ -2373,6 +3807,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "8．在过去4周内，疼痛在多大程度上妨碍了您的正常工作（包括外出工作和家务）？",
       "type": "single",
       "group": "在过去4周内，由于任何情绪问题（例如感到抑郁或焦虑），您在工作或其他日常活动中是否遇到以下问题？",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "1 完全没有影响",
        "1": "2 有一点影响",
@@ -2386,6 +3827,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "9．感到平静、安宁？",
       "type": "single",
       "group": "以下问题是关于您在过去4周内的感受。每题请选择一个最接近您感受的答案。在过去4周内，您有多少时间……",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "常常如此（1分）",
        "1": "大部分时间（2分）",
@@ -2400,6 +3849,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "10．精力充沛？",
       "type": "single",
       "group": "以下问题是关于您在过去4周内的感受。每题请选择一个最接近您感受的答案。在过去4周内，您有多少时间……",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "常常如此（1分）",
        "1": "大部分时间（2分）",
@@ -2414,6 +3871,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "11．感到心情低落、沮丧？",
       "type": "single",
       "group": "以下问题是关于您在过去4周内的感受。每题请选择一个最接近您感受的答案。在过去4周内，您有多少时间……",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "常常如此（1分）",
        "1": "大部分时间（2分）",
@@ -2428,6 +3893,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "12．在过去4周内，您的身体健康或情绪问题有多少时间妨碍了您的社交活动（如拜访朋友、亲戚等）？",
       "type": "single",
       "group": "以下问题是关于您在过去4周内的感受。每题请选择一个最接近您感受的答案。在过去4周内，您有多少时间……",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "所有的时间（1分）",
        "1": "大部分时间（2分）",
@@ -2452,6 +3924,10 @@ window.CASE_RECORD_SCHEMA = {
       "label": "2、疼痛发作时是否有向身体其他部位放射？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1"
+      ],
       "options": {
        "0": "无",
        "1": "有"
@@ -2480,6 +3956,12 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6、下列描述疼痛情况的图片与您实际最相符的是：",
       "type": "single",
       "group": "",
+      "values": [
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "1": "持续疼痛伴轻微波动",
        "2": "持续疼痛伴偶尔爆发痛",
@@ -2492,6 +3974,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "7、疼痛区域（人体标示图）是否有烧灼感发生？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "从未",
        "1": "几乎没",
@@ -2506,6 +3996,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "8、疼痛区域是否有麻刺痛或针刺痛（类似蚁行感或过电样痛）发生？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "从未",
        "1": "几乎没",
@@ -2520,6 +4018,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "9、轻触标示区域皮肤（如穿衣时衣物摩擦）即引起疼痛？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "从未",
        "1": "几乎没",
@@ -2534,6 +4040,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "10、标示区域是否有爆发痛（如突发电击样痛）？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "从未",
        "1": "几乎没",
@@ -2548,6 +4062,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "11、标示区域皮肤受到冷或热刺激时（比如洗澡水）是否会引起短时闯痛？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "从未",
        "1": "几乎没",
@@ -2562,6 +4084,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "12、在标示区域是否有麻木感？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "从未",
        "1": "几乎没",
@@ -2576,6 +4106,14 @@ window.CASE_RECORD_SCHEMA = {
       "label": "13、用手指轻压标示区域皮肤即可触发疼痛？",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4",
+       "5"
+      ],
       "options": {
        "0": "从未",
        "1": "几乎没",
@@ -2595,6 +4133,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "1．看书的时候，常因突然发现没有认真思考而不得不再看一遍。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2608,6 +4153,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "2．发现自己忘记了为什么要从这个房间去另外一个房间（或者从房屋的这边走到那边）。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2621,6 +4173,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "3．注意不到路标。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2634,6 +4193,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "4．在给人指路时，常分不清左右。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2647,6 +4213,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "5．常撞到别人。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2660,6 +4233,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "6．忘记是否已经关灯、关火或锁门。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2673,6 +4253,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "7．与别人初次见面时，常没注意听对方的姓名。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2686,6 +4273,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "8．事后才意识到可能说了一些无礼的话。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2699,6 +4293,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "9．当正在做一件事情时，常听不到别人叫我。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2712,6 +4313,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "10．控制不住发脾气，过后总后悔。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2725,6 +4333,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "11．常几天不回复重要的信件或邮件等。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2738,6 +4353,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "12．走在熟悉的道路上，却突然忘记该朝哪个方向走。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2751,6 +4373,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "13．在超市里，尽管自己想买的东西就在眼前，却常常看不见。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2764,6 +4393,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "14．发现自己突然想知道刚才措词是否准确。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2777,6 +4413,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "15．难于下决心或作出决定。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2790,6 +4433,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "16．忘记与他人的约会。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2803,6 +4453,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "17．忘记把东西放在哪里。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2816,6 +4473,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "18．不小心扔掉需要的东西，却保留了真正要扔掉的东西。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2829,6 +4493,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "19．当应该认真听的时候，却会走神或做白日梦，如听课、听讲座等。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2842,6 +4513,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "20．忘记别人的名字。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2855,6 +4533,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "21．开始做一件事情时，却无意中因别的事情分心。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2868,6 +4553,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "22．话都到嘴边了，可就是一时想不起来要说什么。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2881,6 +4573,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "23．到了商店，却忘记要买什么东西。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2894,6 +4593,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "24．常丢三落四。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2907,6 +4613,13 @@ window.CASE_RECORD_SCHEMA = {
       "label": "25．不知道想要说什么。",
       "type": "single",
       "group": "",
+      "values": [
+       "0",
+       "1",
+       "2",
+       "3",
+       "4"
+      ],
       "options": {
        "0": "0 从不",
        "1": "1 偶尔",
@@ -2926,13 +4639,43 @@ window.CASE_RECORD_SCHEMA = {
     "key": "hasAdverseEvent",
     "label": "是否有不良事件",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "无",
+     "有"
+    ]
    },
    {
     "key": "adverseEvents",
     "label": "不良事件",
     "type": "multi",
-    "group": ""
+    "group": "",
+    "values": [
+     "肝功能损伤",
+     "肾功能损伤",
+     "头晕",
+     "恶心",
+     "嗜睡",
+     "头痛",
+     "体重增加",
+     "失眠",
+     "腹泻",
+     "视物模糊",
+     "口干",
+     "食欲下降",
+     "便秘",
+     "疲劳",
+     "外周水肿",
+     "欣快情绪",
+     "多汗",
+     "鼻窦炎",
+     "食欲增加",
+     "注意力障碍",
+     "平衡障碍",
+     "腹痛",
+     "皮疹",
+     "其他"
+    ]
    },
    {
     "key": "startDate",
@@ -2950,13 +4693,26 @@ window.CASE_RECORD_SCHEMA = {
     "key": "saeCategory",
     "label": "SAE类别",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "致命",
+     "危及生命",
+     "需要住院治疗或延长住院时间",
+     "能力丧失母亲使用研究药物导致新生儿不良事件",
+     "由医生判断为重大医疗事件"
+    ]
    },
    {
     "key": "drugMeasure",
     "label": "采取与药物的相关措施",
     "type": "single",
-    "group": ""
+    "group": "",
+    "values": [
+     "剂量不变",
+     "减小剂量",
+     "停止用药",
+     "对症治疗"
+    ]
    },
    {
     "key": "otherMeasures",

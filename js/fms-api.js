@@ -50,12 +50,10 @@ window.FmsApi = {
   async fetchFollowUpList(doctorId, patientId, pageNo = 1) {
     const pageSize = this.FOLLOW_UP_PAGE_SIZE;
     const result = await this.get('/api/fms/patient/followup/list', { pageNo, pageSize, patientId, doctorId, researchType: 12 });
-    const ok = result && result.success === true;
-    const data = ok ? result.data : null;
-    // 文档里 data 为对象，兼容直接返回数组或 { list, totalPages, totalCount } 两种结构。
-    const rows = Array.isArray(data) ? data : (data && Array.isArray(data.list) ? data.list : []);
-    const paging = Array.isArray(data) ? result : (data || {});
-    const totalPages = Number(paging.totalPages);
+    // data 为后端 List 序列化后的数组，分页字段在最外层。
+    const ok = result && result.success === true && Array.isArray(result.data);
+    const rows = ok ? result.data : [];
+    const totalPages = Number(result && result.totalPages);
     return {
       followUps: rows.map(row => ({
         id: row.id,
@@ -64,7 +62,7 @@ window.FmsApi = {
       })),
       pageNo,
       hasMore: ok && (totalPages > 0 ? pageNo < totalPages : rows.length >= pageSize),
-      totalCount: Number(paging.totalCount) || 0
+      totalCount: Number(result && result.totalCount) || 0
     };
   },
 

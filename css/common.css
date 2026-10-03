@@ -77,8 +77,8 @@ main{max-width:680px;margin:auto;padding:20px 14px 92px}
 .state{width:28px;height:28px;border-radius:8px;background:#f2f4f8;color:#8a93a3;display:grid;place-items:center;font-size:13px;flex:none}
 .state.done{background:#eaf1fd;color:#1257c4;font-weight:700}
 .mbody{flex:1;min-width:0}
-.mname{font-size:15px;font-weight:650}
-.mdesc{font-size:11px;color:#8a93a3;margin-top:4px}
+.mname{display:block;font-size:15px;font-weight:650}
+.mdesc{display:block;font-size:11px;color:#8a93a3;margin-top:4px}
 .chev{font-size:22px;color:#a0a7b4}
 .toast{position:fixed;left:50%;bottom:calc(74px + env(safe-area-inset-bottom));transform:translate(-50%,12px);background:#111827;color:#fff;font-size:12px;padding:9px 13px;border-radius:8px;opacity:0;transition:.2s;pointer-events:none;white-space:nowrap;z-index:50}
 .visit-card{min-height:76px;display:flex;align-items:center}
@@ -141,3 +141,5 @@ a.module:hover {
 }
 /* 底部留出固定「新增患者资料」按钮栏的高度，避免遮住加载提示 */
 .list-footer{padding:16px 0 calc(48px + env(safe-area-inset-bottom));text-align:center;color:#8a93a3;font-size:12px}
+/* 页面底部有固定按钮栏时，给内容留出按钮栏高度 */
+.with-fabbar{padding-bottom:calc(92px + env(safe-area-inset-bottom))}

@@ -40,11 +40,11 @@ GET /api/fms/patient/list?pageNo=1&pageSize=20&doctorId=5065&researchType=12
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| success | boolean | 是否成功 |
+| success | boolean | `true` 表示成功（Swagger 示例中的 `false` 只是字段类型示例） |
 | data | array | 患者数组 |
 | data[].id | number | 患者 ID，跳转随访记录页时带上 |
 | data[].name | string | 患者姓名 |
-| data[].lastFollowUpDate | string / number / null | 上次随访（新增记录）日期。字段名来自需求方给出的返回示例，示例值为 `null`，实际格式待后端确认 |
+| data[].lastFollowUpDate | string / null | 上次随访（新增记录）日期，格式 `yyyy-MM-dd`；没有随访记录时为 `null` |
 | data[].followUpCount | number | 该患者累计随访次数 |
 | totalPages | number | 总页数 |
 | totalCount | number | 总条数 |
@@ -58,7 +58,7 @@ GET /api/fms/patient/list?pageNo=1&pageSize=20&doctorId=5065&researchType=12
 | 页面展示 | 来源字段 | 规则 |
 |---|---|---|
 | 患者姓名 | `name` | 为空时显示「未命名患者」 |
-| 上次新增记录时间：YYYY-MM-DD | `lastFollowUpDate` | 统一转成 `年-月-日`；支持 `2020-11-04`、`2020-11-04 10:20:30`、ISO 字符串和毫秒时间戳。为 `null` 或无法解析时显示「暂无新增记录」 |
+| 上次新增记录时间：YYYY-MM-DD | `lastFollowUpDate` | 按 `yyyy-MM-dd` 显示；为 `null` 时显示「暂无新增记录」 |
 | 已添加 N 条 | `followUpCount` | 为空或非数字时按 0 |
 
 4. 分页（上拉加载更多，即滚动到底部加载下一页）：
@@ -89,8 +89,6 @@ patient-list.html
 - 预取数据只用一次，刷新或从后续页面返回列表时都会重新请求，保证数据是最新的。
 - 数据放在 sessionStorage，不放在 URL，避免患者信息出现在地址栏和日志里。
 
-## 5. 已知限制 / 待确认
+## 5. 已知限制
 
-- 搜索只覆盖已加载的页；如需要全量搜索，需后端增加姓名参数（如 `name`）。
-- 示例响应中 `success` 为 `false` 但带有数据，需要和后端确认成功时是否返回 `true`；前端目前严格按 `success === true` 解析。
-- `lastFollowUpDate` 的具体格式需要后端确认，前端已兼容常见格式。
+- 接口没有姓名搜索参数，搜索只覆盖已加载的页。

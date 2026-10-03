@@ -11,9 +11,11 @@ function visitRow(visit) {
   button.className = 'card visit-card';
   button.innerHTML = '<div><div class="visit-label">随访日期</div><div class="visit-date"></div></div><div class="chev">›</div>';
   button.querySelector('.visit-date').textContent = visit.followUpDate || '日期未填写';
-  // 随访详情页尚未接入，先带上随诊 ID 提示。
-  button.onclick = () => tip(displayName + ' · ' + (visit.followUpDate || '随访') + ' 随访记录');
-  button.dataset.id = visit.id ?? '';
+  button.onclick = () => {
+    location.href = './follow-up-entry.html?' + new URLSearchParams({
+      patientId, followUpId: visit.id ?? '', name: displayName, date: visit.followUpDate
+    });
+  };
   return button;
 }
 

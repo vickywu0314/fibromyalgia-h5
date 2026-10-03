@@ -126,7 +126,7 @@ const OVERRIDES = {
   blsj: { hasAdverseEvent: { label: '是否有不良事件' }, adverseEvents: { label: '不良事件' } },
   vas: { painNature: { label: '近期肌肉疼痛性质', group: '' } },
   csi: { '*': { group: '' } },
-  work: { '*': { group: '' } },
+  work: { '*': { group: '' }, q5: { options: { 0: '0（没有影响）', 10: '10（完全无法工作）' } }, q6: { options: { 0: '0（没有影响）', 10: '10（完全无法进行日常活动）' } } },
   bodyComposition: { '*': { group: '' } },
   tipi: { '*': { group: '' } },
   tpc: { '*': { group: '' } },

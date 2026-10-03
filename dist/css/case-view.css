@@ -1,0 +1,8 @@
+/* 随诊详情查看模式：隐藏填写进度和保存按钮，只读控件保持清晰可读 */
+.is-view .progress-block,
+.is-view .bottom-action,
+.is-view .bottom,
+.is-view [type="submit"]{display:none!important}
+.is-view input:disabled,.is-view select:disabled,.is-view textarea:disabled{opacity:1;color:#222;-webkit-text-fill-color:#222}
+.is-view label:has(input:disabled){opacity:1}
+.case-view-notice{margin:0 0 16px;padding:10px 12px;border-radius:8px;background:#fdecec;color:#c0392b;font-size:13px}

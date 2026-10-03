@@ -7,6 +7,7 @@
   <title>基本信息</title>
   <link rel="stylesheet" href="css/basic-info-base.css">
   <link rel="stylesheet" href="css/basic-info.css">
+<link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
   <!-- App WebView 页面：不包含返回箭头、标题栏等 H5 导航，由原生 App 统一提供 -->
@@ -221,5 +222,8 @@
 
   <script src="js/basic-info-bridge.js"></script>
   <script src="js/basic-info.js"></script>
+<script src="../js/fms-api.js"></script>
+<script src="../js/case-view.js"></script>
+<script>CaseView.init(document.getElementById('basicInfoForm'), 'jbxx', { keep: '.menu-row' });</script>
 </body>
 </html>

@@ -6,6 +6,7 @@
 <meta name="format-detection" content="telephone=no">
 <title>证候判断</title>
 <link rel="stylesheet" href="css/syndrome-differentiation.css">
+<link rel="stylesheet" href="../css/case-view.css">
 </head>
 <body>
 <main class="page">
@@ -49,5 +50,8 @@
   </form>
 </main>
 <script src="js/syndrome-differentiation.js"></script>
+<script src="../js/fms-api.js"></script>
+<script src="../js/case-view.js"></script>
+<script>CaseView.init(document.getElementById('syndromeForm'), 'zhpd');</script>
 </body>
 </html>

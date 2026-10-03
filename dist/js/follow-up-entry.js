@@ -26,4 +26,13 @@ document.querySelectorAll('.module[data-href]').forEach(link => {
     opening = false;
   };
 });
-document.getElementById('viewRecord').onclick = () => tip('随诊病历页面尚未接入');
+// 查看随诊病历：一次请求全部 7 个模块，带着数据跳到随诊病历页。
+document.getElementById('viewRecord').onclick = async () => {
+  if (opening) return;
+  if (!patientId || !caseId) return tip('缺少随诊信息，请从随访记录进入');
+  opening = true;
+  tip('正在加载...');
+  try { CaseView.savePrefetch(caseId, 'all', await CaseView.fetchParts(patientId, caseId, CaseView.ALL_PARTS)); } catch {}
+  location.href = './case-record.html?' + new URLSearchParams({ patientId, caseId, name: displayName, date });
+  opening = false;
+};

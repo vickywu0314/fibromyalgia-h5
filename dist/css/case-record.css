@@ -1,0 +1,18 @@
+/* 随诊病历：一次显示本次随诊 7 个模块的数据 */
+.record-page{padding-bottom:calc(32px + env(safe-area-inset-bottom))}
+.record-section{background:#fff;border:1px solid #e6eaf0;border-radius:14px;padding:16px 14px;margin-bottom:12px}
+.record-section>h2{margin:0 0 4px;font-size:18px;font-weight:700;color:#111827}
+.record-scale{margin-top:14px}
+.record-scale>h3{margin:0;padding:10px 0 2px;font-size:15px;font-weight:700;color:#1257c4;border-top:1px solid #eef1f5}
+.record-group{margin:12px 0 2px;font-size:13px;font-weight:650;color:#4b5563}
+.record-row{padding:9px 0;border-bottom:1px solid #f1f3f6}
+.record-row:last-child{border-bottom:0}
+.record-label{font-size:13px;color:#6b7280;line-height:1.5}
+.record-value{margin-top:3px;font-size:15px;color:#111827;line-height:1.5;word-break:break-word}
+.record-empty{padding:8px 0 0;font-size:13px;color:#9ca3af}
+.record-images{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.record-images img{width:96px;height:96px;object-fit:cover;border-radius:8px;border:1px solid #e6eaf0;background:#f7f8fa}
+.record-item{padding:10px 0;border-bottom:1px solid #f1f3f6}
+.record-item:last-child{border-bottom:0}
+.record-item strong{display:block;font-size:15px;color:#111827}
+.record-item p{margin:3px 0 0;font-size:13px;color:#4b5563;line-height:1.5}

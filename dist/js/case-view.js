@@ -4,12 +4,16 @@ window.CaseView = {
   PREFETCH_KEY: 'fms_case_detail_prefetch',
 
   // parts：jbxx 基本信息 / bsbq 病史病情 / zhpd 证候判断 / fzjc 辅助检查 / bqpg 病情评估 / zlfa 治疗方案 / blsj 不良反应
-  async fetchPart(patientId, caseId, part) {
+  ALL_PARTS: ['jbxx', 'bsbq', 'zhpd', 'fzjc', 'bqpg', 'zlfa', 'blsj'],
+  async fetchParts(patientId, caseId, parts) {
     const doctorId = FmsApi.getDoctorId();
     if (!doctorId) throw new Error('未取得医生身份，请在 App 内打开');
-    const result = await FmsApi.get('/api/fms/patient/case/detail', { patientId, doctorId, caseId, parts: part });
+    const result = await FmsApi.get('/api/fms/patient/case/detail', { patientId, doctorId, caseId, parts: parts.join(',') });
     if (!result || result.success !== true) throw new Error((result && result.message) || '随诊详情加载失败，请稍后重试');
-    return (result.data && result.data[part]) || {};
+    return result.data || {};
+  },
+  async fetchPart(patientId, caseId, part) {
+    return (await this.fetchParts(patientId, caseId, [part]))[part] || {};
   },
 
   savePrefetch(caseId, part, data) {

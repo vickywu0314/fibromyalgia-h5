@@ -6,3 +6,5 @@
 .is-view input:disabled,.is-view select:disabled,.is-view textarea:disabled{opacity:1;color:#222;-webkit-text-fill-color:#222}
 .is-view label:has(input:disabled){opacity:1}
 .case-view-notice{margin:0 0 16px;padding:10px 12px;border-radius:8px;background:#fdecec;color:#c0392b;font-size:13px}
+/* 查看模式不显示上传入口和页面上的示例「上次随访」信息 */
+.is-view .upload,.is-view .last-visit{display:none!important}

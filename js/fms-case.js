@@ -42,6 +42,26 @@
     try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) { throw new Error('本地暂存失败，请检查存储空间'); }
   }
 
+  // 本地有改动、尚未成功提交到后端的模块（part），单独存，不进入提交的 JSON
+  var UNSYNCED_KEY = 'fms_case_unsynced';
+  function unsynced() {
+    try { var a = JSON.parse(localStorage.getItem(UNSYNCED_KEY) || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+  }
+  function markUnsynced(part, on) {
+    var a = unsynced().filter(function (p) { return p !== part; });
+    if (on) a.push(part);
+    try { localStorage.setItem(UNSYNCED_KEY, JSON.stringify(a)); } catch (e) {}
+  }
+  function isSynced(part) { return unsynced().indexOf(part) === -1; }
+
+  // 模块里除 finish 外是否有任何已填内容（后端不接受空模块）
+  function hasData(v) {
+    if (v == null || v === '') return false;
+    if (Array.isArray(v)) return v.some(hasData);
+    if (typeof v === 'object') return Object.keys(v).some(function (k) { return k !== 'finish' && hasData(v[k]); });
+    return v !== false;
+  }
+
   function load() {
     var c = read();
     if (!c) { c = skeleton(); write(c); }
@@ -80,6 +100,7 @@
     }
     if (keys[0] === 'jbxx' && keys.length === 1 && c.jbxx.visitDate) c.visitDate = c.jbxx.visitDate;
     write(c);
+    if (PARTS.indexOf(keys[0]) !== -1) markUnsynced(keys[0], true);
     return c;
   }
 
@@ -128,7 +149,23 @@
     }
     pickIds(c, result);
     write(c);
+    if (PARTS.indexOf(part) !== -1) markUnsynced(part, false);
     return result;
+  }
+
+  // 完成录入：各模块保存时已提交；这里只把仍有未提交改动的模块按各自的 part 补交
+  // （后端要求 part 必须是具体模块且该模块有数据，所以不能用一个汇总的 part）
+  async function syncAll(onProgress) {
+    var c = load();
+    if (!PARTS.some(function (p) { return hasData(c[p]); })) throw new Error('还没有填写任何资料');
+    var pending = unsynced();
+    var parts = PARTS.filter(function (p) { return pending.indexOf(p) !== -1 && hasData(c[p]); });
+    for (var i = 0; i < parts.length; i++) {
+      if (onProgress) onProgress(i + 1, parts.length, parts[i]);
+      try { await submit(parts[i]); }
+      catch (e) { throw new Error((PART_NAMES[parts[i]] || parts[i]) + '：' + (e.message || '提交失败')); }
+    }
+    return parts;
   }
 
   function toast(text) {
@@ -161,7 +198,13 @@
     if (btn) { btn.disabled = true; btn.textContent = '正在保存…'; }
     try {
       set(path, value, opts.merge);
-      if (opts.submit !== false) await submit(partOf(path));
+      if (opts.submit !== false) {
+        await submit(partOf(path));
+        // 同一次保存里顺带写入了其他模块（如病史病情页写 jbxx 的发病时间），一并提交
+        var c = load();
+        var pending = unsynced().filter(function (p) { return hasData(c[p]); });
+        for (var i = 0; i < pending.length; i++) await submit(pending[i]);
+      }
       toast('已保存');
       if (opts.back) setTimeout(function () { location.href = opts.back; }, 400);
       return true;
@@ -179,6 +222,7 @@
     info = info || {};
     var c = skeleton();
     var p = info.patient || {};
+    try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
     c.doctorId = doctorId();
     c.patientId = p.id != null ? p.id : (p.patientId != null ? p.patientId : null);
     c.jbxx.name = info.name || p.name || '';
@@ -192,7 +236,7 @@
     return c;
   }
 
-  function clear() { try { localStorage.removeItem(KEY); } catch (e) {} }
+  function clear() { try { localStorage.removeItem(KEY); localStorage.removeItem(UNSYNCED_KEY); } catch (e) {} }
 
   // 表单工具：FormData → 对象（同名多值为数组；有 data-array 的复选框始终为数组）
   function formData(form) {
@@ -239,7 +283,7 @@
 
   window.FmsCase = {
     KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,
-    load: load, get: get, set: set, submit: submit, save: save,
+    load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
     startNew: startNew, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios
   };

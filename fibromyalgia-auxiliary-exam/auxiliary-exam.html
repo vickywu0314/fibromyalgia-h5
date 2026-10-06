@@ -55,9 +55,6 @@
       </div>
     </section>
 
-    <section class="exam-section">
-    <div class="upload"><h3>上传检验报告</h3><p>图片格式:jpg、png、gif<br>图片大小:不超过5M</p><label class="upload-box" for="labReport"><span>＋</span><small>上传图片</small></label><input id="labReport" name="labReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="labPreview" class="preview" hidden><img alt=""></div></div>
-    </section>
 
     <h1 class="ecg-title">心电图</h1>
     <section class="exam-section">
@@ -70,8 +67,14 @@
         <label><input type="radio" name="ecg" value="其他">其他</label>
         <label><input type="radio" name="ecg" value="未查">未查</label>
       </div>
-      <div id="ecgUploadBody">
-    <div class="upload"><h3>上传检验报告</h3><p>图片格式:jpg、png、gif<br>图片大小:不超过5M</p><label class="upload-box" for="ecgReport"><span>＋</span><small>上传图片</small></label><input id="ecgReport" name="ecgReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="ecgPreview" class="preview" hidden><img alt=""></div></div>
+    </section>
+
+    <h1 class="ecg-title">上传检验报告</h1>
+    <section class="exam-section uploads">
+      <p class="upload-tip">图片格式：jpg、png、gif；图片大小不超过5M</p>
+      <div class="upload-grid">
+        <div class="upload"><h3>检验报告</h3><label class="upload-box" for="labReport"><span>＋</span><small>上传图片</small></label><input id="labReport" name="labReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="labPreview" class="preview" hidden><img alt=""></div></div>
+        <div id="ecgUploadBody"><div class="upload"><h3>心电图报告</h3><label class="upload-box" for="ecgReport"><span>＋</span><small>上传图片</small></label><input id="ecgReport" name="ecgReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="ecgPreview" class="preview" hidden><img alt=""></div></div></div>
       </div>
     </section>
 

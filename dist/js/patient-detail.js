@@ -10,11 +10,14 @@ pname.textContent = n; pid.textContent = '研究编号 ' + code; avatar.textCont
 const modules = [...document.querySelectorAll('.module[data-part]')];
 let done = 0;
 modules.forEach(m => {
-  const finished = !!(draft[m.dataset.part] && draft[m.dataset.part].finish);
+  // 已保存且已成功提交到后端才算完成；本地有未提交的改动时显示「待同步」
+  const saved = !!(draft[m.dataset.part] && draft[m.dataset.part].finish);
+  const finished = saved && FmsCase.isSynced(m.dataset.part);
   if (finished) done++;
   const state = m.querySelector('.state');
   state.classList.toggle('done', finished);
   state.textContent = finished ? '✓' : '○';
+  if (saved && !finished) state.title = '有改动尚未提交，点击完成录入时会自动提交';
 });
 progressNum.textContent = done + ' / ' + modules.length;
 progressBar.style.width = (done / modules.length * 100).toFixed(1) + '%';
@@ -26,8 +29,8 @@ finishBtn.onclick = async () => {
   finishBtn.disabled = true;
   finishBtn.textContent = '正在提交…';
   try {
-    FmsCase.set('page', 1);
-    await FmsCase.submit('all');
+    // 按模块逐个提交（part 为各模块 key），不再使用汇总的 part
+    await FmsCase.syncAll((i, total) => { finishBtn.textContent = '正在提交 ' + i + '/' + total + '…'; });
     FmsCase.clear();
     sessionStorage.removeItem('fms_patient_prefill');
     FmsCase.toast('本次资料已提交');

@@ -26,7 +26,7 @@
     r.addEventListener("click",()=>{if(r.dataset.was==="1"){r.checked=false;r.dataset.was=""}});
   });
 
-  // 回显：window.fillForm({hasAdverseEvent:"有",adverseEvents:["头晕"],startDate:"2026-06-01",...})
+  // 回显：window.fillForm(FmsCase.get("blsj"))，如 {hasAdverseEvent:"有",adverseEvents:["头晕"],startDate:"2026-06-01",...}
   window.fillForm=function(data){
     data=data||{};
     f.elements.hasAdverseEvent.value=data.hasAdverseEvent||"";
@@ -40,15 +40,29 @@
     syncDates();
   };
 
+  // 结构体 blsj：adverseEvents 存不带百分比的名称（checkbox value）
+  function collect(){
+    const has=f.elements.hasAdverseEvent.value||"";
+    const on=has==="有";
+    const val=k=>on?String(f.elements[k].value||"").trim():"";
+    return {
+      finish:true,
+      hasAdverseEvent:has,
+      adverseEvents:on?[...f.querySelectorAll('input[name="adverseEvents"]:checked')].map(c=>c.value):[],
+      startDate:val("startDate"),
+      endDate:val("endDate"),
+      saeCategory:val("saeCategory"),
+      drugMeasure:val("drugMeasure"),
+      otherMeasures:val("otherMeasures"),
+      adverseEventDetails:val("adverseEventDetails")
+    };
+  }
+
   f.onsubmit=e=>{
     e.preventDefault();
-    if(start.value&&end.value&&end.value<start.value){alert("结束日期不能早于发生日期");return}
-    const fd=new FormData(f),data={};
-    for(const [k,v] of fd){if(k==="adverseEvents"){(data[k]??=[]).push(v)}else data[k]=v}
-    const payload={type:"adverse-reaction",data};
-    if(window.webkit?.messageHandlers?.saveForm)window.webkit.messageHandlers.saveForm.postMessage(payload);
-    else if(window.Android&&typeof window.Android.saveForm==="function")window.Android.saveForm(JSON.stringify(payload));
-    else{console.log("[ADVERSE REACTION]",payload);history.back()}
+    if(start.value&&end.value&&end.value<start.value){FmsCase.toast("结束日期不能早于发生日期");return}
+    FmsCase.save("blsj",collect(),{back:"../patient-detail.html",button:f.querySelector('button[type="submit"]')});
   };
   sync();
+  window.fillForm(FmsCase.get("blsj"));
 })();

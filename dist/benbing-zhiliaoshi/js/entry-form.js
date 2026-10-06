@@ -1,10 +1,13 @@
 /* 本病治疗史 - 新增/编辑表单（西药 / 中药汤剂 / 非药物疗法 / 中成药 共用）
-   结构（按 PDF）：无 / 有 → [ 名称及用法（各类不同）, 开始日期, 是否沿用至今：是 / 否 → [结束日期, 停用原因] ] */
+   结构（按 PDF）：无 / 有 → [ 名称及用法（各类不同）, 开始日期, 是否沿用至今：是 / 否 → [结束日期, 停用原因] ]
+   数据写入病例草稿 jbxx.treatmentHistory.<类别数组>，“无/有”写 has<类别>（见 store.js）。
+   记录字段：name, dose, unit, frequency, startDate, ongoing, endDate, reason, duration(非药物单次时长)；
+   另：spec(规格)、route(给药方式)、durationUnit；西药同时写 medication（=name，对应结构体 medication）。 */
 (function () {
   var D = window.BenbingData;
+  var S = window.BenbingStore;
   var root = document.querySelector('[data-kind]');
   var kind = root.dataset.kind;
-  var key = 'benbing_' + kind + '_records';
   var form = document.getElementById('entryForm');
   var els = form.elements;
   var details = document.getElementById('details');
@@ -12,6 +15,7 @@
   var customRow = document.getElementById('customRow');
   var stopped = document.getElementById('stopped');
   var message = document.getElementById('message');
+  var submitBtn = form.querySelector('button[type="submit"]');
   var nameField = kind === 'xiyao' ? 'medication' : 'name';
   var list = kind === 'xiyao' ? D.XIYAO : kind === 'zhongchengyao' ? D.ZHONGCHENGYAO : null;
   var builtFor = null;
@@ -87,13 +91,6 @@
     toggle(stopped, els.ongoing.value === '否');
   }
 
-  function read() {
-    try {
-      var raw = localStorage.getItem(key);
-      var v = raw === null ? (D.SAMPLES[kind] || []).slice() : JSON.parse(raw);
-      return Array.isArray(v) ? v : [];
-    } catch (e) { return []; }
-  }
 
   /* 初始化静态选项 */
   if (list) setOptions(els[nameField], list.map(function (x) { return x.name; }), kind === 'xiyao' ? '请选择西药药品' : '请选择中成药');
@@ -104,7 +101,7 @@
   }
   setOptions(els.reason, D.STOP_REASONS, '请选择停用原因');
 
-  var items = read();
+  var items = S.items(kind);
   var params = new URLSearchParams(location.search);
   var edit = params.has('edit') ? Number(params.get('edit')) : -1;
   if (!(Number.isInteger(edit) && edit >= 0 && edit < items.length)) edit = -1;
@@ -115,7 +112,7 @@
     els.hasEntry.value = '有';
     refresh();
     if (els[nameField]) {
-      var nm = rec[nameField] || '';
+      var nm = rec.name || rec.medication || '';
       if (kind === 'fei-yaowu-liaofa' && nm && D.FEI_YAOWU.names.indexOf(nm) < 0) {
         els.name.value = '其他';
         refresh();
@@ -133,6 +130,28 @@
       if (rec.endDate) els.endDate.value = rec.endDate;
       if (rec.reason) els.reason.value = rec.reason;
     }
+  } else if (S.has(kind) === '无' && !items.length) {
+    els.hasEntry.value = '无';
+  }
+  S.setProgress(items.length || S.has(kind) ? 100 : 0);
+
+  /* 编辑已有记录时提供“删除此记录” */
+  if (edit >= 0) {
+    var del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'secondary';
+    del.textContent = '删除此记录';
+    del.style.marginTop = '12px';
+    submitBtn.insertAdjacentElement('afterend', del);
+    del.addEventListener('click', function () {
+      if (!del.dataset.done) {
+        if (!confirm('确定删除这条记录吗？')) return;
+        items.splice(edit, 1);
+        del.dataset.done = '1';
+        submitBtn.disabled = true;
+      }
+      S.saveKind(kind, items, items.length ? '有' : S.has(kind), del);
+    });
   }
   form.addEventListener('change', refresh);
   refresh();
@@ -143,8 +162,9 @@
     var has = els.hasEntry.value;
     if (!has) { message.textContent = '请选择无或有'; return; }
     if (has === '无') {
-      try { localStorage.setItem(key, JSON.stringify([])); } catch (err) {}
-      location.href = kind + '.html';
+      if (items.length && !confirm('选择“无”将清空已添加的' + items.length + '条记录，确定吗？')) return;
+      items = [];
+      S.saveKind(kind, items, '无', submitBtn);
       return;
     }
     var data = {};
@@ -166,7 +186,8 @@
       } else {
         var item = findItem(nm);
         if (!els.dose.value || !els.frequency.value) { message.textContent = '请选择单次剂量和频次'; return; }
-        data[nameField] = nm;
+        data.name = nm;
+        if (kind === 'xiyao') data.medication = nm;
         if (item.spec) data.spec = item.spec;
         data.dose = els.dose.value;
         data.unit = item.unit;
@@ -179,12 +200,8 @@
     data.endDate = data.ongoing === '否' ? els.endDate.value : '';
     data.reason = data.ongoing === '否' ? els.reason.value : '';
     if (data.startDate && data.endDate && data.endDate < data.startDate) { message.textContent = '结束日期不能早于开始日期'; return; }
-    if (edit >= 0) items[edit] = data; else items.push(data);
-    try {
-      localStorage.setItem(key, JSON.stringify(items));
-      location.href = kind + '.html';
-    } catch (err) {
-      message.textContent = '保存失败，请检查浏览器存储设置';
-    }
+    if (edit >= 0) items[edit] = data;
+    else { items.push(data); edit = items.length - 1; } // 提交失败重试时不重复新增
+    S.saveKind(kind, items, '有', submitBtn);
   });
 })();

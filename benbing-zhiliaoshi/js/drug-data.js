@@ -73,13 +73,5 @@
 
   var STOP_REASONS = ['疗效不佳或无效', '症状缓解', '不良反应', '患者自行停用', '经济原因', '治疗方案调整', '疗程结束', '其他'];
 
-  /* 本地无存储时的示例记录（与各列表页一致） */
-  var SAMPLES = {
-    xiyao: [{ medication: '艾司唑仑', spec: '1mg', dose: '1', unit: 'mg', frequency: '日1次', route: '口服', startDate: '', ongoing: '是', endDate: '', reason: '' }],
-    'zhongyao-tangji': [{ name: '汤剂1', startDate: '2022-01-22', ongoing: '是', endDate: '', reason: '' }],
-    'fei-yaowu-liaofa': [{ name: '八段锦', duration: '60', durationUnit: '分钟', frequency: '一周1次', startDate: '', ongoing: '是', endDate: '', reason: '' }],
-    zhongchengyao: [{ name: '痹祺胶囊', dose: '4', unit: '粒', frequency: '日1次', startDate: '', ongoing: '是', endDate: '', reason: '' }]
-  };
-
-  global.BenbingData = { XIYAO: XIYAO, ZHONGCHENGYAO: ZHONGCHENGYAO, FEI_YAOWU: FEI_YAOWU, STOP_REASONS: STOP_REASONS, SAMPLES: SAMPLES };
+  global.BenbingData = { XIYAO: XIYAO, ZHONGCHENGYAO: ZHONGCHENGYAO, FEI_YAOWU: FEI_YAOWU, STOP_REASONS: STOP_REASONS };
 })(window);

@@ -26,6 +26,7 @@
         <div class="field">
           <label for="name">姓名</label>
           <input id="name" name="name" type="text" placeholder="请输入姓名">
+          <p class="error" id="nameError" hidden>请输入姓名</p>
         </div>
 
         <div class="field">
@@ -35,7 +36,7 @@
         </div>
 
         <div class="submodule-list inline-module">
-          <button type="button" class="submodule-row menu-row" data-page="csi">
+          <button type="button" class="submodule-row menu-row" data-page="csi" data-key="csi">
             <span class="submodule-copy"><strong>中枢敏化程度：中枢敏化指数（CSI-9）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
         </div>
@@ -141,16 +142,16 @@
         </div>
 
         <div class="submodule-list">
-          <button type="button" class="submodule-row menu-row" data-page="work">
+          <button type="button" class="submodule-row menu-row" data-page="work" data-key="work">
             <span class="submodule-copy"><strong>间接成本评估：工作生产力及活动受损问卷</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
-          <button type="button" class="submodule-row menu-row" data-page="body">
+          <button type="button" class="submodule-row menu-row" data-page="body" data-key="bodyComposition">
             <span class="submodule-copy"><strong>人体成分分析</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
-          <button type="button" class="submodule-row menu-row" data-page="tipi">
+          <button type="button" class="submodule-row menu-row" data-page="tipi" data-key="tipi">
             <span class="submodule-copy"><strong>人格评估：中国版10项目大五人格量表（TIPI-C）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
-          <button type="button" class="submodule-row menu-row" data-page="sffq">
+          <button type="button" class="submodule-row menu-row" data-page="sffq" data-key="sffq">
             <span class="submodule-copy"><strong>膳食摄入评估：半定量膳食频率问卷（SFFQ）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
         </div>
@@ -162,6 +163,8 @@
     </form>
   </main>
 
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/fms-case.js"></script>
   <script src="js/form-utils.js"></script>
   <script src="js/regions.js"></script>
   <script src="js/basic-info-bridge.js"></script>

@@ -1,11 +1,13 @@
 (function(){
   const U = window.FormUtils;
   const form = document.getElementById("basicInfoForm");
+  const nameInput = document.getElementById("name");
+  const nameError = document.getElementById("nameError");
   const idCard = document.getElementById("idCard");
   const idCardError = document.getElementById("idCardError");
   const province = document.getElementById("province");
   const city = document.getElementById("city");
-  const STORAGE_KEY = "fibromyalgia:basicInfo";
+  const visitDate = document.getElementById("visitDate");
 
   // 常住地：省 → 市 两级联动
   const regionMap = {};
@@ -37,39 +39,94 @@
   });
 
   function validId(value){
-    if (!value) return true;
     return /^\d{15}$/.test(value) || /^\d{17}[\dXx]$/.test(value);
   }
   idCard.addEventListener("blur", () => {
-    const ok = validId(idCard.value.trim());
+    const v = idCard.value.trim();
+    const ok = !v || validId(v);
     idCardError.hidden = ok;
     idCard.setAttribute("aria-invalid", String(!ok));
   });
+  nameInput.addEventListener("input", () => { if (nameInput.value.trim()) nameError.hidden = true; });
 
-  // 子模块入口：优先原生 openPage，无原生桥时回退为直接跳转对应 html
-  document.querySelectorAll(".menu-row").forEach(btn => {
+  // 子模块入口：显示完成状态（读草稿 jbxx.<key>.finish），点击直接跳对应 html
+  const rows = document.querySelectorAll(".menu-row");
+  let done = 0;
+  rows.forEach(btn => {
+    const sub = FmsCase.get("jbxx." + btn.dataset.key);
+    const finished = !!(sub && sub.finish);
+    if (finished) done++;
+    const status = btn.querySelector(".status");
+    if (status) {
+      status.textContent = finished ? "已完成" : "未填写";
+      status.classList.toggle("done", finished);
+      status.classList.toggle("pending", !finished);
+    }
     btn.addEventListener("click", () => NativeBridge.openPage(btn.dataset.page));
   });
+  const count = document.getElementById("submoduleCount");
+  if (count) count.textContent = done + "/" + rows.length;
 
-  // 回显：本地暂存 / 原生 setFormData
-  U.bind({
-    form: form,
-    key: STORAGE_KEY,
-    update: function(data){
-      update();
-      renderCities(data.city || "");
-    }
-  });
+  // 回显：草稿 jbxx（姓名 / 身份证号由新增患者页带入；就诊时间默认 jbxx.visitDate）
+  function toFormData(j){
+    j = Object.assign({}, j || {});
+    let types = Array.isArray(j.drinkTypes) ? j.drinkTypes : (typeof j.drinkType === "string" && j.drinkType ? j.drinkType.split(/[、,，]/) : []);
+    j.drinkType = types;
+    delete j.drinkTypes;
+    return j;
+  }
+  const jbxx = FmsCase.get("jbxx") || {};
+  const initial = toFormData(jbxx);
+  U.fill(form, initial);
+  if (!visitDate.value) visitDate.value = jbxx.visitDate || (FmsCase.load().visitDate || "");
+  update();
+  renderCities(initial.city || "");
+  // 原生回显（保留兼容）
+  window.setFormData = function(data){
+    if (typeof data === "string") { try { data = JSON.parse(data); } catch (e) { return; } }
+    form.reset();
+    const d = toFormData(data);
+    U.fill(form, d);
+    update();
+    renderCities(d.city || "");
+  };
+
+  function num(v){
+    if (v === undefined || v === null || String(v).trim() === "") return "";
+    const n = Number(v);
+    return isNaN(n) ? String(v) : n;
+  }
 
   form.addEventListener("submit", e => {
     e.preventDefault();
-    if (!validId(idCard.value.trim())) {
-      idCardError.hidden = false;
-      idCard.focus();
-      return;
-    }
-    const data = U.serialize(form);
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (err) {}
-    NativeBridge.save({type: "basicInfo", data: data});
+    const name = nameInput.value.trim();
+    const id = idCard.value.trim();
+    if (!name) { nameError.hidden = false; nameInput.focus(); FmsCase.toast("请输入姓名"); return; }
+    if (!validId(id)) { idCardError.hidden = false; idCard.focus(); FmsCase.toast("请输入正确的身份证号"); return; }
+    const d = U.serialize(form);
+    const drinkTypes = Array.isArray(d.drinkType) ? d.drinkType : (d.drinkType ? [d.drinkType] : []);
+    // 隐藏区域的字段也显式写空，避免 merge 时残留旧值
+    const value = {
+      visitDate: d.visitDate || "",
+      name: name,
+      idCard: id.toUpperCase(),
+      gender: d.gender || "",
+      province: d.province || "",
+      city: d.city || "",
+      marriage: d.marriage || "",
+      education: d.education || "",
+      workStatus: d.workStatus || "",
+      smoking: d.smoking || "",
+      smokingYears: num(d.smokingYears),
+      smokingAmount: d.smokingAmount || "",
+      drinking: d.drinking || "",
+      drinkingYears: num(d.drinkingYears),
+      drinkType: drinkTypes.join("、"),
+      drinkTypes: drinkTypes,
+      drinkAmount: num(d.drinkAmount),
+      finish: true
+    };
+    // merge：保留 jbxx 下 csi/work/bodyComposition/tipi/sffq 及病史病情写入的 tpc/fs/treatmentHistory 等
+    FmsCase.save("jbxx", value, {merge: true, back: "../patient-detail.html", button: form.querySelector('button[type="submit"]')});
   });
 })();

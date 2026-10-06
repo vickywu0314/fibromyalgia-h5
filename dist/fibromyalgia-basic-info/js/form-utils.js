@@ -1,4 +1,4 @@
-/* 基本信息模块通用表单工具：序列化 / 回显 / 条件显示 / 保存 */
+/* 基本信息模块通用表单工具：序列化 / 回显 / 条件显示 / 保存（依赖 ../js/fms-case.js） */
 (function(){
   // 序列化：同名多值（复选框）输出为数组；disabled 的字段不提交
   function serialize(form){
@@ -22,6 +22,7 @@
       const els = form.querySelectorAll('[name="' + (window.CSS && CSS.escape ? CSS.escape(name) : name) + '"]');
       if (!els.length) return;
       const val = data[name];
+      if (val == null || (typeof val === "object" && !Array.isArray(val))) return;
       const list = Array.isArray(val) ? val.map(String) : [String(val)];
       els.forEach(el => {
         if (el.type === "radio" || el.type === "checkbox") el.checked = list.indexOf(el.value) !== -1;
@@ -44,32 +45,26 @@
     });
   }
 
-  function load(key){
-    try { return JSON.parse(localStorage.getItem(key) || "null"); } catch (e) { return null; }
+  // 数据只存取在病例草稿（FmsCase，见 ../js/fms-case.js）里，不再使用页面自己的 localStorage key
+  function load(path){
+    const v = window.FmsCase ? FmsCase.get(path) : null;
+    return v && typeof v === "object" ? v : null;
   }
 
-  function save(type, data, key){
-    const payload = {type: type, data: data};
-    if (key) { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
-    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.saveForm) {
-      window.webkit.messageHandlers.saveForm.postMessage(payload);
-      return true;
-    }
-    if (window.Android && typeof window.Android.saveForm === "function") {
-      window.Android.saveForm(JSON.stringify(payload));
-      return true;
-    }
-    console.log("[save]", payload);
-    return false;
+  // 写草稿并提交：FmsCase.save(path, value, {merge, back, button})
+  function save(path, data, opts){
+    return FmsCase.save(path, data, opts || {});
   }
 
   /**
-   * 绑定页面：恢复本地暂存 → 刷新条件显示；暴露 window.setFormData(data) 供原生回显。
-   * opts: {form, key, update(data)}；update 收到回显的数据对象（用于依赖选项列表的字段，如城市）
+   * 绑定页面：从草稿 path 回显 → 刷新条件显示；暴露 window.setFormData(data) 供原生回显。
+   * opts: {form, path, update(data)}；update 收到回显的数据对象（用于依赖选项列表的字段，如城市）
+   * 量表类数据（{answers:{...}}）按 answers 回显。
    */
   function bind(opts){
     const form = opts.form, update = opts.update || function(){};
-    const saved = load(opts.key);
+    let saved = load(opts.path);
+    if (saved && saved.answers && typeof saved.answers === "object") saved = Object.assign({}, saved, saved.answers);
     fill(form, saved);
     update(saved || {});
     window.setFormData = function(data){

@@ -1,6 +1,8 @@
 (function(){
   const form=document.getElementById("syndromeForm");
   const secondaryInputs=form.querySelectorAll('input[name="secondarySyndrome"]');
+  const PATH="zhpd";
+  const BACK="../patient-detail.html";
 
   // 兼证不能与主证相同：主证选中的那一项在兼证中禁用并取消勾选
   function syncSecondary(){
@@ -17,34 +19,35 @@
     input.addEventListener("change",syncSecondary);
   });
 
+  // 结构体：secondarySyndrome 为字符串（多选用“、”拼接），另存数组 secondarySyndromes；hasSecondary 按是否选兼证得出
   function collect(){
     const main=form.querySelector('input[name="mainSyndrome"]:checked')?.value||"";
     const secondary=[...secondaryInputs].filter(i=>i.checked&&!i.disabled).map(i=>i.value);
-    return {mainSyndrome:main,secondarySyndrome:secondary};
+    return {
+      finish:true,
+      mainSyndrome:main,
+      secondarySyndrome:secondary.join("、"),
+      secondarySyndromes:secondary,
+      hasSecondary:secondary.length?"是":"否"
+    };
   }
 
-  // 回显：window.fillForm({mainSyndrome:"肝郁气滞证",secondarySyndrome:["寒湿痹阻证"]})
+  // 回显：window.fillForm(FmsCase.get("zhpd"))
   window.fillForm=function(data){
     data=data||{};
     form.querySelectorAll('input[name="mainSyndrome"]').forEach(i=>{i.checked=i.value===data.mainSyndrome});
-    const sec=[].concat(data.secondarySyndrome||[]);
+    let sec=Array.isArray(data.secondarySyndromes)?data.secondarySyndromes:data.secondarySyndrome;
+    if(typeof sec==="string") sec=sec?sec.split(/[、,，]/):[];
+    sec=[].concat(sec||[]);
     secondaryInputs.forEach(i=>{i.checked=sec.includes(i.value)});
     syncSecondary();
   };
 
   form.addEventListener("submit",e=>{
     e.preventDefault();
-    const payload={type:"syndrome-differentiation",data:collect()};
-
-    if(window.webkit?.messageHandlers?.saveForm){
-      window.webkit.messageHandlers.saveForm.postMessage(payload);
-    }else if(window.Android && typeof window.Android.saveForm==="function"){
-      window.Android.saveForm(JSON.stringify(payload));
-    }else{
-      console.log("[SYNDROME]",payload);
-      history.back();
-    }
+    const btn=form.querySelector('button[type="submit"]');
+    FmsCase.save(PATH,collect(),{back:BACK,button:btn});
   });
 
-  syncSecondary();
+  window.fillForm(FmsCase.get(PATH));
 })();

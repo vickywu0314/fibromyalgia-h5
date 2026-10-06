@@ -4,7 +4,6 @@
   const workQuestions = document.getElementById("workQuestions");
   const q5 = document.getElementById("q5");
   const actualHours = document.getElementById("actualHours");
-  const STORAGE_KEY = "fibromyalgia:workProductivity";
 
   function checked(name){
     const el = form.querySelector('input[name="' + name + '"]:checked');
@@ -43,10 +42,38 @@
     updateFlow();
   });
   actualHours.addEventListener("input", updateFlow);
-  U.bind({form: form, key: STORAGE_KEY, update: updateFlow});
+  U.bind({form: form, path: "jbxx.work", update: updateFlow});
+
+  // WPAI 标准计分（WPAI-GH v2.0），结果为百分比（0~100，保留 1 位小数）：
+  //   缺勤率 absenteeism = Q2/(Q2+Q4)
+  //   出勤受损 presenteeism = Q5/10
+  //   总体工作受损 workImpairment = Q2/(Q2+Q4) + [1 - Q2/(Q2+Q4)] × Q5/10
+  //   活动受损 activityImpairment = Q6/10
+  // 前三项仅在当前有带薪工作（Q1=是）时计算；无公认二分判定，score / result 留空。
+  function pct(x){ return x == null || isNaN(x) ? "" : String(Math.round(x * 1000) / 10); }
+  function numOrNull(v){ return v === undefined || v === "" ? null : Number(v); }
+  function wpai(d){
+    const r = {absenteeism: "", presenteeism: "", workImpairment: "", activityImpairment: ""};
+    const q6 = numOrNull(d.q6Score);
+    if (q6 != null) r.activityImpairment = pct(q6 / 10);
+    if (d.q1 !== "是") return r;
+    const q2 = numOrNull(d.q2), q4 = numOrNull(d.q4), q5 = numOrNull(d.q5Score);
+    let abs = null;
+    if (q2 != null && q4 != null && q2 + q4 > 0) { abs = q2 / (q2 + q4); r.absenteeism = pct(abs); }
+    if (q5 != null && q4 > 0) r.presenteeism = pct(q5 / 10);
+    if (abs != null) {
+      if (abs === 1) r.workImpairment = pct(1);
+      else if (q5 != null) r.workImpairment = pct(abs + (1 - abs) * q5 / 10);
+    }
+    return r;
+  }
 
   form.addEventListener("submit", e => {
     e.preventDefault();
-    U.save("work-productivity", U.serialize(form), STORAGE_KEY);
+    const d = U.serialize(form);
+    if (!d.q1) { FmsCase.toast("请回答第 1 题"); return; }
+    if (d.q6Score === undefined) { FmsCase.toast("请完成第 6 题评分"); return; }
+    const value = Object.assign({finish: true, score: "", result: "", answers: d}, wpai(d));
+    U.save("jbxx.work", value, {back: "basic-info.html", button: form.querySelector('button[type="submit"]')});
   });
 })();

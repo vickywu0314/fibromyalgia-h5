@@ -9,6 +9,9 @@ window.NativeBridge = window.NativeBridge || {
       window.Android.openPage(page);
       return;
     }
+    // 无原生桥（浏览器直接打开）时，回退为跳转到同目录下对应的 H5 页面
+    var url = (window.NativeBridge.pageUrls || {})[page];
+    if (url) { window.location.href = url; return; }
     console.log("[NativeBridge] openPage:", page);
   },
   save: function(payload){
@@ -23,4 +26,12 @@ window.NativeBridge = window.NativeBridge || {
     console.log("[NativeBridge] save:", payload);
     return false;
   }
+};
+// 子模块 page 标识 → 相对 H5 页面（仅在无原生桥时使用）
+window.NativeBridge.pageUrls = window.NativeBridge.pageUrls || {
+  csi: "csi.html",
+  work: "work.html",
+  body: "body-composition.html",
+  tipi: "tipi.html",
+  sffq: "sffq.html"
 };

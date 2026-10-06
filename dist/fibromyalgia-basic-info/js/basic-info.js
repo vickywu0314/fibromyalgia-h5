@@ -1,14 +1,39 @@
 (function(){
+  const U = window.FormUtils;
   const form = document.getElementById("basicInfoForm");
-  const diagnosisDetail = document.getElementById("diagnosisDetail");
   const idCard = document.getElementById("idCard");
   const idCardError = document.getElementById("idCardError");
+  const province = document.getElementById("province");
+  const city = document.getElementById("city");
+  const STORAGE_KEY = "fibromyalgia:basicInfo";
 
-  document.querySelectorAll('input[name="diagnosed"]').forEach(el => {
-    el.addEventListener("change", () => {
-      diagnosisDetail.hidden = el.value !== "是";
-      diagnosisDetail.querySelectorAll("input,select").forEach(x => x.disabled = diagnosisDetail.hidden);
-    });
+  // 常住地：省 → 市 两级联动
+  const regionMap = {};
+  (window.REGIONS || []).forEach(([p, cities]) => {
+    regionMap[p] = cities;
+    province.add(new Option(p, p));
+  });
+  function renderCities(keep){
+    const cities = regionMap[province.value] || [];
+    const prev = keep !== undefined ? keep : city.value;
+    city.length = 1;
+    cities.forEach(c => city.add(new Option(c, c)));
+    city.disabled = !cities.length;
+    city.value = cities.indexOf(prev) !== -1 ? prev : (cities.length === 1 ? cities[0] : "");
+  }
+  province.addEventListener("change", () => renderCities(""));
+
+  // 条件显示：吸烟史 / 饮酒史 选“经常有”才出现追问
+  function checked(name){
+    const el = form.querySelector('input[name="' + name + '"]:checked');
+    return el ? el.value : "";
+  }
+  function update(){
+    U.toggle(document.getElementById("smokingDetail"), checked("smoking") === "经常有");
+    U.toggle(document.getElementById("drinkingDetail"), checked("drinking") === "经常有");
+  }
+  form.addEventListener("change", e => {
+    if (e.target.name === "smoking" || e.target.name === "drinking") update();
   });
 
   function validId(value){
@@ -21,13 +46,19 @@
     idCard.setAttribute("aria-invalid", String(!ok));
   });
 
+  // 子模块入口：优先原生 openPage，无原生桥时回退为直接跳转对应 html
   document.querySelectorAll(".menu-row").forEach(btn => {
     btn.addEventListener("click", () => NativeBridge.openPage(btn.dataset.page));
   });
 
-  document.getElementById("signatureBtn").addEventListener("click", () => {
-    // 签字板建议由 App 原生或后续独立 H5 签名组件接管。
-    NativeBridge.openPage("signature");
+  // 回显：本地暂存 / 原生 setFormData
+  U.bind({
+    form: form,
+    key: STORAGE_KEY,
+    update: function(data){
+      update();
+      renderCities(data.city || "");
+    }
   });
 
   form.addEventListener("submit", e => {
@@ -37,7 +68,8 @@
       idCard.focus();
       return;
     }
-    const data = Object.fromEntries(new FormData(form).entries());
-    NativeBridge.save({type:"basicInfo", data});
+    const data = U.serialize(form);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (err) {}
+    NativeBridge.save({type: "basicInfo", data: data});
   });
 })();

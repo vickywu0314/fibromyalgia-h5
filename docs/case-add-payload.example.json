@@ -3,6 +3,7 @@
   "patientId": null,
   "doctorId": 5065,
   "researchType": 12,
+  "visitType": "首诊",
   "visitDate": "2026-10-06",
   "page": 1,
   "part": "blsj",

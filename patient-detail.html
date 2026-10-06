@@ -2,9 +2,10 @@
 
 <main>
 <section class="card patient-card"><div class="avatar" id="avatar">患</div><div class="pbody"><div class="pname" id="pname">患者</div><div class="pid" id="pid">研究编号</div></div><div class="history" id="history">随访记录 ›</div></section>
+<section class="card visit-date-card" id="visitDateCard" hidden><label class="progress-title" for="visitDate">随访日期</label><input class="input" id="visitDate" type="date"></section>
 <section class="card progress-card"><div class="progress-top"><div class="progress-title">资料完成度</div><div class="progress-num" id="progressNum">0 / 7</div></div><div class="bar"><i id="progressBar"></i></div></section>
 
-<div class="group"><div class="group-title">基础资料</div><div class="module-card">
+<div class="group" id="baseGroup"><div class="group-title">基础资料</div><div class="module-card">
 
 <a class="module" href="fibromyalgia-basic-info/basic-info.html" data-part="jbxx">
   <span class="state">○</span>

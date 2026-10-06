@@ -7,6 +7,23 @@ const n = draft.jbxx.name || prefill.patient?.name || prefill.entered?.name || q
 const code = prefill.patient?.researchNo || prefill.patient?.patientNo || q.get('code') || '待分配';
 pname.textContent = n; pid.textContent = '研究编号 ' + code; avatar.textContent = n.slice(-1);
 
+// 随访：同一患者下的新病例，不含基本信息模块；显示可修改的随访日期
+const isFollowUp = draft.visitType === '随访';
+const backUrl = isFollowUp
+  ? './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId ?? '', name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '' })
+  : './patient-list.html';
+if (isFollowUp) {
+  document.title = '新增随访记录';
+  baseGroup.remove();
+  visitDateCard.hidden = false;
+  visitDate.value = draft.visitDate || '';
+  visitDate.onchange = () => { FmsCase.set('visitDate', visitDate.value); };
+}
+document.getElementById('history').onclick = () => {
+  if (draft.patientId == null) { FmsCase.toast('保存基本信息后可查看随访记录'); return; }
+  location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId, name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '' });
+};
+
 const modules = [...document.querySelectorAll('.module[data-part]')];
 let done = 0;
 modules.forEach(m => {
@@ -34,7 +51,7 @@ finishBtn.onclick = async () => {
     FmsCase.clear();
     sessionStorage.removeItem('fms_patient_prefill');
     FmsCase.toast('本次资料已提交');
-    setTimeout(() => { location.href = './patient-list.html'; }, 600);
+    setTimeout(() => { location.href = backUrl; }, 600);
   } catch (e) {
     FmsCase.toast(e.message || '提交失败，请稍后重试');
     finishBtn.disabled = false;

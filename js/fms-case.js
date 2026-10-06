@@ -16,7 +16,7 @@
   }
 
   function skeleton() {
-    var c = { id: null, patientId: null, doctorId: null, researchType: 12, visitDate: today(), page: 1, part: '' };
+    var c = { id: null, patientId: null, doctorId: null, researchType: 12, visitType: '首诊', visitDate: today(), page: 1, part: '' };
     PARTS.forEach(function (p) { c[p] = { finish: false }; });
     c.jbxx.visitDate = c.visitDate;
     return c;
@@ -126,7 +126,8 @@
     c.researchType = 12;
     c.page = 1;
     c.part = part || '';
-    c.visitDate = (c.jbxx && c.jbxx.visitDate) || c.visitDate || today();
+    // 首诊以基本信息里的就诊时间为准；随访没有基本信息页，用随访日期
+    c.visitDate = (c.visitType === '随访' ? c.visitDate : (c.jbxx && c.jbxx.visitDate) || c.visitDate) || today();
     var controller = new AbortController();
     var timer = setTimeout(function () { controller.abort(); }, 20000);
     var result;
@@ -236,6 +237,20 @@
     return c;
   }
 
+  // 新增随访：挂在已有患者（patientId）下的一条新病例；不含基本信息模块，只带入姓名 / 身份证号用于展示
+  function startFollowUp(info) {
+    info = info || {};
+    var c = skeleton();
+    try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
+    c.visitType = '随访';
+    c.doctorId = doctorId();
+    c.patientId = info.patientId != null && info.patientId !== '' ? (/^\d+$/.test(String(info.patientId)) ? Number(info.patientId) : info.patientId) : null;
+    c.jbxx.name = info.name || '';
+    c.jbxx.idCard = info.idCard || '';
+    write(c);
+    return c;
+  }
+
   function clear() { try { localStorage.removeItem(KEY); localStorage.removeItem(UNSYNCED_KEY); } catch (e) {} }
 
   // 表单工具：FormData → 对象（同名多值为数组；有 data-array 的复选框始终为数组）
@@ -284,7 +299,7 @@
   window.FmsCase = {
     KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,
     load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
-    startNew: startNew, clear: clear, toast: toast,
+    startNew: startNew, startFollowUp: startFollowUp, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios
   };
 })();

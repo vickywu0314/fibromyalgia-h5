@@ -201,9 +201,6 @@
       "白酒"
     ],
     "drinkAmount": 3,
-    "painOnsetDate": "2024-05-01",
-    "diagnosed": "是",
-    "diagnosisDate": "2024-05-01",
     "tpc": {
       "finish": true,
       "score": "9",
@@ -343,7 +340,10 @@
         "ongoing": "否"
       }
     ],
-    "concomitantMedicationFinish": true
+    "concomitantMedicationFinish": true,
+    "painOnsetDate": "2024-05-01",
+    "diagnosed": "是",
+    "diagnosisDate": "2024-05-01"
   },
   "bsbq": {
     "stool": "稀溏",

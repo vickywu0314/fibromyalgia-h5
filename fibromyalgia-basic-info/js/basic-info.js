@@ -33,10 +33,9 @@
   function update(){
     U.toggle(document.getElementById("smokingDetail"), checked("smoking") === "经常有");
     U.toggle(document.getElementById("drinkingDetail"), checked("drinking") === "经常有");
-    U.toggle(document.getElementById("diagnosisDetail"), checked("diagnosed") === "是");
   }
   form.addEventListener("change", e => {
-    if (["smoking", "drinking", "diagnosed"].indexOf(e.target.name) !== -1) update();
+    if (e.target.name === "smoking" || e.target.name === "drinking") update();
   });
 
   function validId(value){
@@ -124,10 +123,7 @@
       drinkingYears: num(d.drinkingYears),
       drinkType: drinkTypes.join("、"),
       drinkTypes: drinkTypes,
-      drinkAmount: num(d.drinkAmount),
-      painOnsetDate: d.painOnsetDate || "",
-      diagnosed: d.diagnosed || "",
-      diagnosisDate: d.diagnosed === "是" ? (d.diagnosisDate || "") : ""
+      drinkAmount: num(d.drinkAmount)
     };
     return value;
   }

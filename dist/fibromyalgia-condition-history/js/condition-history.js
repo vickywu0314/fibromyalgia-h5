@@ -2,7 +2,8 @@
  const form=document.getElementById('conditionForm');
  const reveals=[...form.querySelectorAll('.reveal[data-when]')];
  const noteInputs=[...form.querySelectorAll('[data-note]')];
- // 病史病情只写 bsbq；发病时间 / 是否确诊在基本信息页（jbxx），TPC、FS、本病治疗史、合并疾病、合并药物是基本信息的子模块。
+ // 按 PDF：「周身疼痛发病时间 / 是否确诊 / 确诊时间」在病史病情页填写，按提交结构体存到 jbxx 下；其余字段写 bsbq。
+ const JBXX_FIELDS=['painOnsetDate','diagnosed','diagnosisDate'];
  const ARRAY_FIELDS=['onsetTriggers','aggravatingTriggers','painNature','systemic','menstrualItems'];
  const TEXT_FIELDS=['stool','urine','tongueColor','tongueShape','coatColor','coatShape'];
 
@@ -38,13 +39,18 @@
 
  function collect(){
    const d=FmsCase.formData(form);
+   const jbxx={
+     painOnsetDate:d.painOnsetDate||'',
+     diagnosed:d.diagnosed||'',
+     diagnosisDate:d.diagnosed==='是'?(d.diagnosisDate||''):''
+   };
    const bsbq={};
    TEXT_FIELDS.forEach(k=>{bsbq[k]=d[k]||'';});
    ARRAY_FIELDS.forEach(k=>{bsbq[k]=Array.isArray(d[k])?d[k]:(d[k]?[d[k]]:[]);});
    // 加重诱因中 4 个“请说明”：{ emotion, diet, naturalFactor, nonNaturalFactor }
    bsbq.aggravatingTriggerNotes={};
    noteInputs.forEach(el=>{ if(!el.disabled&&el.value.trim())bsbq.aggravatingTriggerNotes[el.dataset.note]=el.value.trim(); });
-   return bsbq;
+   return {jbxx,bsbq};
  }
 
  function setValue(name,v){
@@ -58,19 +64,22 @@
 
  // 回显：先恢复父选项再恢复条件区域内的说明文字。
  function fill(){
-   const bsbq=FmsCase.get('bsbq')||{};
+   const jbxx=FmsCase.get('jbxx')||{},bsbq=FmsCase.get('bsbq')||{};
+   setValue('diagnosed',jbxx.diagnosed);
    TEXT_FIELDS.concat(ARRAY_FIELDS).forEach(k=>setValue(k,bsbq[k]));
    refresh();
+   setValue('painOnsetDate',jbxx.painOnsetDate);
+   if(jbxx.diagnosed==='是')setValue('diagnosisDate',jbxx.diagnosisDate);
    const notes=bsbq.aggravatingTriggerNotes||{};
    noteInputs.forEach(el=>{ if(!el.disabled)el.value=notes[el.dataset.note]||''; });
  }
 
- // 进度：7 项中已填写的项数
+ // 进度：9 项中已填写的项数
  function updateProgress(){
    if(!window.FmsCase)return;
    const d=FmsCase.formData(form);
    const has=k=>Array.isArray(d[k])?d[k].length>0:!!d[k];
-   const items=[has('onsetTriggers'),has('aggravatingTriggers'),has('painNature'),has('systemic'),has('stool')&&has('urine'),
+   const items=[has('painOnsetDate'),has('diagnosed'),has('onsetTriggers'),has('aggravatingTriggers'),has('painNature'),has('systemic'),has('stool')&&has('urine'),
      has('tongueColor')&&has('tongueShape')&&has('coatColor')&&has('coatShape'),has('menstrualItems')];
    const pct=Math.round(items.filter(Boolean).length/items.length*100);
    const bar=document.getElementById('progressBar'),txt=document.getElementById('progressText');
@@ -83,7 +92,8 @@
 
  form.addEventListener('submit',function(e){
    e.preventDefault();
-   const bsbq=collect();
+   const {jbxx,bsbq}=collect();
+   FmsCase.set('jbxx',jbxx,true); // jbxx 的这三项随本次保存一并提交（part=jbxx）
    bsbq.finish=true;
    FmsCase.save('bsbq',bsbq,{back:'../patient-detail.html',button:document.getElementById('saveBtn')});
  });

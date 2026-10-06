@@ -53,7 +53,7 @@
 `bsbq` 里还有几点：
 - `coatShape` 现在存的是「苔质」（厚、薄、润、滑、燥、腐、腻、剥、无）。
 - `menstrualItems` 存月经情况，多选，可选项：正常、停经、延期、提前、血块、白带、量多、量少、男性。
-- 「周身疼痛发病时间、是否确诊、确诊时间」在基本信息页填写，放在 `jbxx.painOnsetDate / diagnosed / diagnosisDate`。
+- 「周身疼痛发病时间、是否确诊、确诊时间」按 PDF 在病史病情页填写，按结构体存在 `jbxx.painOnsetDate / diagnosed / diagnosisDate`；病史病情保存时会顺带以 `part: "jbxx"` 提交一次（随访同样如此）。
 
 ### zhpd 证候判断
 | 字段 | 类型 | 说明 |
@@ -130,7 +130,7 @@
 ## 六、模块从属（页面层级）
 
 - 基本信息（`jbxx`）及其子模块：CSI-9（`csi`）、压痛点 TPC（`tpc`）、纤维肌痛症状量表 FS（`fs`，下含 WPI `fs.wpi`、SSS `fs.sss`）、间接成本评估（`work`）、人体成分分析（`bodyComposition`）、TIPI-C（`tipi`）、SFFQ（`sffq`）、本病治疗史（`treatmentHistory`）、合并疾病/既往疾病史（`diseaseHistory`）、合并药物（`concomitantMedication`）
-- 病史病情（`bsbq`）：无子模块
+- 病史病情（`bsbq`）：无子模块；页内第 1、2 题「周身疼痛发病时间」「是否曾确诊（确诊时间）」写入 `jbxx`
 - 证候判断（`zhpd`）、辅助检查（`fzjc`）：无子模块
 - 病情评估（`bqpg`）：9 个量表
 - 本次治疗方案（`zlfa`）：西药、中药饮片、中成药、非药物疗法、查看开药汇总

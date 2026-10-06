@@ -44,11 +44,11 @@
   render();
   window.addEventListener("pageshow", e => { if(e.persisted) render(); });
 
-  // 保存：合并写入 jbxx.fs（不覆盖 wpi/sss），回病史病情页
+  // 保存：合并写入 jbxx.fs（不覆盖 wpi/sss），回基本信息页
   document.getElementById("backBtn").addEventListener("click", function(){
     const fs = FmsCase.get("jbxx.fs") || {};
     FmsCase.save("jbxx.fs", summary(fs.wpi, fs.sss), {
-      merge:true, button:this, back:"../fibromyalgia-condition-history/condition-history.html"
+      merge:true, button:this, back:"basic-info.html"
     });
   });
 })();

@@ -33,9 +33,10 @@
   function update(){
     U.toggle(document.getElementById("smokingDetail"), checked("smoking") === "经常有");
     U.toggle(document.getElementById("drinkingDetail"), checked("drinking") === "经常有");
+    U.toggle(document.getElementById("diagnosisDetail"), checked("diagnosed") === "是");
   }
   form.addEventListener("change", e => {
-    if (e.target.name === "smoking" || e.target.name === "drinking") update();
+    if (["smoking", "drinking", "diagnosed"].indexOf(e.target.name) !== -1) update();
   });
 
   function validId(value){
@@ -53,8 +54,11 @@
   const rows = document.querySelectorAll(".menu-row");
   let done = 0;
   rows.forEach(btn => {
-    const sub = FmsCase.get("jbxx." + btn.dataset.key);
-    const finished = !!(sub && sub.finish);
+    // 合并疾病 / 合并药物是数组，完成标记分别为 jbxx.diseaseHistoryFinish / concomitantMedicationFinish
+    const key = btn.dataset.key;
+    const finished = (key === "diseaseHistory" || key === "concomitantMedication")
+      ? !!FmsCase.get("jbxx." + key + "Finish")
+      : !!(FmsCase.get("jbxx." + key) || {}).finish;
     if (finished) done++;
     const status = btn.querySelector(".status");
     if (status) {
@@ -62,7 +66,8 @@
       status.classList.toggle("done", finished);
       status.classList.toggle("pending", !finished);
     }
-    btn.addEventListener("click", () => NativeBridge.openPage(btn.dataset.page));
+    // 进入子模块前把本页已填内容暂存到草稿（不提交、不改完成状态），返回时能回显
+    btn.addEventListener("click", () => { FmsCase.set("jbxx", collect(), true); NativeBridge.openPage(btn.dataset.page); });
   });
   const count = document.getElementById("submoduleCount");
   if (count) count.textContent = done + "/" + rows.length;
@@ -97,19 +102,15 @@
     return isNaN(n) ? String(v) : n;
   }
 
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    const name = nameInput.value.trim();
-    const id = idCard.value.trim();
-    if (!name) { nameError.hidden = false; nameInput.focus(); FmsCase.toast("请输入姓名"); return; }
-    if (!validId(id)) { idCardError.hidden = false; idCard.focus(); FmsCase.toast("请输入正确的身份证号"); return; }
+  // 本页字段（不含 finish）
+  function collect(){
     const d = U.serialize(form);
     const drinkTypes = Array.isArray(d.drinkType) ? d.drinkType : (d.drinkType ? [d.drinkType] : []);
     // 隐藏区域的字段也显式写空，避免 merge 时残留旧值
     const value = {
       visitDate: d.visitDate || "",
-      name: name,
-      idCard: id.toUpperCase(),
+      name: nameInput.value.trim(),
+      idCard: idCard.value.trim().toUpperCase(),
       gender: d.gender || "",
       province: d.province || "",
       city: d.city || "",
@@ -124,9 +125,21 @@
       drinkType: drinkTypes.join("、"),
       drinkTypes: drinkTypes,
       drinkAmount: num(d.drinkAmount),
-      finish: true
+      painOnsetDate: d.painOnsetDate || "",
+      diagnosed: d.diagnosed || "",
+      diagnosisDate: d.diagnosed === "是" ? (d.diagnosisDate || "") : ""
     };
-    // merge：保留 jbxx 下 csi/work/bodyComposition/tipi/sffq 及病史病情写入的 tpc/fs/treatmentHistory 等
+    return value;
+  }
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = nameInput.value.trim();
+    const id = idCard.value.trim();
+    if (!name) { nameError.hidden = false; nameInput.focus(); FmsCase.toast("请输入姓名"); return; }
+    if (!validId(id)) { idCardError.hidden = false; idCard.focus(); FmsCase.toast("请输入正确的身份证号"); return; }
+    const value = Object.assign(collect(), {finish: true});
+    // merge：保留 jbxx 下各子模块（csi/tpc/fs/work/bodyComposition/tipi/sffq/treatmentHistory/diseaseHistory/concomitantMedication）
     FmsCase.save("jbxx", value, {merge: true, back: "../patient-detail.html", button: form.querySelector('button[type="submit"]')});
   });
 })();

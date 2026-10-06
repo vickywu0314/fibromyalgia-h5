@@ -1,7 +1,7 @@
 /* 合并药物：记录存于病例草稿 jbxx.concomitantMedication（数组，每条 {name, dose, unit, frequency, startDate, ongoing, endDate, reason}）；
-   列表页“保存并返回”写 jbxx.concomitantMedicationFinish = true（病史病情页入口据此显示完成状态）。 */
+   列表页“保存并返回”写 jbxx.concomitantMedicationFinish = true（基本信息页入口据此显示完成状态）。 */
 (function(){
- var BACK='../fibromyalgia-condition-history/condition-history.html',page=document.querySelector('[data-page]').dataset.page;
+ var BACK='../fibromyalgia-basic-info/basic-info.html',page=document.querySelector('[data-page]').dataset.page;
  function read(){var v=FmsCase.get('jbxx.concomitantMedication');return Array.isArray(v)?v.filter(function(x){return x&&typeof x==='object';}):[];}
  var items=read();
  // 进度条：本模块已保存完成为 100%，否则 0%

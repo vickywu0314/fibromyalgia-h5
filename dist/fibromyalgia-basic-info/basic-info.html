@@ -125,20 +125,42 @@
             <label class="amount-line">每天用量 <input class="mini wide" name="drinkAmount" type="number" min="0" inputmode="decimal" aria-label="每天饮酒用量"> ml</label>
           </div>
         </fieldset>
+
+        <div class="field">
+          <label for="painOnsetDate">周身疼痛发病时间</label>
+          <input id="painOnsetDate" name="painOnsetDate" type="date">
+        </div>
+
+        <fieldset class="field">
+          <legend>是否曾确诊纤维肌痛综合征</legend>
+          <div class="choices inline">
+            <label><input type="radio" name="diagnosed" value="是"> 是</label>
+            <label><input type="radio" name="diagnosed" value="否"> 否</label>
+          </div>
+          <div id="diagnosisDetail" class="conditional" hidden>
+            <label>确诊时间 <input name="diagnosisDate" type="date"></label>
+          </div>
+        </fieldset>
       </section>
 
       <section class="submodule-section" aria-labelledby="submoduleTitle">
         <div class="submodule-heading">
           <div>
-            <h2 id="submoduleTitle">评估问卷</h2>
+            <h2 id="submoduleTitle">评估与病史</h2>
             <p>请逐项完善患者相关信息</p>
           </div>
-          <div class="submodule-count">已完成 <strong id="submoduleCount">0/5</strong></div>
+          <div class="submodule-count">已完成 <strong id="submoduleCount">0/10</strong></div>
         </div>
 
         <div class="submodule-list">
           <button type="button" class="submodule-row menu-row" data-page="csi" data-key="csi">
             <span class="submodule-copy"><strong>中枢敏化程度：中枢敏化指数（CSI-9）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="tpc" data-key="tpc">
+            <span class="submodule-copy"><strong>压痛点（TPC）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="fs" data-key="fs">
+            <span class="submodule-copy"><strong>纤维肌痛症状量表（FS）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
           <button type="button" class="submodule-row menu-row" data-page="work" data-key="work">
             <span class="submodule-copy"><strong>间接成本评估：工作生产力及活动受损问卷</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
@@ -151,6 +173,15 @@
           </button>
           <button type="button" class="submodule-row menu-row" data-page="sffq" data-key="sffq">
             <span class="submodule-copy"><strong>膳食摄入评估：半定量膳食频率问卷（SFFQ）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="treatmentHistory" data-key="treatmentHistory">
+            <span class="submodule-copy"><strong>本病治疗史</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="diseaseHistory" data-key="diseaseHistory">
+            <span class="submodule-copy"><strong>合并疾病（既往疾病史）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="concomitantMedication" data-key="concomitantMedication">
+            <span class="submodule-copy"><strong>合并药物</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
         </div>
       </section>

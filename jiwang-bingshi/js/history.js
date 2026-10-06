@@ -1,7 +1,7 @@
 /* 合并疾病：记录存于病例草稿 jbxx.diseaseHistory（数组，每条 {category, categoryLabel, name, months, diagnosisDate}）；
-   列表页“保存并返回”写 jbxx.diseaseHistoryFinish = true（病史病情页入口据此显示完成状态）。 */
+   列表页“保存并返回”写 jbxx.diseaseHistoryFinish = true（基本信息页入口据此显示完成状态）。 */
 (function(){
- var BACK='../fibromyalgia-condition-history/condition-history.html';
+ var BACK='../fibromyalgia-basic-info/basic-info.html';
  var page=document.querySelector('[data-page]'),view=page.dataset.page;
  function read(){var v=FmsCase.get('jbxx.diseaseHistory');return Array.isArray(v)?v.filter(function(r){return r&&typeof r==='object';}):[];}
  var records=read();

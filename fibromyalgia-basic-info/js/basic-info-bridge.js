@@ -9,7 +9,12 @@ window.NativeBridge.pageUrls = window.NativeBridge.pageUrls || {
   work: "work.html",
   body: "body-composition.html",
   tipi: "tipi.html",
-  sffq: "sffq.html"
+  sffq: "sffq.html",
+  tpc: "tpc.html",
+  fs: "fs.html",
+  treatmentHistory: "../benbing-zhiliaoshi/benbing-zhiliaoshi.html",
+  diseaseHistory: "../jiwang-bingshi/index.html",
+  concomitantMedication: "../hebing-yaowu/index.html"
 };
 window.NativeBridge.openPage = function(page){
   var url = (window.NativeBridge.pageUrls || {})[page];

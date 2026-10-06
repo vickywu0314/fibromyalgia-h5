@@ -1,4 +1,4 @@
-/* 本病治疗史入口页：显示各类别状态；“保存并返回”置 jbxx.treatmentHistory.finish = true 并回病史病情页 */
+/* 本病治疗史入口页：显示各类别状态；“保存并返回”置 jbxx.treatmentHistory.finish = true 并回基本信息页 */
 (function(){
   var S = window.BenbingStore;
   document.querySelectorAll('[data-kind-link]').forEach(function (a) {
@@ -13,6 +13,6 @@
       var k = S.KINDS[kind];
       if (!Array.isArray(th[k.key])) value[k.key] = [];
     });
-    FmsCase.save(S.PATH, value, { merge: true, button: this, back: '../fibromyalgia-condition-history/condition-history.html' });
+    FmsCase.save(S.PATH, value, { merge: true, button: this, back: '../fibromyalgia-basic-info/basic-info.html' });
   });
 })();

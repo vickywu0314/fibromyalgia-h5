@@ -37,6 +37,15 @@ createBtn.addEventListener("click", async function () {
     // 查重失败不能自动解释为患者不存在；成功且无数据时才继续新建。
     if (result.success === false) throw new Error(result.message || '暂时无法确认患者是否存在，请稍后重试');
     const existed = !!(result.data && typeof result.data === 'object' && !Array.isArray(result.data) && Object.keys(result.data).length);
+    // 已建档的患者不再新建首诊病例：进入该患者的随访记录，在那里新增随访
+    if (existed) {
+      const p = result.data;
+      const pid = p.id ?? p.patientId ?? '';
+      if (window.confirm('该患者已建档（' + (p.name || patientName) + '），将进入其随访记录，可在那里新增随访。')) {
+        window.location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name: p.name || patientName, cardno: p.cardno || p.cardNo || patientId.toUpperCase() });
+      }
+      return;
+    }
     sessionStorage.setItem('fms_patient_prefill', JSON.stringify({
       existed, patient: existed ? result.data : {},
       entered: { name: patientName, cardNo: patientId.toUpperCase() }

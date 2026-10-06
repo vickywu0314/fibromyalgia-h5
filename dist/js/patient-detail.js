@@ -2,6 +2,8 @@
 const draft = FmsCase.load();
 let prefill = {};
 try { prefill = JSON.parse(sessionStorage.getItem('fms_patient_prefill') || '{}'); } catch {}
+// 查重信息只在属于当前病例的患者时使用
+if ((prefill.entered?.cardNo || '') !== (draft.jbxx.idCard || '')) prefill = {};
 const q = new URLSearchParams(location.search);
 const n = draft.jbxx.name || prefill.patient?.name || prefill.entered?.name || q.get('name') || '待填写患者';
 const code = prefill.patient?.researchNo || prefill.patient?.patientNo || q.get('code') || '待分配';

@@ -10,6 +10,7 @@ empty.textContent = '暂无随访记录';
 
 addVisit.onclick = () => {
   if (!patientId) { FmsCase.toast('缺少患者 id，请从患者列表进入'); return; }
+  sessionStorage.removeItem('fms_patient_prefill'); // 清掉上次新增患者的查重信息，避免显示别人的研究编号
   FmsCase.startFollowUp({ patientId, name, idCard: cardno });
   location.href = './patient-detail.html';
 };

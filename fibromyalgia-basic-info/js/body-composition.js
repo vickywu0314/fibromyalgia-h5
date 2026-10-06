@@ -1,1 +1,27 @@
-(()=>{const f=document.querySelector("#form"),file=document.querySelector("#file"),box=document.querySelector("#preview"),img=document.querySelector("#previewImg");file.onchange=()=>{const x=file.files[0];if(!x)return;if(x.size>5*1024*1024){alert("文件大小不能超过5M");file.value="";return}img.src=URL.createObjectURL(x);box.hidden=false};document.querySelector("#remove").onclick=()=>{file.value="";img.removeAttribute("src");box.hidden=true};f.onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(f));d.waistHipRatio="0."+(d.ratio1||"")+(d.ratio2||"");const p={type:"body-composition",data:d};if(window.webkit?.messageHandlers?.saveForm)window.webkit.messageHandlers.saveForm.postMessage(p);else if(window.Android?.saveForm)window.Android.saveForm(JSON.stringify(p));else console.log(p)}})();
+(function(){
+  const U = window.FormUtils;
+  const f = document.querySelector("#form"), file = document.querySelector("#file"), box = document.querySelector("#preview"), img = document.querySelector("#previewImg");
+  const STORAGE_KEY = "fibromyalgia:bodyComposition";
+  let imageData = "";
+  function showImage(src){
+    imageData = src || "";
+    if (src) { img.src = src; box.hidden = false; } else { img.removeAttribute("src"); box.hidden = true; }
+  }
+  file.onchange = () => {
+    const x = file.files[0];
+    if (!x) return;
+    if (x.size > 5 * 1024 * 1024) { alert("文件大小不能超过5M"); file.value = ""; return; }
+    const reader = new FileReader();
+    reader.onload = () => showImage(reader.result);
+    reader.readAsDataURL(x);
+  };
+  document.querySelector("#remove").onclick = () => { file.value = ""; showImage(""); };
+  U.bind({form: f, key: STORAGE_KEY, update: data => showImage(data.reportImage || "")});
+  f.onsubmit = e => {
+    e.preventDefault();
+    const d = U.serialize(f);
+    if (imageData) d.reportImage = imageData;
+    U.save("body-composition", d, null);
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(Object.assign({}, d, {reportImage: undefined}))); } catch (err) {}
+  };
+})();

@@ -183,7 +183,11 @@
     c.patientId = p.id != null ? p.id : (p.patientId != null ? p.patientId : null);
     c.jbxx.name = info.name || p.name || '';
     c.jbxx.idCard = info.idCard || p.cardno || p.cardNo || p.idCard || '';
-    if (p.gender || p.sex) c.jbxx.gender = p.gender || p.sex;
+    // 性别：优先用已有患者资料，统一成「男/女」；没有时按 18 位身份证第 17 位推出（奇男偶女）
+    var g = String(p.gender != null ? p.gender : (p.sex != null ? p.sex : ''));
+    var gender = { '男': '男', '女': '女', '1': '男', '2': '女', 'M': '男', 'F': '女', 'male': '男', 'female': '女' }[g] || '';
+    if (!gender && /^\d{17}[\dXx]$/.test(c.jbxx.idCard)) gender = Number(c.jbxx.idCard.charAt(16)) % 2 ? '男' : '女';
+    if (gender) c.jbxx.gender = gender;
     write(c);
     return c;
   }

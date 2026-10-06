@@ -1,6 +1,6 @@
 (function(){
   const f = document.querySelector("#sffqForm"), status = document.querySelector("#saveStatus");
-  const STORAGE_KEY = "fibromyalgia:sffq";
+  const PATH = "jbxx.sffq";
 
   function value(name){
     const el = f.querySelector('input[name="' + name + '"]:checked');
@@ -35,15 +35,22 @@
       const els = f.querySelectorAll('[name="' + name + '"]');
       els.forEach(el => {
         if (el.type === "radio" || el.type === "checkbox") el.checked = el.value === String(data[name]);
-        else el.value = data[name];
+        else if (data[name] != null && typeof data[name] !== "object") el.value = data[name];
       });
     });
   }
+  // 问卷较长：作答过程中暂存到病例草稿（只写草稿不提交，完成状态沿用原值），点保存时才提交
+  let storeTimer = null;
   function store(){
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(serialize())); } catch (e) {}
+    clearTimeout(storeTimer);
+    storeTimer = setTimeout(() => {
+      const prev = FmsCase.get(PATH) || {};
+      try { FmsCase.set(PATH, {finish: !!prev.finish, score: "", result: "", answers: serialize()}); } catch (e) {}
+    }, 300);
   }
 
-  try { fill(JSON.parse(localStorage.getItem(STORAGE_KEY) || "null")); } catch (e) {}
+  const saved = FmsCase.get(PATH);
+  fill(saved && saved.answers);
   update();
   window.setFormData = function(data){
     if (typeof data === "string") { try { data = JSON.parse(data); } catch (e) { return; } }
@@ -69,10 +76,8 @@
       }
     }
     status.textContent = "";
-    const payload = {type: "sffq", data: serialize()};
-    store();
-    if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.saveForm) window.webkit.messageHandlers.saveForm.postMessage(payload);
-    else if (window.Android && typeof window.Android.saveForm === "function") window.Android.saveForm(JSON.stringify(payload));
-    else { console.log("[SFFQ]", payload); status.textContent = "问卷已保存在此浏览器"; }
+    clearTimeout(storeTimer);
+    // SFFQ 无标准总分及判定，score / result 留空，answers 保存全部作答
+    FmsCase.save(PATH, {finish: true, score: "", result: "", answers: serialize()}, {back: "basic-info.html", button: f.querySelector('button[type="submit"]')});
   });
 })();

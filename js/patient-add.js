@@ -41,7 +41,9 @@ createBtn.addEventListener("click", async function () {
       existed, patient: existed ? result.data : {},
       entered: { name: patientName, cardNo: patientId.toUpperCase() }
     }));
-    window.location.href = './patient-detail.html';
+    // 开始新的病例草稿，姓名 / 身份证号带入基本信息页，无需再次输入
+    FmsCase.startNew({ name: patientName, idCard: patientId.toUpperCase(), patient: existed ? result.data : {} });
+    window.location.href = './fibromyalgia-basic-info/basic-info.html';
   } catch (error) {
     window.alert(error.name === 'AbortError' ? '查询超时，请稍后重试' : error.message);
   } finally {

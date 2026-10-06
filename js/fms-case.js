@@ -54,6 +54,14 @@
   }
   function isSynced(part) { return unsynced().indexOf(part) === -1; }
 
+  // 查看 / 编辑模式：从随访列表打开已有记录时为「查看」，模块页只读；点「编辑」后只放开当前模块
+  var MODE_KEY = 'fms_case_mode';      // 'view' | 'edit'
+  var BASE_KEY = 'fms_case_base';      // 'view'：本次是查看已有记录
+  function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} return null; }
+  function isViewMode() { return ss(MODE_KEY) === 'view'; }
+  function isViewingRecord() { return ss(BASE_KEY) === 'view'; }
+  function setMode(m) { ss(MODE_KEY, m || null); }
+
   // 模块里除 finish 外是否有任何已填内容（后端不接受空模块）
   function hasData(v) {
     if (v == null || v === '') return false;
@@ -82,6 +90,7 @@
 
   // 写入 path；merge=true 时与原对象浅合并（保留子模块对象，如 jbxx.csi）
   function set(path, value, merge) {
+    if (isViewMode()) return load(); // 查看模式不改草稿（防止页面暂存逻辑用只读表单覆盖数据）
     var c = load();
     var keys = split(path);
     var obj = c;
@@ -192,6 +201,7 @@
   var saving = false;
   async function save(path, value, opts) {
     opts = opts || {};
+    if (isViewMode()) { toast('当前为查看模式，点「编辑」后再保存'); return false; }
     if (saving) return false;
     saving = true;
     var btn = opts.button;
@@ -221,6 +231,7 @@
   // 新增患者：开始新的病例草稿，带入姓名 / 身份证号（已存在的患者带入 patientId）
   function startNew(info) {
     info = info || {};
+    setMode(null); ss(BASE_KEY, null);
     var c = skeleton();
     var p = info.patient || {};
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
@@ -240,6 +251,7 @@
   // 新增随访：挂在已有患者（patientId）下的一条新病例；不含基本信息模块，只带入姓名 / 身份证号用于展示
   function startFollowUp(info) {
     info = info || {};
+    setMode(null); ss(BASE_KEY, null);
     var c = skeleton();
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
     c.visitType = '随诊';
@@ -277,10 +289,11 @@
     if (!c.jbxx.idCard && info.idCard) c.jbxx.idCard = info.idCard;
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
     write(c);
+    ss(BASE_KEY, 'view'); setMode('view');
     return c;
   }
 
-  function clear() { try { localStorage.removeItem(KEY); localStorage.removeItem(UNSYNCED_KEY); } catch (e) {} }
+  function clear() { try { localStorage.removeItem(KEY); localStorage.removeItem(UNSYNCED_KEY); } catch (e) {} setMode(null); ss(BASE_KEY, null); }
 
   // 表单工具：FormData → 对象（同名多值为数组；有 data-array 的复选框始终为数组）
   function formData(form) {
@@ -325,10 +338,41 @@
     return { total: total, answered: n };
   }
 
+
+  // 模块页在查看模式下只读：锁定输入、隐藏保存/添加/删除，底部给「返回」「编辑」
+  var NON_MODULE = /(patient-(list|add|detail)|follow-up-list|case-view|research-platform)\.html$/;
+  function applyReadonly() {
+    if (!isViewMode() || NON_MODULE.test(location.pathname) || document.getElementById('fmsViewBar')) return;
+    var root = document.querySelector('main') || document.body;
+    root.querySelectorAll('input, select, textarea').forEach(function (el) { el.disabled = true; });
+    root.querySelectorAll('button, a, label.upload-box, .photo-field label').forEach(function (el) {
+      var t = (el.textContent || '').replace(/\s+/g, '');
+      if (el.type === 'submit' || /^(保存|添加|删除|提交|拍照|从相册|上传)/.test(t) || /保存/.test(t) || el.classList.contains('visit-del')) el.style.display = 'none';
+    });
+    var bar = document.createElement('div');
+    bar.id = 'fmsViewBar';
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9998;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -1px 0 #eceef1';
+    var back = document.createElement('button');
+    back.type = 'button'; back.textContent = '返回';
+    back.style.cssText = 'flex:1;min-height:44px;border:1px solid #d4d7dc;border-radius:6px;background:#fff;color:#333;font-size:15px';
+    back.onclick = function () { if (history.length > 1) history.back(); else location.href = '/patient-detail.html'; };
+    var edit = document.createElement('button');
+    edit.type = 'button'; edit.textContent = '编辑';
+    edit.style.cssText = 'flex:2;min-height:44px;border:0;border-radius:6px;background:#168bdd;color:#fff;font-size:15px';
+    edit.onclick = function () { setMode('edit'); location.reload(); };
+    bar.appendChild(back); bar.appendChild(edit);
+    document.body.appendChild(bar);
+    document.body.style.paddingBottom = '72px';
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(applyReadonly, 0); });
+  else setTimeout(applyReadonly, 0);
+  window.addEventListener('pageshow', function (e) { if (e.persisted && isViewMode()) setTimeout(applyReadonly, 0); });
+
   window.FmsCase = {
     KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,
     load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
     startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
-    formData: formData, fillForm: fillForm, sumRadios: sumRadios
+    formData: formData, fillForm: fillForm, sumRadios: sumRadios,
+    isViewMode: isViewMode, isViewingRecord: isViewingRecord, setMode: setMode
   };
 })();

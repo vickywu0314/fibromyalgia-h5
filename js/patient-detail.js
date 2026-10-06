@@ -28,6 +28,14 @@ document.getElementById('history').onclick = () => {
   location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId, name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '' });
 };
 
+// 查看已有记录：回到这一页即恢复只读；点模块进入只读页，在模块页点「编辑」只放开那一个模块
+const viewing = FmsCase.isViewingRecord();
+if (viewing) {
+  FmsCase.setMode('view');
+  document.title = isFollowUp ? '随诊记录' : '基线访问';
+  visitDate.disabled = true;
+}
+
 const modules = [...document.querySelectorAll('.module[data-part]')];
 let done = 0;
 modules.forEach(m => {
@@ -43,7 +51,11 @@ modules.forEach(m => {
 progressNum.textContent = done + ' / ' + modules.length;
 progressBar.style.width = (done / modules.length * 100).toFixed(1) + '%';
 
-finishBtn.onclick = async () => {
+if (viewing) {
+  // 底部按钮改为「查看随诊病历」：把本次记录各模块的数据汇总到一个只读页面
+  finishBtn.textContent = isFollowUp ? '查看随诊病历' : '查看病历';
+  finishBtn.onclick = () => { location.href = './case-view.html'; };
+} else finishBtn.onclick = async () => {
   const missing = modules.filter(m => !(draft[m.dataset.part] && draft[m.dataset.part].finish))
     .map(m => FmsCase.PART_NAMES[m.dataset.part]);
   if (missing.length && !confirm('以下模块尚未完成：\n' + missing.join('、') + '\n\n确定提交本次资料吗？')) return;

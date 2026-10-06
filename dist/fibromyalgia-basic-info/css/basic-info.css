@@ -1,7 +1,8 @@
 /* 基本信息页：患者评估与病史子模块区域 */
 .submodule-section{
-  margin:8px -16px 26px;
-  padding:20px 16px 0;
+  margin:8px 0 26px;
+  padding:16px 12px 12px;
+  border-radius:10px;
   background:#f5f6f7;
 }
 .submodule-heading{
@@ -34,7 +35,7 @@
 }
 .submodule-list{
   overflow:hidden;
-  border-radius:9px 9px 0 0;
+  border-radius:9px;
   background:#fff;
 }
 .submodule-row.menu-row{
@@ -45,6 +46,11 @@
   background:#fff;
 }
 .submodule-row.menu-row:last-child{border-bottom:0}
+.submodule-row.menu-row span.submodule-copy{
+  color:#222;
+  font-size:inherit;
+  font-weight:inherit;
+}
 .submodule-copy{
   min-width:0;
   display:flex;
@@ -85,16 +91,9 @@
   line-height:1;
 }
 @media(max-width:360px){
-  .submodule-section{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
   .submodule-heading{gap:8px}
 }
 
-/* 题目区域内嵌的子模块入口（CSI-9 位于身份证号与性别之间，与规格顺序一致） */
-.submodule-list.inline-module{
-  margin:0 0 24px;
-  border:1px solid #eceef1;
-  border-radius:9px;
-}
 .choices input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#168bdd}
 .choices input[type=radio]{accent-color:#168bdd}
 .conditional .choices label{display:flex;gap:8px}

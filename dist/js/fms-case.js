@@ -16,7 +16,7 @@
   }
 
   function skeleton() {
-    var c = { id: null, patientId: null, doctorId: null, researchType: 12, visitType: '首诊', visitDate: today(), page: 1, part: '' };
+    var c = { id: null, patientId: null, doctorId: null, researchType: 12, visitType: '基线', visitDate: today(), page: 1, part: '' };
     PARTS.forEach(function (p) { c[p] = { finish: false }; });
     c.jbxx.visitDate = c.visitDate;
     return c;
@@ -126,8 +126,8 @@
     c.researchType = 12;
     c.page = 1;
     c.part = part || '';
-    // 首诊以基本信息里的就诊时间为准；随访没有基本信息页，用随访日期
-    c.visitDate = (c.visitType === '随访' ? c.visitDate : (c.jbxx && c.jbxx.visitDate) || c.visitDate) || today();
+    // 基线访问以基本信息里的就诊时间为准；随诊没有基本信息页，用随诊日期
+    c.visitDate = (c.visitType === '随诊' ? c.visitDate : (c.jbxx && c.jbxx.visitDate) || c.visitDate) || today();
     var controller = new AbortController();
     var timer = setTimeout(function () { controller.abort(); }, 20000);
     var result;
@@ -242,7 +242,7 @@
     info = info || {};
     var c = skeleton();
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
-    c.visitType = '随访';
+    c.visitType = '随诊';
     c.doctorId = doctorId();
     c.patientId = info.patientId != null && info.patientId !== '' ? (/^\d+$/.test(String(info.patientId)) ? Number(info.patientId) : info.patientId) : null;
     c.jbxx.name = info.name || '';

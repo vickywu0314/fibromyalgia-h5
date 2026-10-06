@@ -1,4 +1,4 @@
-// 随访记录：挂在患者（patientId）下。新增随访 = 为该患者新建一条病例（visitType 随访），模块录入同新增患者。
+// 随访记录：挂在患者（patientId）下。新增随访 = 为该患者新建一条病例（visitType 随诊），模块录入同新增患者。
 const params = new URLSearchParams(location.search);
 const name = params.get('name') || '患者';
 const patientId = params.get('patientId') || '';

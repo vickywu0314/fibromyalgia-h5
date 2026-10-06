@@ -40,7 +40,7 @@ createBtn.addEventListener("click", async function () {
     // 已建档的患者不再新建首诊病例：进入该患者的随访记录，在那里新增随访
     if (existed) {
       const p = result.data;
-      const pid = p.id ?? p.patientId ?? '';
+      const pid = p.patientId ?? p.id ?? '';
       if (window.confirm('该患者已建档（' + (p.name || patientName) + '），将进入其随访记录，可在那里新增随访。')) {
         window.location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name: p.name || patientName, cardno: p.cardno || p.cardNo || patientId.toUpperCase() });
       }
@@ -51,6 +51,7 @@ createBtn.addEventListener("click", async function () {
       entered: { name: patientName, cardNo: patientId.toUpperCase() }
     }));
     // 开始新的病例草稿，姓名 / 身份证号带入基本信息页，无需再次输入
+    sessionStorage.removeItem('fms_case_from');
     FmsCase.startNew({ name: patientName, idCard: patientId.toUpperCase(), patient: existed ? result.data : {} });
     window.location.href = './fibromyalgia-basic-info/basic-info.html';
   } catch (error) {

@@ -124,7 +124,10 @@
 流程：患者列表 → 点患者 → 随访记录（`follow-up-list.html?patientId=&name=&cardno=`）→「新增随访记录」→ 资料页（病史病情、证候判断、辅助检查、病情评估、本次治疗方案、不良反应，顶部可改随访日期）→ 各模块保存同样调用 `case/add`，请求里 `patientId` 为该患者 id、`visitType: "随诊"`、第一次无 `id`，后续带返回的 `id`。
 
 - 患者列表接口返回的每个患者需有 `id`（或 `patientId`），前端据此把随访挂到该患者下。
-- 随访记录页的历史列表还没有接口，目前只显示「暂无随访记录」；请后端提供「按患者查询病例/随访列表」的接口（以及按 id 查询单次病例详情，用于查看/继续编辑）。
+- 随访记录列表：`GET /api/fms/patient/followup/list?pageNo=1&pageSize=100&patientId=&doctorId=&researchType=12`。前端从 `data` / `data.list` / `data.records` 取数组；每条用 `caseId`（或 `id`）作为病例 id，用 `visitDate`（或 `followupDate` / `createTime`）作为日期；有 `visitType` 用后端的，否则日期最早的一条显示为「基线访问」，其余为「随诊」。**请后端确认列表每条的 id 和日期字段名。**
+- 打开某条记录：`GET /api/fms/patient/case/detail?patientId=&doctorId=&caseId=&parts=jbxx,bsbq,zhpd,fzjc,bqpg,zlfa,blsj`，返回的 `data` 按提交结构体回填到各页面；之后保存仍调 `case/add`，带 `id = caseId` 即为更新。
+- 删除记录：`GET /api/fms/patient/del/followuphistory?id=<caseId>`，`success` 为 false 或 `data` 为 false 视为失败。
+- 患者 id 统一用 `patientId`（患者列表、查重结果优先取 `patientId`，没有再取 `id`）。
 
 ## 六、模块从属（页面层级）
 

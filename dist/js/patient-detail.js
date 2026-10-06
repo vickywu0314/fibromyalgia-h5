@@ -11,7 +11,9 @@ pname.textContent = n; pid.textContent = '研究编号 ' + code; avatar.textCont
 
 // 随访：同一患者下的新病例，不含基本信息模块；显示可修改的随访日期
 const isFollowUp = draft.visitType === '随诊';
-const backUrl = isFollowUp
+// 从随访记录进入（新增随诊或打开已有记录）的，完成后回随访记录；新增患者的回患者列表
+const fromFollowUp = sessionStorage.getItem('fms_case_from') === 'followup';
+const backUrl = (isFollowUp || fromFollowUp) && draft.patientId != null
   ? './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId ?? '', name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '' })
   : './patient-list.html';
 if (isFollowUp) {

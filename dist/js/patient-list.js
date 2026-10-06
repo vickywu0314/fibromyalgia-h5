@@ -34,7 +34,7 @@ async function loadPatients() {
       const count = patient.recordCount ?? patient.followCount ?? patient.followUpCount ?? patient.count;
       button.querySelector('.meta span:last-child').textContent = count == null ? '' : `已添加${count}条`;
       // 随访记录挂在患者下：带上患者 id、姓名、身份证号
-      const pid = patient.id ?? patient.patientId ?? '';
+      const pid = patient.patientId ?? patient.id ?? '';
       const cardNo = patient.cardno || patient.cardNo || patient.idCard || '';
       button.onclick = () => {
         location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name, cardno: cardNo });

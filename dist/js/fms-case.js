@@ -225,7 +225,7 @@
     var p = info.patient || {};
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
     c.doctorId = doctorId();
-    c.patientId = p.id != null ? p.id : (p.patientId != null ? p.patientId : null);
+    c.patientId = p.patientId != null ? p.patientId : (p.id != null ? p.id : null);
     c.jbxx.name = info.name || p.name || '';
     c.jbxx.idCard = info.idCard || p.cardno || p.cardNo || p.idCard || '';
     // 性别：优先用已有患者资料，统一成「男/女」；没有时按 18 位身份证第 17 位推出（奇男偶女）
@@ -247,6 +247,35 @@
     c.patientId = info.patientId != null && info.patientId !== '' ? (/^\d+$/.test(String(info.patientId)) ? Number(info.patientId) : info.patientId) : null;
     c.jbxx.name = info.name || '';
     c.jbxx.idCard = info.idCard || '';
+    write(c);
+    return c;
+  }
+
+  // 打开已有病例（随诊列表点某一条）：按 caseId 查详情，写入草稿，后续保存带同一个 id 即为更新
+  var DETAIL_API = '/api/fms/patient/case/detail';
+  async function loadCase(info) {
+    info = info || {};
+    var did = doctorId();
+    if (!did) throw new Error('未取得医生身份，请在 App 内打开');
+    var result = await FmsApi.get(DETAIL_API, {
+      patientId: info.patientId != null ? info.patientId : '',
+      doctorId: did,
+      caseId: info.caseId,
+      parts: PARTS.join(',')
+    });
+    if (!result || result.success === false) throw new Error((result && result.message) || '病例详情加载失败');
+    var d = result.data && typeof result.data === 'object' ? result.data : {};
+    var c = skeleton();
+    Object.keys(d).forEach(function (k) { if (d[k] != null) c[k] = d[k]; });
+    PARTS.forEach(function (p) { if (!c[p] || typeof c[p] !== 'object') c[p] = { finish: false }; });
+    c.id = d.id != null ? d.id : (d.caseId != null ? d.caseId : info.caseId);
+    c.patientId = d.patientId != null ? d.patientId : (info.patientId != null && info.patientId !== '' ? info.patientId : null);
+    c.doctorId = did;
+    c.visitType = d.visitType || info.visitType || c.visitType;
+    c.visitDate = d.visitDate || (c.jbxx && c.jbxx.visitDate) || info.visitDate || c.visitDate;
+    if (!c.jbxx.name && info.name) c.jbxx.name = info.name;
+    if (!c.jbxx.idCard && info.idCard) c.jbxx.idCard = info.idCard;
+    try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
     write(c);
     return c;
   }
@@ -299,7 +328,7 @@
   window.FmsCase = {
     KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,
     load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
-    startNew: startNew, startFollowUp: startFollowUp, clear: clear, toast: toast,
+    startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios
   };
 })();

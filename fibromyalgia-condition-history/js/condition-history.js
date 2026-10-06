@@ -1,7 +1,6 @@
 (function(){
  const form=document.getElementById('conditionForm');
  const reveals=[...form.querySelectorAll('.reveal[data-when]')];
- const noteInputs=[...form.querySelectorAll('[data-note]')];
  // 按 PDF：「周身疼痛发病时间 / 是否确诊 / 确诊时间」在病史病情页填写，按提交结构体存到 jbxx 下；其余字段写 bsbq。
  const JBXX_FIELDS=['painOnsetDate','diagnosed','diagnosisDate'];
  const ARRAY_FIELDS=['onsetTriggers','aggravatingTriggers','painNature','systemic','menstrualItems'];
@@ -47,9 +46,6 @@
    const bsbq={};
    TEXT_FIELDS.forEach(k=>{bsbq[k]=d[k]||'';});
    ARRAY_FIELDS.forEach(k=>{bsbq[k]=Array.isArray(d[k])?d[k]:(d[k]?[d[k]]:[]);});
-   // 加重诱因中 4 个“请说明”：{ emotion, diet, naturalFactor, nonNaturalFactor }
-   bsbq.aggravatingTriggerNotes={};
-   noteInputs.forEach(el=>{ if(!el.disabled&&el.value.trim())bsbq.aggravatingTriggerNotes[el.dataset.note]=el.value.trim(); });
    return {jbxx,bsbq};
  }
 
@@ -70,8 +66,6 @@
    refresh();
    setValue('painOnsetDate',jbxx.painOnsetDate);
    if(jbxx.diagnosed==='是')setValue('diagnosisDate',jbxx.diagnosisDate);
-   const notes=bsbq.aggravatingTriggerNotes||{};
-   noteInputs.forEach(el=>{ if(!el.disabled)el.value=notes[el.dataset.note]||''; });
  }
 
  // 进度：9 项中已填写的项数

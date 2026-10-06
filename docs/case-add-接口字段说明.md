@@ -47,7 +47,6 @@
 |---|---|---|
 | `onsetTriggers` | string[] | 发病诱因，多选 |
 | `aggravatingTriggers` | string[] | 加重诱因，多选 |
-| `aggravatingTriggerNotes` | object | 加重诱因中「情绪波动、饮食不当、自然界因素、非自然界因素」的说明文字，key 分别为 `emotion / diet / naturalFactor / nonNaturalFactor` |
 | `painNature` | string[] | 肌肉疼痛性质，多选 |
 
 `bsbq` 里还有几点：

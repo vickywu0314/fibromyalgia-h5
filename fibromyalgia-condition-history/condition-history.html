@@ -24,6 +24,14 @@
         <label><input type="radio" name="diagnosed" value="是">是</label>
         <div class="reveal" data-when="diagnosed=是" hidden>
           <label class="field"><span>确诊时间</span><input class="control" type="date" name="diagnosisDate"></label>
+          <div class="field" style="align-items:flex-start"><span style="padding-top:10px">确诊医疗机构</span>
+            <div class="radios" style="padding-left:0">
+              <label><input type="radio" name="hospitalLevel" value="1级">1级</label>
+              <label><input type="radio" name="hospitalLevel" value="2级">2级</label>
+              <label><input type="radio" name="hospitalLevel" value="3级">3级</label>
+              <label><input type="radio" name="hospitalLevel" value="无级别">无级别</label>
+            </div>
+          </div>
         </div>
         <label><input type="radio" name="diagnosed" value="否">否</label>
       </div>

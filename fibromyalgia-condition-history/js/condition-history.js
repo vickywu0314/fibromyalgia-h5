@@ -2,7 +2,7 @@
  const form=document.getElementById('conditionForm');
  const reveals=[...form.querySelectorAll('.reveal[data-when]')];
  // 按 PDF：「周身疼痛发病时间 / 是否确诊 / 确诊时间」在病史病情页填写，按提交结构体存到 jbxx 下；其余字段写 bsbq。
- const JBXX_FIELDS=['painOnsetDate','diagnosed','diagnosisDate'];
+ const JBXX_FIELDS=['painOnsetDate','diagnosed','diagnosisDate','hospitalLevel'];
  const ARRAY_FIELDS=['onsetTriggers','aggravatingTriggers','painNature','systemic'];
  // 月经情况：menstrualStage 单选（绝经期/围绝经期/育龄期）；经期/经色/经量/痛经 仅「围绝经期」时填写，其他分期清空
  const MENSTRUAL_SUB=['periodTiming','periodColor','periodAmount','dysmenorrhea'];
@@ -43,7 +43,8 @@
    const jbxx={
      painOnsetDate:d.painOnsetDate||'',
      diagnosed:d.diagnosed||'',
-     diagnosisDate:d.diagnosed==='是'?(d.diagnosisDate||''):''
+     diagnosisDate:d.diagnosed==='是'?(d.diagnosisDate||''):'',
+     hospitalLevel:d.diagnosed==='是'?(d.hospitalLevel||''):''
    };
    const bsbq={};
    TEXT_FIELDS.forEach(k=>{bsbq[k]=d[k]||'';});
@@ -68,7 +69,7 @@
    TEXT_FIELDS.concat(ARRAY_FIELDS).forEach(k=>setValue(k,bsbq[k]));
    refresh();
    setValue('painOnsetDate',jbxx.painOnsetDate);
-   if(jbxx.diagnosed==='是')setValue('diagnosisDate',jbxx.diagnosisDate);
+   if(jbxx.diagnosed==='是'){setValue('diagnosisDate',jbxx.diagnosisDate);setValue('hospitalLevel',jbxx.hospitalLevel);}
  }
 
  // 进度：9 项中已填写的项数

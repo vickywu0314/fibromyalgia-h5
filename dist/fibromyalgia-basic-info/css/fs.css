@@ -19,6 +19,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .module-copy strong{font-size:15px;font-weight:500;line-height:1.45}
 .status{display:inline-flex;align-items:center;min-height:20px;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:400}
 .status.pending{color:#858b94;background:#f1f2f4}
+.status.doing{color:#d4771c;background:#fdf3e7}
 .status.done{color:#1677b8;background:#eaf5fc}
 .chevron{flex:none;color:#9aa0a8;font-size:27px;font-weight:300;line-height:1}
 .bottom-action{padding-top:24px}

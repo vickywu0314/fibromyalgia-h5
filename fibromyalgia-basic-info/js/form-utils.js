@@ -75,5 +75,36 @@
     };
   }
 
-  window.FormUtils = {serialize: serialize, fill: fill, toggle: toggle, load: load, save: save, bind: bind};
+  /**
+   * 作答过程中暂存到草稿（只写本地草稿、不提交，finish=false），返回入口页时显示「填写中」。
+   * 已保存完成（finish=true）的子模块不再暂存，修改需点「保存」才生效，避免草稿里的分数与答案不一致。
+   * build() 返回要写入的对象（不含 finish）。
+   */
+  function autoStore(form, path, build){
+    function store(){
+      if (!window.FmsCase || (FmsCase.isViewMode && FmsCase.isViewMode())) return;
+      const prev = FmsCase.get(path);
+      if (prev && prev.finish) return;
+      try { FmsCase.set(path, Object.assign({finish: false}, build())); } catch (e) {}
+    }
+    form.addEventListener("input", store);
+    form.addEventListener("change", store);
+    return store;
+  }
+
+  /** 子模块入口状态：已保存 → done；有数据未保存 → doing；无数据 → pending */
+  function entryState(value, finished){
+    if (finished) return "done";
+    return window.FmsCase && FmsCase.hasData(value) ? "doing" : "pending";
+  }
+  const STATE_TEXT = {done: "已完成", doing: "填写中", pending: "未填写"};
+  function renderStatus(el, state, text){
+    if (!el) return;
+    el.textContent = text || STATE_TEXT[state];
+    el.classList.remove("done", "doing", "pending");
+    el.classList.add(state);
+  }
+
+  window.FormUtils = {serialize: serialize, fill: fill, toggle: toggle, load: load, save: save, bind: bind,
+    autoStore: autoStore, entryState: entryState, renderStatus: renderStatus, STATE_TEXT: STATE_TEXT};
 })();

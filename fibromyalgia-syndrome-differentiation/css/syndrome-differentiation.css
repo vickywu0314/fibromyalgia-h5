@@ -5,7 +5,7 @@ button,input{font:inherit;color:inherit}
 .page{width:100%;max-width:720px;margin:0 auto;padding:16px 16px calc(28px + env(safe-area-inset-bottom))}
 .progress-block{margin-bottom:28px}
 .progress{height:24px;background:#d8d8d8;overflow:hidden}
-.progress span{display:block;width:30%;height:100%;background:#168bdd}
+.progress span{display:block;width:0;height:100%;background:#168bdd}
 .progress-block p{margin:6px 0 0;font-size:14px}
 h1{margin:0 0 14px;font-size:18px;font-weight:600;line-height:1.5}
 .question{margin:0;padding:20px 0;border:0;border-bottom:1px solid #e7e9ec}

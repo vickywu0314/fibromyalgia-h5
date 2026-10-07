@@ -6,7 +6,8 @@
      中成药：药品 → 频次、用量(片/粒)、开始时间、结束时间（无“是否沿用至今/停用原因”）
    数据写入病例草稿 jbxx.treatmentHistory.<类别数组>，“无/有”写 has<类别>（见 store.js）。
    记录字段：name, dose, unit(固定“片/粒”), frequency, startDate, ongoing, endDate, reason, duration(非药物单次时长), durationUnit；
-   西药同时写 medication（=name，对应结构体 medication）。 */
+   西药同时写 medication（=name，对应结构体 medication）。
+   页面顶部进度由 ../js/fms-progress.js 按本表单可见题目统计。 */
 (function () {
   var D = window.BenbingData;
   var S = window.BenbingStore;
@@ -128,8 +129,9 @@
     }
   } else if (S.has(kind) === '无' && !items.length) {
     els.hasEntry.value = '无';
+  } else if (S.has(kind) === '有' || items.length) {
+    els.hasEntry.value = '有'; // 已回答过“有”，新增记录时直接带出
   }
-  S.setProgress(items.length || S.has(kind) ? 100 : 0);
 
   /* 编辑已有记录时提供“删除此记录” */
   if (edit >= 0) {
@@ -151,6 +153,8 @@
   }
   form.addEventListener('change', refresh);
   refresh();
+  /* 进度：本条记录表单中当前可见、可填的项（无/有、药品、频次、用量、日期、是否沿用至今、结束日期、停用原因…）已填数 / 应填数 */
+  if (window.FmsProgress) FmsProgress.track(form);
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();

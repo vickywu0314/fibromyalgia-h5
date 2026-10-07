@@ -5,11 +5,12 @@
   const form = document.getElementById("tpcForm");
   const questions = [...form.querySelectorAll(".question")];
 
-  function progress(){
-    const done = questions.filter(q => q.querySelector("input:checked")).length;
-    const pct = Math.round(done / questions.length * 100);
-    document.getElementById("progressBar").style.width = pct + "%";
-    document.getElementById("progressText").textContent = "已完成" + pct + "%";
+  function collect(){
+    const answers = {};
+    for(let i = 1; i <= questions.length; i++){
+      answers["q"+i] = [...form.querySelectorAll('input[name="q'+i+'"]:checked')].map(x => x.value);
+    }
+    return answers;
   }
 
   // “左”和“右”可同时选择；选择“无”时取消左右，选择左右时取消“无”。
@@ -24,13 +25,14 @@
       }else if(e.target !== none && e.target.checked && none){
         none.checked = false;
       }
-      progress();
     });
   });
 
   const saved = FmsCase.get("jbxx.tpc");
   if(saved && saved.answers) FmsCase.fillForm(form, saved.answers);
-  progress();
+  // 进度：已作答的压痛点（每对左/右/无为一题）/ 9；作答中暂存草稿（入口显示「填写中」）
+  FmsProgress.track(form);
+  FormUtils.autoStore(form, "jbxx.tpc", () => ({ score: "", result: "", answers: collect() }));
 
   form.addEventListener("submit", e => {
     e.preventDefault();

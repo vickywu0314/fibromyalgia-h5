@@ -54,6 +54,7 @@
       try{images[id]=[await compress(x)]}catch(e){FmsCase.toast("图片读取失败");}
       f.value="";
       showPreview(id,previewId);
+      autosave();
     };
   }
   bindUpload("labReport","labPreview");
@@ -151,10 +152,32 @@
     showPreview("ecgReport","ecgPreview");
   };
 
+  // 进度：每个单选题（含「数值/异常」时的数值）各算一题；血常规、尿常规、血脂的每个数值各算一题，
+  // 勾选该组「未查」即视为已答；上传图片不计
+  const GROUP_VALUES=VALUE_FIELDS.concat(LIPIDS.map(k=>[k,k+"_notDone"]));
+  const progress=FmsProgress.track(form,{
+    optional:NOT_DONE.concat(GROUP_VALUES.map(([k])=>k),LIPIDS.map(k=>k+"_notDone")),
+    extra:()=>({
+      total:GROUP_VALUES.length,
+      answered:GROUP_VALUES.filter(([k,group])=>form.elements[group].checked||String(form.elements[k].value||"").trim()!=="").length
+    })
+  });
+
+  // 边填边暂存到草稿（finish=false，不提交），返回患者资料页时显示「填写中」
+  let timer=0;
+  function autosave(){
+    clearTimeout(timer);
+    timer=setTimeout(()=>{try{FmsCase.set(PATH,Object.assign(collect(),{finish:false}))}catch(e){}},300);
+  }
+  form.addEventListener("change",autosave);
+  form.addEventListener("input",autosave);
+
   form.onsubmit=e=>{
     e.preventDefault();
+    clearTimeout(timer);
     FmsCase.save(PATH,collect(),{back:BACK,button:form.querySelector('button[type="submit"]')});
   };
 
   window.fillForm(FmsCase.get(PATH));
+  progress.refresh();
 })();

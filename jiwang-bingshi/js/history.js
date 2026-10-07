@@ -5,12 +5,16 @@
  var BACK='../fibromyalgia-basic-info/basic-info.html',CATEGORIES=['fengshi','huxi','xiaohua','xunhuan','neifenmi','shen','guke','shengzhi','xinli','tengtong'];
  var page=document.querySelector('[data-page]'),view=page.dataset.page;
  function read(){var v=FmsCase.get('jbxx.diseaseHistory');return Array.isArray(v)?v.filter(function(r){return r&&typeof r==='object';}):[];}
- var records=read();
- // 进度条：本模块已保存完成为 100%，否则 0%
- (function(){var done=!!FmsCase.get('jbxx.diseaseHistoryFinish'),pct=done?100:0,bar=document.querySelector('.progress'),span=bar&&bar.querySelector('span'),p=document.querySelector('.progress-block p');if(span)span.style.width=pct+'%';if(bar)bar.setAttribute('aria-valuenow',pct);if(p)p.textContent='已完成'+pct+'%';})();
+ var records=read(),renderList=function(){};
+ // 进度：列表页 / 选择类别页 = 本模块需要回答的「合并疾病」1 项（已添加≥1条记录，或已保存确认无记录时算已答）；
+ // 各类别表单页 = 本条记录表单的已填项 / 应填项（疾病选择；选「其他」时再加疾病名称），由 ../js/fms-progress.js 统计。
+ function moduleProgress(){var rs=read();if(window.FmsProgress)FmsProgress.set(rs.length||FmsCase.get('jbxx.diseaseHistoryFinish')?1:0,1);}
+ if(view==='list'||view==='choose'){moduleProgress();window.addEventListener('pageshow',function(e){if(e.persisted){records=read();moduleProgress();if(view==='list')renderList();}});}
  if(view==='list'){
-  var list=document.getElementById('records');document.getElementById('empty').hidden=records.length>0;
-  records.forEach(function(record,index){var li=document.createElement('li'),link=document.createElement('a'),text=document.createElement('span'),name=document.createElement('strong'),info=document.createElement('small'),arrow=document.createElement('em');link.href=(CATEGORIES.indexOf(record.category)>=0?record.category+'.html?edit='+index:'choose.html');name.textContent=record.categoryLabel||record.name;info.textContent=record.name||'';arrow.textContent='›';arrow.setAttribute('aria-hidden','true');text.append(name,info);link.append(text,arrow);li.appendChild(link);list.appendChild(li);});
+  var list=document.getElementById('records');
+  renderList=function(){list.innerHTML='';document.getElementById('empty').hidden=records.length>0;
+  records.forEach(function(record,index){var li=document.createElement('li'),link=document.createElement('a'),text=document.createElement('span'),name=document.createElement('strong'),info=document.createElement('small'),arrow=document.createElement('em');link.href=(CATEGORIES.indexOf(record.category)>=0?record.category+'.html?edit='+index:'choose.html');name.textContent=record.categoryLabel||record.name;info.textContent=record.name||'';arrow.textContent='›';arrow.setAttribute('aria-hidden','true');text.append(name,info);link.append(text,arrow);li.appendChild(link);list.appendChild(li);});};
+  renderList();
   document.getElementById('back').addEventListener('click',function(){
    FmsCase.save('jbxx',{diseaseHistory:records,diseaseHistoryFinish:true},{merge:true,back:BACK,button:this});
   });
@@ -22,6 +26,7 @@
  // “其他”选中时才显示“疾病名称”；未选中时隐藏、禁用并清空。顶层“其他”类别没有单选项，名称始终显示。
  function refresh(){if(!hasChoices)return;var show=chosen.value==='其他';other.hidden=!show;otherInput.disabled=!show;if(!show)otherInput.value='';}
  form.addEventListener('change',refresh);refresh();
+ if(window.FmsProgress)FmsProgress.track(form);
  // 编辑已有记录时提供“删除此记录”
  if(editing){var del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='删除此记录';del.style.marginTop='12px';submitBtn.insertAdjacentElement('afterend',del);
   del.addEventListener('click',function(){if(!del.dataset.done){if(!confirm('确定删除这条合并疾病记录吗？'))return;records.splice(edit,1);del.dataset.done='1';submitBtn.disabled=true;}FmsCase.save('jbxx.diseaseHistory',records,{back:'index.html',button:del});});}

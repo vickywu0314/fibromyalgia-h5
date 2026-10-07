@@ -19,11 +19,25 @@
     return Array.isArray(v) ? v.filter(function (x) { return x && typeof x === 'object'; }) : [];
   }
   function has(kind) { return all()[KINDS[kind].has] || ''; }
-  /* 写入某一类的记录和“无/有”，提交后回该类列表页 */
+  /* 某一类的填写状态：'none' 未填写 / 'doing' 填写中（选了“有”但还没有记录）/ 'done' 已完成（“无”，或“有”且≥1条记录） */
+  function stateOf(hasValue, list) {
+    if (list && list.length) return 'done';
+    if (hasValue === '无') return 'done';
+    if (hasValue === '有') return 'doing';
+    return 'none';
+  }
+  function state(kind) { return stateOf(has(kind), items(kind)); }
+  /* 写入某一类的记录和“无/有”，提交后回该类列表页。
+     本模块已保存完成（finish=true）后若改成某类未完成，finish 同步置为 false（基本信息页显示“填写中”）。 */
   function saveKind(kind, list, hasValue, button) {
-    var k = KINDS[kind], value = {};
+    var k = KINDS[kind], value = {}, th = all();
     value[k.key] = list;
     value[k.has] = hasValue;
+    if (th.finish) {
+      value.finish = Object.keys(KINDS).every(function (other) {
+        return other === kind ? stateOf(hasValue, list) === 'done' : state(other) === 'done';
+      });
+    }
     return FmsCase.save(PATH, value, { merge: true, back: k.list, button: button });
   }
   /* 记录摘要文字（列表页 / 开药汇总共用） */
@@ -34,17 +48,14 @@
     if (kind === 'zhongchengyao') return [item.frequency, item.dose ? '单次' + item.dose + (item.unit || '') : '', [item.startDate, item.endDate].some(Boolean) ? (item.startDate || '') + ' ~ ' + (item.endDate || '') : ''].filter(Boolean).join('，');
     return [item.frequency, item.dose ? '单次' + item.dose + (item.unit || '') : '', stop].filter(Boolean).join('，');
   }
-  /* 页面顶部进度条 */
-  function setProgress(pct) {
-    var bar = document.querySelector('.progress'), span = bar && bar.querySelector('span');
-    var txt = document.querySelector('.progress-text') || document.querySelector('.progress-block p');
-    if (span) span.style.width = pct + '%';
-    if (bar) bar.setAttribute('aria-valuenow', pct);
-    if (txt) txt.textContent = '已完成' + pct + '%';
+  /* 页面顶部进度条（公共脚本 ../js/fms-progress.js） */
+  function setProgress(answered, total) {
+    if (window.FmsProgress) FmsProgress.set(answered, total);
   }
-  /* 已完成的类别数（有记录或已选择“无/有”） */
+  /* 已完成的类别数（“无”，或“有”且已添加记录） */
   function doneKinds() {
-    return Object.keys(KINDS).filter(function (kind) { return items(kind).length || has(kind); }).length;
+    return Object.keys(KINDS).filter(function (kind) { return state(kind) === 'done'; }).length;
   }
-  global.BenbingStore = { PATH: PATH, KINDS: KINDS, all: all, items: items, has: has, saveKind: saveKind, summary: summary, setProgress: setProgress, doneKinds: doneKinds };
+  var STATUS_TEXT = { none: '未填写', doing: '填写中', done: '已完成' };
+  global.BenbingStore = { PATH: PATH, KINDS: KINDS, all: all, items: items, has: has, saveKind: saveKind, summary: summary, setProgress: setProgress, doneKinds: doneKinds, state: state, stateOf: stateOf, STATUS_TEXT: STATUS_TEXT };
 })(window);

@@ -28,7 +28,7 @@
       mainSyndrome:main,
       secondarySyndrome:secondary.join("、"),
       secondarySyndromes:secondary,
-      hasSecondary:secondary.length?"是":"否"
+      hasSecondary:secondary.length?"是":(main?"否":"")
     };
   }
 
@@ -43,11 +43,19 @@
     syncSecondary();
   };
 
+  // 进度：主证必答；兼证可不选（无兼证），不计入
+  const progress=FmsProgress.track(form,{optional:["secondarySyndrome"]});
+
+  // 边选边暂存到草稿（finish=false，不提交），返回患者资料页时显示「填写中」
+  form.addEventListener("change",()=>{try{FmsCase.set(PATH,Object.assign(collect(),{finish:false}))}catch(e){}});
+
   form.addEventListener("submit",e=>{
     e.preventDefault();
     const btn=form.querySelector('button[type="submit"]');
+    if(!form.querySelector('input[name="mainSyndrome"]:checked')){FmsCase.toast("请选择主证");return}
     FmsCase.save(PATH,collect(),{back:BACK,button:btn});
   });
 
   window.fillForm(FmsCase.get(PATH));
+  progress.refresh();
 })();

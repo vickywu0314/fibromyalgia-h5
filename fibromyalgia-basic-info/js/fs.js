@@ -17,32 +17,26 @@
   }
   window.FsScore = { summary };
 
-  function setProgress(pct){
-    const bar=document.getElementById("progressBar"), txt=document.getElementById("progressText");
-    if(bar) bar.style.width=pct+"%";
-    if(txt) txt.textContent="已完成"+pct+"%";
-  }
-  window.FsScore.setProgress = setProgress;
 
   if(!document.getElementById("fsSummary")) return; // 以下仅 fs.html 页面
 
   function render(){
     const fs = FmsCase.get("jbxx.fs") || {};
+    // 进度：已完成（finish）的子量表数 / 2；状态：已保存 → 已完成（x分），有暂存作答 → 填写中，无数据 → 未填写
     let doneCount = 0;
     ["wpi","sss"].forEach(k=>{
       const el = document.querySelector('[data-status="'+k+'"]'), m = fs[k];
-      const done = !!(m && m.finish);
-      if(done) doneCount++;
-      el.className = "status " + (done ? "done" : "pending");
-      el.textContent = done ? "已完成（" + m.score + "分）" : "未填写";
+      const state = FormUtils.entryState(m, !!(m && m.finish));
+      if(state === "done") doneCount++;
+      FormUtils.renderStatus(el, state, state === "done" ? "已完成（" + m.score + "分）" : "");
     });
-    setProgress(Math.round(doneCount / 2 * 100));
+    FmsProgress.set(doneCount, 2);
     const sum = summary(fs.wpi, fs.sss), box = document.getElementById("fsSummary");
     box.hidden = !sum.finish;
     if(sum.finish) box.textContent = "FS 总分（WPI+SSS）：" + sum.score + " 分；符合 2016 纤维肌痛诊断标准（WPI/SSS）：" + sum.result;
   }
   render();
-  window.addEventListener("pageshow", e => { if(e.persisted) render(); });
+  window.addEventListener("pageshow", render);
 
   // 保存：合并写入 jbxx.fs（不覆盖 wpi/sss），回基本信息页
   document.getElementById("backBtn").addEventListener("click", function(){

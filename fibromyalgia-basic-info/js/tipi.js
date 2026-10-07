@@ -20,6 +20,15 @@
   }
 
   U.bind({form: form, path: "jbxx.tipi"});
+  // 进度：已答题数 / 10；作答中暂存草稿（入口显示「填写中」）
+  const tracker = FmsProgress.track(form);
+  U.autoStore(form, "jbxx.tipi", () => {
+    const answers = {};
+    for (let i = 1; i <= 10; i++) { const v = answer(i); answers["q" + i] = v == null ? "" : String(v); }
+    return {score: "", result: "", answers: answers};
+  });
+  const setFormData = window.setFormData;
+  window.setFormData = function(data){ setFormData(data); tracker.refresh(); };
 
   form.addEventListener("submit", e => {
     e.preventDefault();

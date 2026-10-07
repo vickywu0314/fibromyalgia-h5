@@ -35,26 +35,35 @@
     </section>
 
     <section class="exam-section">
-      <div class="section-title"><h2>便常规</h2><label class="badge-toggle"><input type="checkbox" name="stool_notDone" value="未查" data-toggle-off="stool_notDoneBody">未查</label></div>
-      <div id="stool_notDoneBody">
-      <div class="item"><h3>潜血</h3><div class="radios inline"><label><input type="radio" name="stool_occult" value="阴性">阴性</label><label><input type="radio" name="stool_occult" value="阳性">阳性</label></div></div>
-      </div>
+      <div class="section-title"><h2>便常规+便潜血</h2></div>
+      <div class="item"><h3>便外观性</h3><div class="radios"><label><input type="radio" name="stool_appearance" value="黏液便">黏液便</label><label><input type="radio" name="stool_appearance" value="脓血便">脓血便</label><label><input type="radio" name="stool_appearance" value="黑便">黑便</label><label><input type="radio" name="stool_appearance" value="鲜红血便">鲜红血便</label><label><input type="radio" name="stool_appearance" value="陶土样便">陶土样便</label><label><input type="radio" name="stool_appearance" value="正常">正常</label><label><input type="radio" name="stool_appearance" value="未查">未查</label></div></div>
+      <div class="item"><h3>白细胞</h3><div class="radios"><label><input type="radio" name="stool_wbc_status" value="正常">正常</label><label><input type="radio" name="stool_wbc_status" value="数值">数值</label><div class="value sub-value" data-when="stool_wbc_status=数值" hidden><input type="number" step="any" inputmode="decimal" name="stool_wbc_value"><span>/ul</span></div><label><input type="radio" name="stool_wbc_status" value="未查">未查</label></div></div>
+      <div class="item"><h3>红细胞</h3><div class="radios"><label><input type="radio" name="stool_rbc_status" value="正常">正常</label><label><input type="radio" name="stool_rbc_status" value="数值">数值</label><div class="value sub-value" data-when="stool_rbc_status=数值" hidden><input type="number" step="any" inputmode="decimal" name="stool_rbc_value"><span>/ul</span></div><label><input type="radio" name="stool_rbc_status" value="未查">未查</label></div></div>
+      <div class="item"><h3>便潜血</h3><div class="radios inline"><label><input type="radio" name="stool_occult" value="阴性">阴性</label><label><input type="radio" name="stool_occult" value="阳性">阳性</label><label><input type="radio" name="stool_occult" value="未查">未查</label></div></div>
     </section>
 
     <section class="exam-section">
-      <div class="section-title"><h2>生化</h2><label class="badge-toggle"><input type="checkbox" name="biochem_notDone" value="未查" data-toggle-off="biochem_notDoneBody">未查</label></div>
-      <div id="biochem_notDoneBody">
+      <div class="section-title"><h2>生化</h2></div>
       <h2 class="subhead">肝功能</h2>
-      <div class="item"><h3>ALT</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="alt"><span>U/L</span></div></div>
-      <div class="item"><h3>AST</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="ast"><span>U/L</span></div></div>
+      <div class="item"><h3>ALT</h3><div class="radios inline"><label><input type="radio" name="alt_status" value="未查">未查</label><label><input type="radio" name="alt_status" value="正常">正常</label><label><input type="radio" name="alt_status" value="异常">异常</label></div><div class="value" data-when="alt_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="alt_value"><span>U/L</span></div></div>
+      <div class="item"><h3>AST</h3><div class="radios inline"><label><input type="radio" name="ast_status" value="未查">未查</label><label><input type="radio" name="ast_status" value="正常">正常</label><label><input type="radio" name="ast_status" value="异常">异常</label></div><div class="value" data-when="ast_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="ast_value"><span>U/L</span></div></div>
       <h2 class="subhead">肾功能</h2>
-      <div class="item"><h3>BUN</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="bun"><span>mmol/L</span></div></div>
-      <div class="item"><h3>Cr</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cr"><span>umol/L</span></div></div>
-      <h2 class="subhead">血糖</h2>
-      <div class="item"><div class="value"><input type="number" step="any" inputmode="decimal" name="glucose"><span>mmol/L</span></div></div>
-      </div>
+      <div class="item"><h3>BUN</h3><div class="radios inline"><label><input type="radio" name="bun_status" value="未查">未查</label><label><input type="radio" name="bun_status" value="正常">正常</label><label><input type="radio" name="bun_status" value="异常">异常</label></div><div class="value" data-when="bun_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="bun_value"><span>mmol/L</span></div></div>
+      <div class="item"><h3>Cr</h3><div class="radios inline"><label><input type="radio" name="cr_status" value="未查">未查</label><label><input type="radio" name="cr_status" value="正常">正常</label><label><input type="radio" name="cr_status" value="异常">异常</label></div><div class="value" data-when="cr_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="cr_value"><span>umol/L</span></div></div>
+      <h2 class="subhead">血脂</h2>
+      <div class="item lipid"><div class="section-title"><h3>胆固醇</h3><label class="badge-toggle"><input type="checkbox" name="cholesterol_notDone" value="未查" data-lipid="cholesterol">未查</label></div><div class="value" id="cholesterol_notDoneBody"><input type="number" step="any" inputmode="decimal" name="cholesterol"><span>mmol/L</span></div></div>
+      <div class="item lipid"><div class="section-title"><h3>甘油三酯</h3><label class="badge-toggle"><input type="checkbox" name="triglyceride_notDone" value="未查" data-lipid="triglyceride">未查</label></div><div class="value" id="triglyceride_notDoneBody"><input type="number" step="any" inputmode="decimal" name="triglyceride"><span>mmol/L</span></div></div>
+      <div class="item lipid"><div class="section-title"><h3>低密度脂蛋白胆固醇</h3><label class="badge-toggle"><input type="checkbox" name="ldl_notDone" value="未查" data-lipid="ldl">未查</label></div><div class="value" id="ldl_notDoneBody"><input type="number" step="any" inputmode="decimal" name="ldl"><span>mmol/L</span></div></div>
+      <div class="item lipid"><div class="section-title"><h3>高密度脂蛋白胆固醇</h3><label class="badge-toggle"><input type="checkbox" name="hdl_notDone" value="未查" data-lipid="hdl">未查</label></div><div class="value" id="hdl_notDoneBody"><input type="number" step="any" inputmode="decimal" name="hdl"><span>mmol/L</span></div></div>
+      <div class="item lipid"><div class="section-title"><h3>载脂蛋白B</h3><label class="badge-toggle"><input type="checkbox" name="apob_notDone" value="未查" data-lipid="apob">未查</label></div><div class="value" id="apob_notDoneBody"><input type="number" step="any" inputmode="decimal" name="apob"><span>g/L</span></div></div>
+      <div class="item lipid"><div class="section-title"><h3>载脂蛋白A</h3><label class="badge-toggle"><input type="checkbox" name="apoa_notDone" value="未查" data-lipid="apoa">未查</label></div><div class="value" id="apoa_notDoneBody"><input type="number" step="any" inputmode="decimal" name="apoa"><span>g/L</span></div></div>
     </section>
 
+    <section class="exam-section uploads">
+      <h2 class="upload-title">上传检验报告</h2>
+      <p class="upload-tip">图片格式：jpg、png、gif；图片大小不超过5M</p>
+      <div class="upload"><label class="upload-box" for="labReport"><span>＋</span><small>上传图片</small></label><input id="labReport" name="labReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="labPreview" class="preview" hidden><img alt=""></div></div>
+    </section>
 
     <h1 class="ecg-title">心电图</h1>
     <section class="exam-section">
@@ -67,14 +76,10 @@
         <label><input type="radio" name="ecg" value="其他">其他</label>
         <label><input type="radio" name="ecg" value="未查">未查</label>
       </div>
-    </section>
-
-    <h1 class="ecg-title">上传检验报告</h1>
-    <section class="exam-section uploads">
-      <p class="upload-tip">图片格式：jpg、png、gif；图片大小不超过5M</p>
-      <div class="upload-grid">
-        <div class="upload"><h3>检验报告</h3><label class="upload-box" for="labReport"><span>＋</span><small>上传图片</small></label><input id="labReport" name="labReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="labPreview" class="preview" hidden><img alt=""></div></div>
-        <div id="ecgUploadBody"><div class="upload"><h3>心电图报告</h3><label class="upload-box" for="ecgReport"><span>＋</span><small>上传图片</small></label><input id="ecgReport" name="ecgReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="ecgPreview" class="preview" hidden><img alt=""></div></div></div>
+      <div id="ecgUploadBody" class="uploads">
+        <h2 class="upload-title">上传检验报告</h2>
+        <p class="upload-tip">图片格式：jpg、png、gif；图片大小不超过5M</p>
+        <div class="upload"><label class="upload-box" for="ecgReport"><span>＋</span><small>上传图片</small></label><input id="ecgReport" name="ecgReport" type="file" accept=".jpg,.jpeg,.png,.gif" hidden><div id="ecgPreview" class="preview" hidden><img alt=""></div></div>
       </div>
     </section>
 

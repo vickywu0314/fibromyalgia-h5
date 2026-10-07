@@ -10,13 +10,21 @@
       x.disabled=!show;
       if(!show){if(x.type==="radio"||x.type==="checkbox")x.checked=false;else x.value=""}
     });
+    syncOther();
     syncDates();
+  }
+  // 症状选“其他”时填写名称（adverseEventOther）
+  function syncOther(){
+    const box=document.getElementById("adverseOtherBox"),inp=f.elements.adverseEventOther;
+    const on=!details.hidden&&!!f.querySelector('input[name="adverseEvents"][value="其他"]:checked');
+    box.hidden=!on;inp.disabled=!on;if(!on)inp.value="";
   }
   function syncDates(){
     end.min=start.value||"";
     start.max=end.value||"";
   }
   f.elements.hasAdverseEvent.forEach(x=>x.addEventListener("change",sync));
+  f.querySelectorAll('input[name="adverseEvents"]').forEach(x=>x.addEventListener("change",syncOther));
   start.addEventListener("change",syncDates);
   end.addEventListener("change",syncDates);
 
@@ -34,6 +42,8 @@
     if(data.hasAdverseEvent!=="有")return;
     const ev=[].concat(data.adverseEvents||[]);
     f.querySelectorAll('input[name="adverseEvents"]').forEach(c=>{c.checked=ev.includes(c.value)});
+    syncOther();
+    if(ev.includes("其他"))f.elements.adverseEventOther.value=data.adverseEventOther||"";
     ["startDate","endDate","otherMeasures","adverseEventDetails"].forEach(k=>{f.elements[k].value=data[k]||""});
     f.elements.saeCategory.value=data.saeCategory||"";
     f.elements.drugMeasure.value=data.drugMeasure||"";
@@ -49,6 +59,7 @@
       finish:true,
       hasAdverseEvent:has,
       adverseEvents:on?[...f.querySelectorAll('input[name="adverseEvents"]:checked')].map(c=>c.value):[],
+      adverseEventOther:on&&!f.elements.adverseEventOther.disabled?String(f.elements.adverseEventOther.value||"").trim():"",
       startDate:val("startDate"),
       endDate:val("endDate"),
       saeCategory:val("saeCategory"),

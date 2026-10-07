@@ -258,6 +258,12 @@
     "status": "pending"
   },
   {
+    "source": "jiwang-bingshi/qita.html",
+    "title": "其他",
+    "route": "/legacy/jiwang-bingshi/qita",
+    "status": "pending"
+  },
+  {
     "source": "jiwang-bingshi/shen.html",
     "title": "肾病系统",
     "route": "/legacy/jiwang-bingshi/shen",
@@ -351,12 +357,6 @@
     "source": "zhiliao-fangan/add-zhongchengyao.html",
     "title": "口服中成药",
     "route": "/legacy/zhiliao-fangan/add-zhongchengyao",
-    "status": "pending"
-  },
-  {
-    "source": "zhiliao-fangan/add-zhongyao-tangji.html",
-    "title": "口服中药汤剂",
-    "route": "/legacy/zhiliao-fangan/add-zhongyao-tangji",
     "status": "pending"
   },
   {

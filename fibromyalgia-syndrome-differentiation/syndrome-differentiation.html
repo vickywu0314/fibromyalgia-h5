@@ -29,12 +29,12 @@
     </fieldset>
 
     <fieldset class="question">
-      <legend>兼证</legend>
+      <legend>兼证<span class="hint">（可多选，不能与主证相同）</span></legend>
       <div id="secondaryOptions" class="options">
-        <label><input type="radio" name="secondarySyndrome" value="肝郁气滞证">肝郁气滞证</label>
-        <label><input type="radio" name="secondarySyndrome" value="寒湿痹阻证">寒湿痹阻证</label>
-        <label><input type="radio" name="secondarySyndrome" value="痰热扰心证">痰热扰心证</label>
-        <label><input type="radio" name="secondarySyndrome" value="肝肾不足证">肝肾不足证</label>
+        <label><input type="checkbox" name="secondarySyndrome" value="肝郁气滞证">肝郁气滞证</label>
+        <label><input type="checkbox" name="secondarySyndrome" value="寒湿痹阻证">寒湿痹阻证</label>
+        <label><input type="checkbox" name="secondarySyndrome" value="痰热扰心证">痰热扰心证</label>
+        <label><input type="checkbox" name="secondarySyndrome" value="肝肾不足证">肝肾不足证</label>
       </div>
     </fieldset>
 
@@ -43,6 +43,7 @@
     </div>
   </form>
 </main>
+<script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script>
 <script src="js/syndrome-differentiation.js"></script>
 </body>
 </html>

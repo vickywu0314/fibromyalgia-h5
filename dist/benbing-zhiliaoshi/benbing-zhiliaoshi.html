@@ -15,18 +15,20 @@
 
     <nav aria-label="治疗类别">
       <ul class="treatment-list">
-        <li><a href="xiyao.html">西药<span class="chevron" aria-hidden="true">›</span></a></li>
-        <li><a href="zhongyao-tangji.html">中药汤剂<span class="chevron" aria-hidden="true">›</span></a></li>
-        <li><a href="fei-yaowu-liaofa.html">非药物疗法<span class="chevron" aria-hidden="true">›</span></a></li>
-        <li><a href="zhongchengyao.html">中成药<span class="chevron" aria-hidden="true">›</span></a></li>
+        <li><a href="xiyao.html" data-kind-link="xiyao">西药<span class="kind-side"><small class="kind-status">未填写</small><span class="chevron" aria-hidden="true">›</span></span></a></li>
+        <li><a href="zhongyao-tangji.html" data-kind-link="zhongyao-tangji">中药汤剂<span class="kind-side"><small class="kind-status">未填写</small><span class="chevron" aria-hidden="true">›</span></span></a></li>
+        <li><a href="fei-yaowu-liaofa.html" data-kind-link="fei-yaowu-liaofa">非药物疗法<span class="kind-side"><small class="kind-status">未填写</small><span class="chevron" aria-hidden="true">›</span></span></a></li>
+        <li><a href="zhongchengyao.html" data-kind-link="zhongchengyao">中成药<span class="kind-side"><small class="kind-status">未填写</small><span class="chevron" aria-hidden="true">›</span></span></a></li>
       </ul>
     </nav>
 
     <div class="actions">
-      <a class="action action-primary" href="kaiyao-huizong.html">查看开药汇总</a>
-      <button class="action action-secondary" type="button" id="backButton">返回</button>
+      <a class="action action-secondary" href="kaiyao-huizong.html">查看开药汇总</a>
+      <button class="action action-primary" type="button" id="saveButton">保存并返回</button>
     </div>
   </main>
+  <script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script>
+  <script src="./js/store.js"></script>
   <script src="./js/benbing-zhiliaoshi.js"></script>
 </body>
 </html>

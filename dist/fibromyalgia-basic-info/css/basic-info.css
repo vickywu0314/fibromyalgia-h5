@@ -1,7 +1,8 @@
 /* 基本信息页：患者评估与病史子模块区域 */
 .submodule-section{
-  margin:8px -16px 26px;
-  padding:20px 16px 0;
+  margin:8px 0 26px;
+  padding:16px 12px 12px;
+  border-radius:10px;
   background:#f5f6f7;
 }
 .submodule-heading{
@@ -34,7 +35,7 @@
 }
 .submodule-list{
   overflow:hidden;
-  border-radius:9px 9px 0 0;
+  border-radius:9px;
   background:#fff;
 }
 .submodule-row.menu-row{
@@ -45,6 +46,11 @@
   background:#fff;
 }
 .submodule-row.menu-row:last-child{border-bottom:0}
+.submodule-row.menu-row span.submodule-copy{
+  color:#222;
+  font-size:inherit;
+  font-weight:inherit;
+}
 .submodule-copy{
   min-width:0;
   display:flex;
@@ -85,27 +91,15 @@
   line-height:1;
 }
 @media(max-width:360px){
-  .submodule-section{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
   .submodule-heading{gap:8px}
 }
 
-/* 表单内嵌的子模块入口（按需求顺序穿插在字段之间） */
-.submodule-row.inline-row{
-  border:1px solid #eceef1;
-  border-radius:9px;
-}
-.submodule-row.inline-row:last-child{border-bottom:1px solid #eceef1}
-/* 条件区域：.conditional 为 grid 布局，需显式处理 hidden */
-.conditional[hidden]{display:none}
-.conditional .sub-label{margin:0}
-.region-fields select{min-width:0}
-.region-fields select:disabled{background:#f5f6f7;color:#9aa0a8}
-.choices input[type=checkbox]{width:18px;height:18px;margin:0}
-.drink-list{display:grid;gap:14px}
-.drink-item{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px}
-.drink-item>label{display:flex!important;align-items:center;gap:8px;min-height:30px}
-.drink-item input[type=checkbox]{width:18px;height:18px;margin:0}
-.drink-item .amount-line{margin-top:0}
-.field input:disabled{background:#f5f6f7}
+.choices input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#168bdd}
+.choices input[type=radio]{accent-color:#168bdd}
 .conditional .choices label{display:flex;gap:8px}
-.conditional input[type=radio],.conditional input[type=checkbox]{width:18px;height:18px;min-height:0;padding:0;border:0;margin:0;flex:none}
+.conditional .amount-line{display:flex!important;margin-top:0}
+.conditional .sub-label{margin:0 0 10px}
+.inline-fields select{min-width:0}
+.inline-fields select:disabled{background:#f5f6f7;color:#9aa0a8}
+.conditional[hidden],[hidden]{display:none!important}
+.error{margin:6px 0 0;color:#e5484d;font-size:12px;line-height:1.4}

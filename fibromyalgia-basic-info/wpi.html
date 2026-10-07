@@ -10,13 +10,13 @@
 <body>
 <main class="page">
   <section class="progress-block" aria-label="填写进度">
-    <div class="progress"><span style="width:30%"></span></div>
-    <p>已完成30%</p>
+    <div class="progress"><span id="progressBar" style="width:0%"></span></div>
+    <p id="progressText">已完成0%</p>
   </section>
 
   <form id="wpiForm">
     <h1>普遍疼痛指数（WPI）</h1>
-    <p class="instruction">标记出过去一周中患者出现疼痛的部位。共有多少部位疼过？</p>
+    <p class="instruction">标记出过去一周中患者出现疼痛的部位，共有多少部位疼过？</p>
 
     <section class="group">
       <h2>左上部位</h2>
@@ -57,14 +57,11 @@
       <label><input type="checkbox" name="painArea" value="腹部">腹部</label>
     </section>
 
-    <section class="result" aria-live="polite">
-      <span>疼痛部位共计（WPI 评分）：</span><strong id="wpiCountText">0</strong><span>/19</span>
-      <input type="hidden" name="wpiScore" id="wpiScore" value="0">
-    </section>
-
-    <div class="bottom-action"><button type="submit">保存并返回</button></div>
+    <div class="bottom-action"><button type="submit" id="saveBtn">保存并返回</button></div>
   </form>
 </main>
+<script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script>
+<script src="js/fs.js"></script>
 <script src="js/wpi.js"></script>
 </body>
 </html>

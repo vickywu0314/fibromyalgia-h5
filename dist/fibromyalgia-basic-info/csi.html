@@ -119,15 +119,13 @@
         </fieldset>
       </section>
 
-      <section class="result" aria-live="polite">
-        <span>总分：</span>
-        <strong id="scoreText">--</strong>
+      <section class="result">
+        <span>总分：</span><strong id="scoreText">--</strong>
         <span class="result-sep">是否≥18分：</span>
         <strong id="resultText">--</strong>
-        <input type="hidden" name="totalScore" id="totalScore">
-        <input type="hidden" name="over18" id="over18">
+        <input type="hidden" name="score" id="scoreInput">
+        <input type="hidden" name="over18" id="over18Input">
       </section>
-      <p class="result-note">每题 0–4 分，9 题全部作答后自动计算总分及是否≥18分。</p>
 
       <div class="bottom-action">
         <button type="submit">保存并返回</button>
@@ -135,6 +133,8 @@
     </form>
   </main>
 
+  <script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script>
+  <script src="js/form-utils.js"></script>
   <script src="js/csi.js"></script>
 </body>
 </html>

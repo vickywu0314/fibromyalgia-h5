@@ -4,12 +4,14 @@
   const form=document.getElementById("sssForm");
   const names=[...new Set([...form.querySelectorAll('input[type="radio"]')].map(r=>r.name))];
 
-  function answered(){ return names.filter(n=>form.querySelector('input[name="'+n+'"]:checked')); }
-  function progress(){ FsScore.setProgress(Math.round(answered().length/names.length*100)); }
   const saved=FmsCase.get("jbxx.fs.sss");
   if(saved && saved.answers) FmsCase.fillForm(form, saved.answers);
-  progress();
-  form.addEventListener("change", progress);
+  // 进度：已答题数 / 6；作答中暂存草稿（FS 入口显示「填写中」）
+  FmsProgress.track(form);
+  FormUtils.autoStore(form, "jbxx.fs.sss", ()=>{
+    const answers={}; names.forEach(n=>{ const c=form.querySelector('input[name="'+n+'"]:checked'); answers[n]=c?c.value:""; });
+    return { score:"", result:"", answers };
+  });
 
   form.addEventListener("submit",e=>{
     e.preventDefault();

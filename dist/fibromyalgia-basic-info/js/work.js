@@ -28,6 +28,15 @@
   form.addEventListener("change", updateFlow);
   actualHours.addEventListener("input", updateFlow);
   U.bind({form: form, path: "jbxx.work", update: updateFlow});
+  // 进度：当前应答题（第1题选“否”跳过 2~5 题、第4题填 0 跳过第5题）中已答数
+  const tracker = FmsProgress.track(form);
+  U.autoStore(form, "jbxx.work", () => {
+    const d = U.serialize(form), answers = {};
+    ["q1", "q2", "q3", "q4", "q5", "q6"].forEach(k => { answers[k] = d[k] != null ? String(d[k]).trim() : ""; });
+    return {score: "", result: "", answers: answers};
+  });
+  const setFormData = window.setFormData;
+  window.setFormData = function(data){ setFormData(data); tracker.refresh(); };
 
   // 第5、6题按 PDF 只有两个选项（「没有影响（0-4分）」/「完全无法…（5-10分）」），没有 0~10 的具体分值，
   // 因此 WPAI 只计算缺勤率（仅当前有带薪工作 Q1=是 时）：

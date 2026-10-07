@@ -39,6 +39,7 @@ window.WESTERN_CATALOG = {
 };
 window.WESTERN_OTHER = { unit: 'mg', freqs: ['日1次', '日2次', '日3次', '日4次', '晚1次', '每4小时1次', '每6小时1次', '每12小时1次', '隔日1次', '必要时'] };
 const c = (name, doses, unit, freqs) => ({ name, doses, unit, freqs });
+/* 中成药：固定为 PDF 列出的 15 个，直接写在页面里，不读取任何接口或外部目录 */
 window.PATENT_DRUGS = [
   c('乌灵胶囊', ['1', '2', '3'], '粒', D3),
   c('通络开痹片', ['1', '2', '3'], '片', D1),
@@ -56,12 +57,6 @@ window.PATENT_DRUGS = [
   c('痹祺胶囊', ['4'], '粒', D3),
   c('逍遥丸', ['1', '1.5'], '袋', D2)
 ];
-/* PDF：中成药使用 RA 数据库，但必须包含以上 15 个。宿主页面如注入 window.RA_PATENT_CATALOG（同结构数组），其余药物追加在后，同名以上表为准 */
-if (Array.isArray(window.RA_PATENT_CATALOG)) {
-  window.RA_PATENT_CATALOG.forEach(d => {
-    if (d && d.name && !window.PATENT_DRUGS.some(x => x.name === d.name)) window.PATENT_DRUGS.push(c(String(d.name), (d.doses || []).map(String), d.unit || '', d.freqs || d.frequencies || []));
-  });
-}
 window.NON_DRUG = {
   names: ['太极拳', '八段锦', '针灸', '拔罐', '推拿', '耳针', '中药熏洗', '穴位贴敷', '耳电针', '针刀疗法', '穴位埋线', '刮痧', '揿针', '芳香疗法', '瑜伽', '冥想', '其他'],
   durations: ['5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60'],

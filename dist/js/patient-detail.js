@@ -38,15 +38,33 @@ if (viewing) {
 
 const modules = [...document.querySelectorAll('.module[data-part]')];
 let done = 0;
+// 预填字段（新增患者 / 随诊时自动带入）不算医生已经开始填写
+const PREFILLED = { jbxx: ['visitDate', 'name', 'idCard', 'gender'] };
+function startedPart(part) {
+  const v = draft[part];
+  if (!v || typeof v !== 'object') return false;
+  const skip = PREFILLED[part] || [];
+  return Object.keys(v).some(k => k !== 'finish' && skip.indexOf(k) === -1 && FmsCase.hasData(v[k]));
+}
+function badge(state, text, title, tone) {
+  state.textContent = text;
+  state.title = title || '';
+  state.classList.add('partial');
+  state.style.cssText = 'width:auto;min-width:28px;padding:0 5px;font-size:11px;font-weight:600;' +
+    (tone === 'sync' ? 'background:#eaf1fd;color:#1257c4' : 'background:#fff4e5;color:#b26a00');
+}
 modules.forEach(m => {
-  // 已保存且已成功提交到后端才算完成；本地有未提交的改动时显示「待同步」
-  const saved = !!(draft[m.dataset.part] && draft[m.dataset.part].finish);
-  const finished = saved && FmsCase.isSynced(m.dataset.part);
+  // 状态：未填写 ○ / 填写中（有内容未保存）/ 待提交（已保存但未同步到后端）/ 已完成 ✓
+  const part = m.dataset.part;
+  const saved = !!(draft[part] && draft[part].finish);
+  const finished = saved && FmsCase.isSynced(part);
   if (finished) done++;
   const state = m.querySelector('.state');
   state.classList.toggle('done', finished);
   state.textContent = finished ? '✓' : '○';
-  if (saved && !finished) state.title = '有改动尚未提交，点击完成录入时会自动提交';
+  state.title = finished ? '已完成' : '未填写';
+  if (saved && !finished) badge(state, '待提交', '已保存，有改动尚未提交，点击完成录入时会自动提交', 'sync');
+  else if (!saved && startedPart(part)) badge(state, '填写中', '已填写部分内容，尚未保存');
 });
 // 病情评估：9 个量表边填边暂存在草稿里；未全部完成（或有未提交改动）时显示已完成量表数 x/9
 {
@@ -56,7 +74,7 @@ modules.forEach(m => {
   const doneN = scales.filter(k => p[k] && p[k].finish).length;
   const started = scales.some(k => p[k] && (p[k].finish || Number(p[k].answered) > 0));
   const state = m && m.querySelector('.state');
-  if (state && started && !state.classList.contains('done')) {
+  if (state && started && !state.classList.contains('done') && !(p.finish && !FmsCase.isSynced('bqpg'))) {
     state.textContent = doneN + '/' + scales.length;
     state.classList.add('partial');
     state.title = doneN === scales.length ? '9 个量表已填完，有改动尚未提交' : '已完成 ' + doneN + ' 个量表，共 ' + scales.length + ' 个';

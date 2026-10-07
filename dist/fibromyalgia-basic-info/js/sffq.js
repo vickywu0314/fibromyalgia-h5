@@ -57,6 +57,19 @@
     f.reset(); fill(data); update();
   };
 
+  // 进度：当前可见的题目（DHA「有」后的品牌/剂量、选中「其他/以上」后的数量输入等条件题出现才计入）中已答数；
+  // 「其他食物」选「有」后，5 行食物名称/重量合计一题：至少一行填写完整且没有只填一半的行才算已答
+  const otherRows = [...f.querySelectorAll(".other-food-row")];
+  const otherNames = otherRows.flatMap(r => [...r.querySelectorAll("input")].map(x => x.name));
+  const tracker = FmsProgress.track(f, {optional: otherNames, extra: () => {
+    if (value("other_food_used") !== "有") return {answered: 0, total: 0};
+    const filled = otherRows.filter(r => [...r.querySelectorAll("input")].some(x => x.value.trim()));
+    const ok = filled.length && filled.every(r => [...r.querySelectorAll("input")].every(x => x.value.trim()));
+    return {answered: ok ? 1 : 0, total: 1};
+  }});
+  const setFormData = window.setFormData;
+  window.setFormData = function(data){ setFormData(data); tracker.refresh(); };
+
   f.addEventListener("change", () => { update(); store(); });
   f.addEventListener("input", store);
   f.addEventListener("submit", e => {

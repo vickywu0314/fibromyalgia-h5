@@ -31,7 +31,7 @@
   // SAE类别为单选，但非SAE时允许不选：再次点击已选项可取消
   f.querySelectorAll('input[name="saeCategory"]').forEach(r=>{
     r.closest("label").addEventListener("pointerdown",()=>{r.dataset.was=r.checked?"1":""});
-    r.addEventListener("click",()=>{if(r.dataset.was==="1"){r.checked=false;r.dataset.was=""}});
+    r.addEventListener("click",()=>{if(r.dataset.was==="1"){r.checked=false;r.dataset.was="";f.dispatchEvent(new Event("change"))}});
   });
 
   // 回显：window.fillForm(FmsCase.get("blsj"))，如 {hasAdverseEvent:"有",adverseEvents:["头晕"],startDate:"2026-06-01",...}
@@ -69,11 +69,23 @@
     };
   }
 
+  // 进度：每个 name 一题（选「有」后才计入症状、日期、措施等）；SAE类别（非SAE可不选）、其他措施为选填
+  const progress=FmsProgress.track(f,{optional:["saeCategory","otherMeasures"]});
+
+  // 边填边暂存到草稿（finish=false，不提交），返回患者资料页时显示「填写中」
+  let timer=0;
+  const autosave=()=>{clearTimeout(timer);timer=setTimeout(()=>{try{FmsCase.set("blsj",Object.assign(collect(),{finish:false}))}catch(e){}},300)};
+  f.addEventListener("change",autosave);
+  f.addEventListener("input",autosave);
+
   f.onsubmit=e=>{
     e.preventDefault();
+    clearTimeout(timer);
+    if(!f.elements.hasAdverseEvent.value){FmsCase.toast("请选择有无不良反应");return}
     if(start.value&&end.value&&end.value<start.value){FmsCase.toast("结束日期不能早于发生日期");return}
     FmsCase.save("blsj",collect(),{back:"../patient-detail.html",button:f.querySelector('button[type="submit"]')});
   };
   sync();
   window.fillForm(FmsCase.get("blsj"));
+  progress.refresh();
 })();

@@ -23,9 +23,12 @@ button,input{font:inherit;color:inherit}
   flex:none;
 }
 .result{display:flex;align-items:center;gap:8px;margin:22px 0 6px;padding:15px 14px;border-radius:7px;background:#f6f8fa;font-size:15px}
+.result{flex-wrap:wrap}
 .result strong{color:#168bdd}
+.result-sep{margin-left:14px}
+.result-note{margin:6px 0 0;color:#7a818b;font-size:13px;line-height:1.6}
 .bottom-action{padding-top:18px}
 .bottom-action button{width:100%;min-height:46px;border:0;border-radius:4px;background:#168bdd;color:#fff}
 @media(max-width:360px){
   .page{padding-left:12px;padding-right:12px}
-}
+}.result{flex-wrap:wrap}.result .result-sep{margin-left:12px}

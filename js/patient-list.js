@@ -1,6 +1,9 @@
 const list = document.getElementById('patientList');
 const empty = document.getElementById('empty');
 const searchInput = document.getElementById('search');
+// 从新增患者页“患者已存在”返回时带入关键字，直接筛出该患者
+const presetKeyword = new URLSearchParams(location.search).get('keyword');
+if (presetKeyword) searchInput.value = presetKeyword;
 let requestId = 0;
 document.getElementById('addPatient').onclick = () => { location.href = './patient-add.html'; };
 function showState(message) {
@@ -33,7 +36,12 @@ async function loadPatients() {
       button.querySelector('.meta span').textContent = date ? '上次新增记录时间：' + String(date).slice(0, 10) : '暂无新增记录时间';
       const count = patient.recordCount ?? patient.followCount ?? patient.followUpCount ?? patient.count;
       button.querySelector('.meta span:last-child').textContent = count == null ? '' : `已添加${count}条`;
-      button.onclick = () => { location.href = './follow-up-list.html?name=' + encodeURIComponent(name); };
+      // 随访记录挂在患者下：带上患者 id、姓名、身份证号
+      const pid = patient.patientId ?? patient.id ?? '';
+      const cardNo = patient.cardno || patient.cardNo || patient.idCard || '';
+      button.onclick = () => {
+        location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name, cardno: cardNo });
+      };
       list.append(button);
     }
   } catch (error) {

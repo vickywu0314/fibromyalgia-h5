@@ -1,1 +1,24 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>中药饮片</title><link rel="stylesheet" href="./css/common.css"><link rel="stylesheet" href="./css/plan.css"></head><body><main class="page form-page" data-page="form" data-kind="zhongyao-yinpian"><section class="progress-block"><div class="progress" role="progressbar" aria-label="填写进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"><span></span></div><p>已完成30%</p></section><h1>中药饮片</h1><form id="planForm"><fieldset class="choice-group"><legend>中医证型</legend><label><input type="radio" name="中医证型" value="肝郁气滞证"><span>肝郁气滞证</span></label><label><input type="radio" name="中医证型" value="寒湿痹阻证"><span>寒湿痹阻证</span></label><label><input type="radio" name="中医证型" value="瘀热扰心证"><span>瘀热扰心证</span></label><label><input type="radio" name="中医证型" value="肝肾不足证"><span>肝肾不足证</span></label></fieldset><fieldset class="choice-group"><legend>处方类型</legend><label><input type="radio" name="处方类型" value="逍遥散"><span>逍遥散</span></label><label><input type="radio" name="处方类型" value="柴胡桂枝汤"><span>柴胡桂枝汤</span></label><label><input type="radio" name="处方类型" value="血府逐瘀汤"><span>血府逐瘀汤</span></label><label><input type="radio" name="处方类型" value="蠲痹汤"><span>蠲痹汤</span></label><label><input type="radio" name="处方类型" value="温胆汤"><span>温胆汤</span></label></fieldset><label class="field"><span class="field-title">处方</span><textarea class="control" name="prescription" rows="4" placeholder="请输入处方，药物之间用逗号分隔"></textarea></label><section class="photo-field" aria-labelledby="photoHeading"><h2 id="photoHeading">上传处方图片</h2><p>可拍照或从相册选择，支持 JPG、PNG、GIF，单张不超过 5MB</p><div class="photo-actions"><button class="upload-button" id="choosePhoto" type="button">从相册选择</button><button class="upload-button" id="takePhoto" type="button">拍照上传</button></div><input class="sr-only" type="file" id="treatmentPhoto" accept="image/jpeg,image/png,image/gif" aria-label="从相册选择处方图片"><input class="sr-only" type="file" id="cameraPhoto" accept="image/*" capture="environment" aria-label="拍照上传处方图片"><div class="photo-preview" id="photoContainer" hidden><img id="photoPreview" alt="已选择的处方图片预览"><button class="photo-remove" id="removePhoto" type="button">删除图片</button></div><p class="photo-status" id="photoStatus" role="status" aria-live="polite">尚未上传图片</p></section><div class="form-actions"><button class="primary" type="submit">保存并返回</button><p class="error" id="error" role="alert"></p></div></form></main><script src="./js/decoctions.js"></script><script src="./js/plan.js"></script></body></html>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>中药汤剂</title><link rel="stylesheet" href="./css/common.css"><link rel="stylesheet" href="./css/plan.css"></head><body>
+<main class="page form-page" data-page="form" data-kind="zhongyao-yinpian">
+<section class="progress-block"><div class="progress" role="progressbar" aria-label="填写进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30"><span></span></div><p>已完成30%</p></section>
+<h1>中药汤剂</h1>
+<form id="planForm">
+<fieldset class="choice-group"><legend>主要中医证型</legend><div id="syndromeChoices"></div></fieldset>
+<div class="sub-block" id="recipeBox" hidden>
+<fieldset class="choice-group"><legend>方剂</legend><div id="recipeChoices"></div></fieldset>
+<div class="herb-box" id="herbBox" hidden><span class="field-title">方剂组成</span><ul class="herb-list" id="herbList"></ul></div>
+</div>
+<label class="field"><span class="field-title">补充药物（分号隔开）</span><textarea class="control" name="supplement" rows="4" placeholder="补充药物，分号隔开"></textarea></label>
+<section class="photo-field" aria-labelledby="photoHeading">
+<h2 id="photoHeading">拍照上传</h2>
+<p>可拍照或从相册选择，支持 JPG、PNG、GIF，单张不超过 5MB</p>
+<div class="photo-actions"><button class="upload-button" id="choosePhoto" type="button">从相册选择</button><button class="upload-button" id="takePhoto" type="button">拍照上传</button></div>
+<input class="sr-only" type="file" id="treatmentPhoto" accept="image/jpeg,image/png,image/gif" aria-label="从相册选择处方图片"><input class="sr-only" type="file" id="cameraPhoto" accept="image/*" capture="environment" aria-label="拍照上传处方图片">
+<div class="photo-preview" id="photoContainer" hidden><img id="photoPreview" alt="已选择的处方图片预览"><button class="photo-remove" id="removePhoto" type="button">删除图片</button></div>
+<p class="photo-status" id="photoStatus" role="status" aria-live="polite">尚未上传图片</p>
+</section>
+<div class="form-actions"><button class="primary" type="submit">保存并返回</button><button class="danger" id="deleteItem" type="button" hidden>删除该记录</button><p class="error" id="error" role="alert"></p></div>
+</form>
+</main>
+<script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script><script src="./js/decoctions.js"></script><script src="./js/plan.js"></script>
+</body></html>

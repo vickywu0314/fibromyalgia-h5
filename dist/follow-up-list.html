@@ -1,11 +1,5 @@
 <!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ffffff"><title>随访记录</title><link rel="stylesheet" href="./css/common.css"></head><body>
 
-<main><div class="patient-context" id="patientName">患者</div><div class="list" id="visits">
-<button class="card visit-card" data-date="2020-10-15"><div><div class="visit-label">随访日期</div><div class="visit-date">2020-10-15</div></div><div class="chev">›</div></button>
-<button class="card visit-card" data-date="2020-09-15"><div><div class="visit-label">随访日期</div><div class="visit-date">2020-09-15</div></div><div class="chev">›</div></button>
-<button class="card visit-card" data-date="2020-08-15"><div><div class="visit-label">随访日期</div><div class="visit-date">2020-08-15</div></div><div class="chev">›</div></button>
-<button class="card visit-card" data-date="2020-07-15"><div><div class="visit-label">随访日期</div><div class="visit-date">2020-07-15</div></div><div class="chev">›</div></button>
-<button class="card visit-card" data-date="2020-06-15"><div><div class="visit-label">随访日期</div><div class="visit-date">2020-06-15</div></div><div class="chev">›</div></button>
-</div></main>
+<main><div class="patient-context" id="patientName">患者</div><div class="list" id="visits"></div><div class="empty" id="empty">暂无随访记录</div></main>
 <div class="fabbar"><button class="primary" id="addVisit">新增随访记录</button></div><div class="toast" id="toast"></div>
-<script src="./js/follow-up-list.js"></script></body></html>
+<script src="./js/fms-api.js"></script><script src="./js/fms-case.js"></script><script src="./js/follow-up-list.js"></script></body></html>

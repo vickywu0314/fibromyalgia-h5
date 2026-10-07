@@ -1,0 +1,815 @@
+{
+  "id": 20001,
+  "patientId": null,
+  "doctorId": 5065,
+  "researchType": 12,
+  "visitType": "基线",
+  "visitDate": "2026-10-06",
+  "page": 1,
+  "part": "blsj",
+  "jbxx": {
+    "finish": true,
+    "visitDate": "2026-10-06",
+    "name": "张三",
+    "idCard": "110101199001011234",
+    "gender": "男",
+    "csi": {
+      "finish": true,
+      "score": "0",
+      "result": "否",
+      "answers": {
+        "q1": "0",
+        "q2": "0",
+        "q3": "0",
+        "q4": "0",
+        "q5": "0",
+        "q6": "0",
+        "q7": "0",
+        "q8": "0",
+        "q9": "0"
+      }
+    },
+    "work": {
+      "finish": true,
+      "score": "",
+      "result": "",
+      "answers": {
+        "q1": "是",
+        "q2": "3",
+        "q3": "3",
+        "q4": "3",
+        "q5": "健康问题对我的工作没有影响（0-4分）",
+        "q6": "健康问题对我的日常活动没有影响（0-4分）"
+      },
+      "absenteeism": "50"
+    },
+    "bodyComposition": {
+      "finish": true,
+      "bodyFatPercentage": "3",
+      "bodyFatMass": "3",
+      "skeletalMuscleMass": "3",
+      "skeletalMuscleIndex": "3",
+      "leanBodyMass": "3",
+      "visceralFatLevel": "1级",
+      "waistHipRatio": "3",
+      "reportImages": [],
+      "imageUrl": ""
+    },
+    "tipi": {
+      "finish": true,
+      "score": "",
+      "result": "",
+      "answers": {
+        "q1": "1",
+        "q2": "1",
+        "q3": "1",
+        "q4": "1",
+        "q5": "1",
+        "q6": "1",
+        "q7": "1",
+        "q8": "1",
+        "q9": "1",
+        "q10": "1"
+      },
+      "extraversion": "4",
+      "agreeableness": "4",
+      "conscientiousness": "4",
+      "emotionalStability": "4",
+      "openness": "4"
+    },
+    "sffq": {
+      "finish": true,
+      "score": "",
+      "result": "",
+      "answers": {
+        "oil_type": "葵花籽油",
+        "oil_daily": "一茶匙（约5g）",
+        "s2_1_freq": "从不",
+        "s2_2_freq": "从不",
+        "s2_3_freq": "从不",
+        "s2_4_freq": "从不",
+        "s2_5_freq": "从不",
+        "s2_6_freq": "从不",
+        "s2_7_freq": "从不",
+        "s2_1_amt": "1两及以下",
+        "s2_2_amt": "1两及以下",
+        "s2_3_amt": "1两及以下",
+        "s2_4_amt": "1两及以下",
+        "s2_5_amt": "1两及以下",
+        "s2_6_amt": "1两及以下",
+        "s2_7_amt": "1两及以下",
+        "s3_1_freq": "从不",
+        "s3_2_freq": "从不",
+        "s3_1_amt": "半两及以下（25g）",
+        "s3_2_amt": "半两及以下（25g）",
+        "s4_1_freq": "从不",
+        "s4_2_freq": "从不",
+        "s4_3_freq": "从不",
+        "s4_4_freq": "从不",
+        "s4_5_freq": "从不",
+        "s4_6_freq": "从不",
+        "s4_7_freq": "从不",
+        "s4_8_freq": "从不",
+        "s4_1_amt": "半两及以下（25g）",
+        "s4_2_amt": "半两及以下（25g）",
+        "s4_3_amt": "半两及以下（25g）",
+        "s4_4_amt": "半两及以下（25g）",
+        "s4_5_amt": "半两及以下（25g）",
+        "s4_6_amt": "半两及以下（25g）",
+        "s4_7_amt": "半两及以下（25g）",
+        "s4_8_amt": "半两及以下（25g）",
+        "s5_1_freq": "每月少于1次",
+        "s5_2_freq": "每月少于1次",
+        "s5_3_freq": "每月少于1次",
+        "s5_4_freq": "每月少于1次",
+        "s5_5_freq": "每月少于1次",
+        "s5_1_amt": "半两及以下（25g）",
+        "s5_2_amt": "半两及以下（25g）",
+        "s5_3_amt": "半两及以下（25g）",
+        "s5_4_amt": "半两及以下（25g）",
+        "s5_5_amt": "半两及以下（25g）",
+        "s6_1_freq": "从不",
+        "s6_2_freq": "从不",
+        "s6_3_freq": "从不",
+        "s6_4_freq": "从不",
+        "s6_1_amt": "半两及以下（25g）",
+        "s6_2_amt": "半两及以下（25g）",
+        "s6_3_amt": "半两及以下（25g）",
+        "s6_4_amt": "半两及以下（25g）",
+        "s7_1_freq": "从不",
+        "s7_2_freq": "从不",
+        "s7_3_freq": "从不",
+        "s7_4_freq": "从不",
+        "s7_5_freq": "从不",
+        "s7_1_amt": "半两及以下（25g）",
+        "s7_2_amt": "半两及以下（25g）",
+        "s7_3_amt": "半两及以下（25g）",
+        "s7_4_amt": "半两及以下（25g）",
+        "s7_5_amt": "半两及以下（25g）",
+        "s8_1_freq": "每月少于1次",
+        "s8_2_freq": "每月少于1次",
+        "s8_1_amt": "半个",
+        "s8_2_amt": "半个",
+        "s9_1_freq": "每月少于1次",
+        "s9_2_freq": "每月少于1次",
+        "s9_3_freq": "每月少于1次",
+        "s9_4_freq": "每月少于1次",
+        "s9_1_amt": "半两及以下（25g）",
+        "s9_2_amt": "半两及以下（25g）",
+        "s9_3_amt": "半两及以下（25g）",
+        "s9_4_amt": "半两及以下（25g）",
+        "s10_1_freq": "每月少于1次",
+        "s10_2_freq": "每月少于1次",
+        "s10_3_freq": "每月少于1次",
+        "s10_4_freq": "每月少于1次",
+        "s10_1_amt": "少于或等于100ml",
+        "s10_2_amt": "少于或等于100ml",
+        "s10_3_amt": "少于或等于100ml",
+        "s10_4_amt": "少于或等于100ml",
+        "dha_used": "有",
+        "dha_brand": "爱维乐",
+        "dha_dose": "1粒/天",
+        "other_food_used": "有",
+        "other_food_1_name": "测试",
+        "other_food_1_weight": "3",
+        "other_food_2_name": "测试",
+        "other_food_2_weight": "3",
+        "other_food_3_name": "测试",
+        "other_food_3_weight": "3",
+        "other_food_4_name": "测试",
+        "other_food_4_weight": "3",
+        "other_food_5_name": "测试",
+        "other_food_5_weight": "3"
+      }
+    },
+    "province": "北京市",
+    "city": "北京市",
+    "marriage": "未婚",
+    "education": "未上过学",
+    "workStatus": "在职人员",
+    "smoking": "经常有",
+    "smokingYears": 3,
+    "smokingAmount": "10支以下",
+    "drinking": "经常有",
+    "drinkingYears": 3,
+    "drinkType": "白酒",
+    "drinkTypes": [
+      "白酒"
+    ],
+    "baijiuAmount": 3,
+    "beerAmount": "",
+    "wineAmount": "",
+    "drinkAmount": 3,
+    "signature": "data:image/png;base64,iVBORw0KGgo...",
+    "tpc": {
+      "finish": true,
+      "score": "9",
+      "result": "否",
+      "answers": {
+        "q1": [
+          "左"
+        ],
+        "q2": [
+          "左"
+        ],
+        "q3": [
+          "左"
+        ],
+        "q4": [
+          "左"
+        ],
+        "q5": [
+          "左"
+        ],
+        "q6": [
+          "左"
+        ],
+        "q7": [
+          "左"
+        ],
+        "q8": [
+          "左"
+        ],
+        "q9": [
+          "左"
+        ]
+      }
+    },
+    "fs": {
+      "wpi": {
+        "finish": true,
+        "score": "1",
+        "result": "",
+        "answers": {
+          "painArea": [
+            "左下颌"
+          ]
+        }
+      },
+      "finish": true,
+      "score": "1",
+      "result": "否",
+      "sss": {
+        "finish": true,
+        "score": "0",
+        "result": "",
+        "answers": {
+          "q1_1": "0（没有）",
+          "q1_2": "0（没有）",
+          "q1_3": "0（没有）",
+          "q2_1": "0（没有）",
+          "q2_2": "0（没有）",
+          "q2_3": "0（没有）"
+        }
+      }
+    },
+    "treatmentHistory": {
+      "xiyao": [
+        {
+          "name": "普瑞巴林胶囊",
+          "medication": "普瑞巴林胶囊",
+          "frequency": "日1次",
+          "dose": "1",
+          "unit": "片/粒",
+          "startDate": "2024-05-01",
+          "ongoing": "否",
+          "endDate": "2024-05-01",
+          "reason": "疗效不佳或无效"
+        }
+      ],
+      "hasXiyao": "有",
+      "zhongyaoTangji": [
+        {
+          "name": "汤剂1",
+          "startDate": "2024-05-01",
+          "ongoing": "否",
+          "endDate": "2024-05-01",
+          "reason": "疗效不佳或无效"
+        }
+      ],
+      "hasZhongyaoTangji": "有",
+      "feiYaowuLiaofa": [
+        {
+          "name": "太极拳",
+          "duration": "5",
+          "durationUnit": "分钟",
+          "frequency": "日1次",
+          "startDate": "2024-05-01",
+          "ongoing": "否",
+          "endDate": "2024-05-01",
+          "reason": "疗效不佳或无效"
+        }
+      ],
+      "hasFeiYaowuLiaofa": "有",
+      "zhongchengyao": [
+        {
+          "name": "乌灵胶囊",
+          "frequency": "日1次",
+          "dose": "1",
+          "unit": "片/粒",
+          "startDate": "2024-05-01",
+          "endDate": "2024-05-01"
+        }
+      ],
+      "hasZhongchengyao": "有",
+      "finish": true
+    },
+    "diseaseHistory": [
+      {
+        "category": "huxi",
+        "categoryLabel": "呼吸系统疾病",
+        "name": "慢性阻塞性肺疾病"
+      }
+    ],
+    "diseaseHistoryFinish": true,
+    "concomitantMedication": [
+      {
+        "name": "测试"
+      }
+    ],
+    "concomitantMedicationFinish": true,
+    "painOnsetDate": "2024-05-01",
+    "diagnosed": "是",
+    "diagnosisDate": "2024-05-01"
+  },
+  "bsbq": {
+    "stool": "稀溏",
+    "urine": "黄",
+    "tongueColor": "淡红",
+    "tongueShape": "苍老",
+    "coatColor": "白",
+    "coatShape": "厚",
+    "onsetTriggers": [
+      "车祸"
+    ],
+    "aggravatingTriggers": [
+      "体力劳动"
+    ],
+    "painNature": [
+      "酸痛"
+    ],
+    "systemic": [
+      "焦虑易怒"
+    ],
+    "menstrualStage": "围绝经期",
+    "periodTiming": "月经先期",
+    "periodColor": "淡红",
+    "periodAmount": "月经过多",
+    "dysmenorrhea": "有",
+    "finish": true
+  },
+  "zhpd": {
+    "finish": true,
+    "mainSyndrome": "肝郁气滞证",
+    "secondarySyndrome": "寒湿痹阻证",
+    "secondarySyndromes": [
+      "寒湿痹阻证"
+    ],
+    "hasSecondary": "是"
+  },
+  "fzjc": {
+    "finish": true,
+    "cbc_wbc_value": "3",
+    "cbc_wbc_status": "已查",
+    "cbc_rbc_value": "3",
+    "cbc_rbc_status": "已查",
+    "cbc_hgb_value": "3",
+    "cbc_hgb_status": "已查",
+    "urine_wbc_value": "3",
+    "urine_wbc_status": "已查",
+    "urine_rbc_value": "3",
+    "urine_rbc_status": "已查",
+    "urine_protein_value": "3",
+    "urine_protein_status": "已查",
+    "urine_occult_value": "3",
+    "urine_occult_status": "已查",
+    "stool_appearance": "正常",
+    "stool_wbc_status": "数值",
+    "stool_wbc_value": "3",
+    "stool_rbc_status": "正常",
+    "stool_rbc_value": "",
+    "alt_status": "异常",
+    "alt_value": "80",
+    "ast_status": "正常",
+    "ast_value": "",
+    "bun_status": "正常",
+    "bun_value": "",
+    "cr_status": "正常",
+    "cr_value": "",
+    "cholesterol": "3",
+    "cholesterol_status": "已查",
+    "triglyceride": "3",
+    "triglyceride_status": "已查",
+    "ldl": "3",
+    "ldl_status": "已查",
+    "hdl": "3",
+    "hdl_status": "已查",
+    "apob": "3",
+    "apob_status": "已查",
+    "apoa": "3",
+    "apoa_status": "已查",
+    "stool_occult": "阴性",
+    "ecg": "正常",
+    "labReportImages": [],
+    "ecgReportImages": [],
+    "lab_report_url": "",
+    "ecg_report_url": ""
+  },
+  "bqpg": {
+    "finish": true,
+    "vas": {
+      "finish": true,
+      "answered": 5,
+      "total": 5,
+      "score": "5",
+      "result": "中度",
+      "answers": {
+        "vas": "5",
+        "pain1": "5",
+        "pain2": "5",
+        "pain3": "5",
+        "pain4": "5",
+        "painNature": [
+          "酸痛",
+          "刺痛"
+        ]
+      }
+    },
+    "fiqr": {
+      "finish": true,
+      "answered": 25,
+      "total": 25,
+      "score": "50.0",
+      "result": "",
+      "answers": {
+        "fiqr_1_1": "5",
+        "fiqr_1_2": "5",
+        "fiqr_1_3": "5",
+        "fiqr_1_4": "5",
+        "fiqr_1_5": "5",
+        "fiqr_1_6": "5",
+        "fiqr_1_7": "5",
+        "fiqr_1_8": "5",
+        "fiqr_1_9": "5",
+        "fiqr_2_1": "5",
+        "fiqr_2_2": "5",
+        "fiqr_3_1": "5",
+        "fiqr_3_2": "5",
+        "fiqr_3_3": "5",
+        "fiqr_3_4": "5",
+        "fiqr_3_5": "5",
+        "fiqr_3_6": "5",
+        "fiqr_3_7": "5",
+        "fiqr_3_8": "5",
+        "fiqr_3_9": "5",
+        "fiqr_3_10": "5",
+        "fiqr_3_10_1": "5",
+        "fiqr_3_10_2": "5",
+        "fiqr_3_10_3": "5",
+        "fiqr_3_10_4": "5"
+      },
+      "functionScore": "15.0",
+      "impactScore": "10",
+      "symptomScore": "25.0",
+      "severity": "中度"
+    },
+    "pcs": {
+      "finish": true,
+      "answered": 13,
+      "total": 13,
+      "score": "0",
+      "result": "否",
+      "answers": {
+        "pcs1": "0",
+        "pcs2": "0",
+        "pcs3": "0",
+        "pcs4": "0",
+        "pcs5": "0",
+        "pcs6": "0",
+        "pcs7": "0",
+        "pcs8": "0",
+        "pcs9": "0",
+        "pcs10": "0",
+        "pcs11": "0",
+        "pcs12": "0",
+        "pcs13": "0"
+      },
+      "rumination": "0",
+      "magnification": "0",
+      "helplessness": "0"
+    },
+    "mfi20": {
+      "finish": true,
+      "answered": 20,
+      "total": 20,
+      "score": "60",
+      "result": "",
+      "answers": {
+        "mfi1": "1",
+        "mfi2": "1",
+        "mfi3": "1",
+        "mfi4": "1",
+        "mfi5": "1",
+        "mfi6": "1",
+        "mfi7": "1",
+        "mfi8": "1",
+        "mfi9": "1",
+        "mfi10": "1",
+        "mfi11": "1",
+        "mfi12": "1",
+        "mfi13": "1",
+        "mfi14": "1",
+        "mfi15": "1",
+        "mfi16": "1",
+        "mfi17": "1",
+        "mfi18": "1",
+        "mfi19": "1",
+        "mfi20": "1"
+      },
+      "generalFatigue": "12",
+      "physicalFatigue": "12",
+      "reducedActivity": "12",
+      "reducedMotivation": "12",
+      "mentalFatigue": "12"
+    },
+    "psqi": {
+      "finish": true,
+      "answered": 18,
+      "total": 18,
+      "score": "1",
+      "result": "否",
+      "answers": {
+        "bedtimeHour": "22",
+        "bedtimeMinute": "30",
+        "latency": "0",
+        "waketimeHour": "6",
+        "waketimeMinute": "30",
+        "hours": "7",
+        "psqi5_1": "0",
+        "psqi5_2": "0",
+        "psqi5_3": "0",
+        "psqi5_4": "0",
+        "psqi5_5": "0",
+        "psqi5_6": "0",
+        "psqi5_7": "0",
+        "psqi5_8": "0",
+        "psqi5_9": "0",
+        "psqi5_10": "0",
+        "psqi5_10_note": "",
+        "psqi6": "0",
+        "psqi7": "0",
+        "psqi8": "0",
+        "psqi9": "0",
+        "bedtime": "22:30",
+        "waketime": "06:30"
+      },
+      "components": {
+        "sleepQuality": 0,
+        "sleepLatency": 0,
+        "sleepDuration": 1,
+        "sleepEfficiency": 0,
+        "sleepDisturbance": 0,
+        "sleepMedication": 0,
+        "daytimeDysfunction": 0
+      }
+    },
+    "had": {
+      "finish": true,
+      "answered": 14,
+      "total": 14,
+      "score": "0",
+      "result": "否",
+      "answers": {
+        "had_a1": "0",
+        "had_a2": "0",
+        "had_a3": "0",
+        "had_a4": "0",
+        "had_a5": "0",
+        "had_a6": "0",
+        "had_a7": "0",
+        "had_d1": "0",
+        "had_d2": "0",
+        "had_d3": "0",
+        "had_d4": "0",
+        "had_d5": "0",
+        "had_d6": "0",
+        "had_d7": "0"
+      },
+      "anxietyScore": "0",
+      "depressionScore": "0",
+      "anxietyResult": "无",
+      "depressionResult": "无"
+    },
+    "sf12": {
+      "finish": true,
+      "answered": 12,
+      "total": 12,
+      "score": "",
+      "result": "",
+      "answers": {
+        "sf1": "1",
+        "sf2": "1",
+        "sf3": "1",
+        "sf4": "1",
+        "sf5": "1",
+        "sf6": "1",
+        "sf7": "1",
+        "sf8": "1",
+        "sf9": "1",
+        "sf10": "1",
+        "sf11": "1",
+        "sf12": "1"
+      }
+    },
+    "painDetect": {
+      "finish": true,
+      "answered": 12,
+      "total": 12,
+      "score": "0",
+      "result": "阴性",
+      "answers": {
+        "painRegions": "",
+        "radiation": "0",
+        "pain3": "5",
+        "pain4": "5",
+        "pain5": "5",
+        "painPattern": "1",
+        "symptom7": "0",
+        "symptom8": "0",
+        "symptom9": "0",
+        "symptom10": "0",
+        "symptom11": "0",
+        "symptom12": "0",
+        "symptom13": "0"
+      }
+    },
+    "cfq": {
+      "finish": true,
+      "answered": 25,
+      "total": 25,
+      "score": "0",
+      "result": "",
+      "answers": {
+        "cfq1": "0",
+        "cfq2": "0",
+        "cfq3": "0",
+        "cfq4": "0",
+        "cfq5": "0",
+        "cfq6": "0",
+        "cfq7": "0",
+        "cfq8": "0",
+        "cfq9": "0",
+        "cfq10": "0",
+        "cfq11": "0",
+        "cfq12": "0",
+        "cfq13": "0",
+        "cfq14": "0",
+        "cfq15": "0",
+        "cfq16": "0",
+        "cfq17": "0",
+        "cfq18": "0",
+        "cfq19": "0",
+        "cfq20": "0",
+        "cfq21": "0",
+        "cfq22": "0",
+        "cfq23": "0",
+        "cfq24": "0",
+        "cfq25": "0"
+      }
+    }
+  },
+  "zlfa": {
+    "finish": true,
+    "hasXiyao": "有",
+    "xiyao": [
+      {
+        "name": "普瑞巴林胶囊",
+        "category": "改善纤维肌痛综合征病情药物",
+        "dose": "75",
+        "unit": "mg",
+        "frequency": "日1次",
+        "instructions": "",
+        "adjust": "是",
+        "adjustment": "加量",
+        "reason": "疗效不佳或无效"
+      },
+      {
+        "name": "布洛芬",
+        "category": "非甾体抗炎类药物",
+        "dose": "",
+        "unit": "",
+        "frequency": "",
+        "instructions": "",
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
+      },
+      {
+        "name": "测试药",
+        "category": "其他",
+        "dose": "10",
+        "unit": "mg",
+        "frequency": "必要时",
+        "instructions": "",
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
+      }
+    ],
+    "xiyaoCategoryAdjust": {
+      "改善纤维肌痛综合征病情药物": {
+        "adjust": "是",
+        "adjustment": "加量",
+        "reason": "疗效不佳或无效"
+      },
+      "非甾体抗炎类药物": {
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
+      },
+      "其他": {
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
+      }
+    },
+    "xiyaoAdjust": {
+      "adjust": "是",
+      "adjustment": "改善纤维肌痛综合征病情药物：加量",
+      "reason": "改善纤维肌痛综合征病情药物：疗效不佳或无效"
+    },
+    "zhongchengyao": [
+      {
+        "name": "乌灵胶囊",
+        "category": "",
+        "dose": "1",
+        "unit": "粒",
+        "frequency": "日1次",
+        "spec": "",
+        "route": "",
+        "instructions": "",
+        "adjust": "是",
+        "adjustment": "加量",
+        "reason": "疗效不佳或无效"
+      }
+    ],
+    "feiYaowu": [
+      {
+        "name": "太极拳",
+        "customName": "",
+        "duration": "5",
+        "unit": "分钟",
+        "frequency": "日1次",
+        "adjust": "是",
+        "adjustment": "增加单次时长",
+        "reason": "疗效不佳或无效"
+      }
+    ],
+    "zhongyaoYinpian": [
+      {
+        "name": "中药汤剂",
+        "syndrome": "肝郁气滞证",
+        "recipe": "逍遥散",
+        "composition": [
+          "柴胡",
+          "当归",
+          "白芍",
+          "白术",
+          "茯苓",
+          "炙甘草",
+          "薄荷",
+          "生姜"
+        ],
+        "prescription": "测试",
+        "image": ""
+      }
+    ],
+    "hasZhongchengyao": "有",
+    "zhongchengyaoAdjust": {
+      "adjust": "是",
+      "adjustment": "加量",
+      "reason": "疗效不佳或无效"
+    },
+    "hasFeiYaowu": "有",
+    "feiYaowuAdjust": {
+      "adjust": "是",
+      "adjustment": "增加单次时长",
+      "reason": "疗效不佳或无效"
+    }
+  },
+  "blsj": {
+    "finish": true,
+    "hasAdverseEvent": "有",
+    "adverseEvents": [
+      "肝功能损伤",
+      "其他"
+    ],
+    "adverseEventOther": "测试",
+    "startDate": "2024-05-01",
+    "endDate": "2024-05-01",
+    "saeCategory": "致命",
+    "drugMeasure": "剂量不变",
+    "otherMeasures": "测试",
+    "adverseEventDetails": "测试"
+  }
+}

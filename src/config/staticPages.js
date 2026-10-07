@@ -354,12 +354,6 @@ export const staticPages = [
     "status": "pending"
   },
   {
-    "source": "zhiliao-fangan/add-zhongyao-tangji.html",
-    "title": "口服中药汤剂",
-    "route": "/legacy/zhiliao-fangan/add-zhongyao-tangji",
-    "status": "pending"
-  },
-  {
     "source": "zhiliao-fangan/add-zhongyao-yinpian.html",
     "title": "中药饮片",
     "route": "/legacy/zhiliao-fangan/add-zhongyao-yinpian",

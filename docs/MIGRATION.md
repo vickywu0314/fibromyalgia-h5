@@ -63,7 +63,6 @@
 | pending | `zhiliao-fangan/add-fei-yaowu.html` | `/legacy/zhiliao-fangan/add-fei-yaowu` | 非药物疗法 |
 | pending | `zhiliao-fangan/add-xiyao.html` | `/legacy/zhiliao-fangan/add-xiyao` | 口服西药 |
 | pending | `zhiliao-fangan/add-zhongchengyao.html` | `/legacy/zhiliao-fangan/add-zhongchengyao` | 口服中成药 |
-| pending | `zhiliao-fangan/add-zhongyao-tangji.html` | `/legacy/zhiliao-fangan/add-zhongyao-tangji` | 口服中药汤剂 |
 | pending | `zhiliao-fangan/add-zhongyao-yinpian.html` | `/legacy/zhiliao-fangan/add-zhongyao-yinpian` | 中药饮片 |
 | pending | `zhiliao-fangan/fei-yaowu.html` | `/legacy/zhiliao-fangan/fei-yaowu` | 非药物疗法 |
 | pending | `zhiliao-fangan/huizong.html` | `/legacy/zhiliao-fangan/huizong` | 查看开药汇总 |

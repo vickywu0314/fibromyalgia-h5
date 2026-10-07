@@ -11,8 +11,8 @@
   <!-- App WebView 页面：不设置 H5 顶部导航，由原生 App 统一提供 -->
   <main class="page">
     <section class="progress-block" aria-label="填写进度">
-      <div class="progress"><span style="width:30%"></span></div>
-      <p>已完成30%</p>
+      <div class="progress"><span id="progressBar" style="width:0%"></span></div>
+      <p id="progressText">已完成0%</p>
     </section>
 
     <form id="tpcForm">
@@ -74,7 +74,7 @@
         </fieldset>
 
         <fieldset class="question">
-          <legend>7. 臀外上象限，臀肌前皱褶处</legend>
+          <legend>7. 臀外上象限，臀肌前皱襞处</legend>
           <div class="options">
             <label><input type="checkbox" name="q7" value="左">左</label>
             <label><input type="checkbox" name="q7" value="右">右</label>
@@ -102,11 +102,12 @@
       </section>
 
       <div class="bottom-action">
-        <button type="submit">保存并返回</button>
+        <button type="submit" id="saveBtn">保存并返回</button>
       </div>
     </form>
   </main>
 
+  <script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script>
   <script src="js/tpc.js"></script>
 </body>
 </html>

@@ -341,6 +341,13 @@
 
   // 模块页在查看模式下只读：锁定输入、隐藏保存/添加/删除，底部给「返回」「编辑」
   var NON_MODULE = /(patient-(list|add|detail)|follow-up-list|case-view|research-platform)\.html$/;
+  // 页面内容区宽度（扣除左右内边距），手机上即屏宽减边距
+  function contentWidth() {
+    var m = document.querySelector('main .page, main.page, .page, main') || document.body;
+    var cs = getComputedStyle(m);
+    var w = m.getBoundingClientRect().width - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+    return Math.max(200, Math.min(w || window.innerWidth, window.innerWidth - 32));
+  }
   function applyReadonly() {
     if (!isViewMode() || NON_MODULE.test(location.pathname) || document.getElementById('fmsViewBar')) return;
     var root = document.querySelector('main') || document.body;
@@ -351,17 +358,22 @@
     });
     var bar = document.createElement('div');
     bar.id = 'fmsViewBar';
-    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9998;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -1px 0 #eceef1';
+    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9998;box-sizing:border-box;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -1px 0 #eceef1';
     var back = document.createElement('button');
     back.type = 'button'; back.textContent = '返回';
-    back.style.cssText = 'flex:1;min-height:44px;border:1px solid #d4d7dc;border-radius:6px;background:#fff;color:#333;font-size:15px';
+    back.style.cssText = 'flex:1;min-width:0;box-sizing:border-box;width:auto;margin:0;min-height:44px;border:1px solid #d4d7dc;border-radius:6px;background:#fff;color:#333;font-size:15px';
     back.onclick = function () { if (history.length > 1) history.back(); else location.href = '/patient-detail.html'; };
     var edit = document.createElement('button');
     edit.type = 'button'; edit.textContent = '编辑';
-    edit.style.cssText = 'flex:2;min-height:44px;border:0;border-radius:6px;background:#168bdd;color:#fff;font-size:15px';
+    edit.style.cssText = 'flex:2;min-width:0;box-sizing:border-box;width:auto;margin:0;min-height:44px;border:0;border-radius:6px;background:#168bdd;color:#fff;font-size:15px';
     edit.onclick = function () { setMode('edit'); location.reload(); };
-    bar.appendChild(back); bar.appendChild(edit);
+    // 按钮放在与页面内容同宽的容器里，宽屏下不会拉满整屏
+    var inner = document.createElement('div');
+    inner.style.cssText = 'display:flex;gap:10px;width:100%;max-width:' + contentWidth() + 'px;margin:0 auto;box-sizing:border-box';
+    inner.appendChild(back); inner.appendChild(edit);
+    bar.appendChild(inner);
     document.body.appendChild(bar);
+    window.addEventListener('resize', function () { inner.style.maxWidth = contentWidth() + 'px'; });
     document.body.style.paddingBottom = '72px';
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(applyReadonly, 0); });

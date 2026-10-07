@@ -30,10 +30,10 @@
     if (!x) return;
     if (x.size > 5 * 1024 * 1024) { FmsCase.toast("文件大小不能超过5M"); file.value = ""; return; }
     const reader = new FileReader();
-    reader.onload = () => compress(reader.result).then(showImage);
+    reader.onload = () => compress(reader.result).then(src => { showImage(src); store(); });
     reader.readAsDataURL(x);
   };
-  document.querySelector("#remove").onclick = () => { file.value = ""; showImage(""); };
+  document.querySelector("#remove").onclick = () => { file.value = ""; showImage(""); store(); };
 
   U.bind({form: f, path: "jbxx.bodyComposition", update: data => {
     // 内脏脂肪等级按结构体存为“5级”，回显时还原为下拉值
@@ -43,14 +43,23 @@
     showImage(imgs[0] || "");
   }});
 
-  f.onsubmit = e => {
-    e.preventDefault();
-    const d = U.serialize(f);
-    const value = {finish: true};
+  // 进度：7 个指标中已填数（上传检验图片为附件，不计入）；填写中暂存草稿（入口显示「填写中」）
+  function draft(){
+    const d = U.serialize(f), value = {};
     FIELDS.forEach(k => { value[k] = d[k] != null ? String(d[k]).trim() : ""; });
     if (value.visceralFatLevel) value.visceralFatLevel += "级";
     value.reportImages = imageData ? [imageData] : [];
     value.imageUrl = "";
+    return value;
+  }
+  const tracker = FmsProgress.track(f);
+  const store = U.autoStore(f, "jbxx.bodyComposition", draft);
+  const setFormData = window.setFormData;
+  window.setFormData = function(data){ setFormData(data); tracker.refresh(); };
+
+  f.onsubmit = e => {
+    e.preventDefault();
+    const value = Object.assign({finish: true}, draft());
     U.save("jbxx.bodyComposition", value, {back: "basic-info.html", button: f.querySelector('button[type="submit"]')});
   };
 })();

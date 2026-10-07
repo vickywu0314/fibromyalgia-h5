@@ -78,6 +78,10 @@
   color:#858b94;
   background:#f1f2f4;
 }
+.status.doing{
+  color:#d4771c;
+  background:#fdf3e7;
+}
 .status.done{
   color:#1677b8;
   background:#eaf5fc;

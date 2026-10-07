@@ -54,27 +54,37 @@
   });
   nameInput.addEventListener("input", () => { if (nameInput.value.trim()) nameError.hidden = true; });
 
-  // 子模块入口：显示完成状态（读草稿 jbxx.<key>.finish），点击直接跳对应 html
+  // 子模块入口：显示完成状态（未填写 / 填写中 / 已完成），点击直接跳对应 html
+  //   普通子模块：jbxx.<key> 对象，finish=true 为已完成，有其他已填内容为填写中
+  //   合并疾病 / 合并药物：jbxx.<key> 是数组，完成标记分别为 jbxx.diseaseHistoryFinish / concomitantMedicationFinish；
+  //   其「无/有」等附属字段（jbxx 下名称含该 key 的字段，如 hasDiseaseHistory）有值也算填写中
   const rows = document.querySelectorAll(".menu-row");
-  let done = 0;
-  rows.forEach(btn => {
-    // 合并疾病 / 合并药物是数组，完成标记分别为 jbxx.diseaseHistoryFinish / concomitantMedicationFinish
-    const key = btn.dataset.key;
-    const finished = (key === "diseaseHistory" || key === "concomitantMedication")
-      ? !!FmsCase.get("jbxx." + key + "Finish")
-      : !!(FmsCase.get("jbxx." + key) || {}).finish;
-    if (finished) done++;
-    const status = btn.querySelector(".status");
-    if (status) {
-      status.textContent = finished ? "已完成" : "未填写";
-      status.classList.toggle("done", finished);
-      status.classList.toggle("pending", !finished);
+  function entryState(key){
+    const j = FmsCase.get("jbxx") || {};
+    if (key === "diseaseHistory" || key === "concomitantMedication") {
+      const lower = key.toLowerCase();
+      const related = Object.keys(j).filter(k => k !== key + "Finish" && k.toLowerCase().indexOf(lower) !== -1).map(k => j[k]);
+      return U.entryState(related, !!j[key + "Finish"]);
     }
+    const v = j[key];
+    return U.entryState(v, !!(v && typeof v === "object" && v.finish));
+  }
+  let entriesDone = 0;
+  function renderEntries(){
+    entriesDone = 0;
+    rows.forEach(btn => {
+      const state = entryState(btn.dataset.key);
+      if (state === "done") entriesDone++;
+      U.renderStatus(btn.querySelector(".status"), state);
+    });
+    const count = document.getElementById("submoduleCount");
+    if (count) count.textContent = entriesDone + "/" + rows.length;
+  }
+  rows.forEach(btn => {
     // 进入子模块前把本页已填内容暂存到草稿（不提交、不改完成状态），返回时能回显
     btn.addEventListener("click", () => { FmsCase.set("jbxx", collect(), true); NativeBridge.openPage(btn.dataset.page); });
   });
-  const count = document.getElementById("submoduleCount");
-  if (count) count.textContent = done + "/" + rows.length;
+  renderEntries();
 
   // 回显：草稿 jbxx（姓名 / 身份证号由新增患者页带入；就诊时间默认 jbxx.visitDate）
   function toFormData(j){
@@ -100,6 +110,7 @@
     renderCities(d.city || "");
     sizeCanvas();
     showSignature(typeof d.signature === "string" ? d.signature : "");
+    tracker.refresh();
   };
 
   function num(v){
@@ -166,6 +177,16 @@
     if (!drawn) return "";
     try { return sigCanvas.toDataURL("image/png"); } catch (e) { return ""; }
   }
+
+  // 进度：本页直填字段（可见、可用的题目，含电子签名）+ 已完成的子模块入口
+  //   分子 = 已填直填字段 + 已完成入口数；分母 = 当前应填直填字段 + 入口总数
+  const tracker = FmsProgress.track(form, {
+    extra: () => ({answered: entriesDone + (signature || drawn ? 1 : 0), total: rows.length + 1})
+  });
+  sigCanvas.addEventListener("pointerup", () => tracker.refresh());
+  sigClear.addEventListener("click", () => tracker.refresh());
+  // 从子模块返回（含 bfcache 恢复）时刷新入口状态与进度
+  window.addEventListener("pageshow", () => { renderEntries(); tracker.refresh(); });
 
   // 本页字段（不含 finish）
   function collect(){

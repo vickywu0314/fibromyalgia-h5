@@ -27,12 +27,14 @@
   // 返回表单内需要作答的题目分组：{ name: [元素...] }
   function questions(form, optional) {
     var groups = {};
+    // 查看模式下输入框被统一禁用/只读，仍按实际填写情况统计（隐藏的条件题靠可见性排除）
+    var viewing = !!(window.FmsCase && FmsCase.isViewMode && FmsCase.isViewMode());
     Array.prototype.forEach.call(form.elements, function (el) {
       var name = el.name;
-      if (!name || el.disabled || optional.indexOf(name) !== -1) return;
+      if (!name || (el.disabled && !viewing) || optional.indexOf(name) !== -1) return;
       var type = (el.type || '').toLowerCase();
       if (['hidden', 'file', 'button', 'submit', 'reset'].indexOf(type) !== -1) return;
-      if (el.hasAttribute('data-optional') || el.readOnly) return;
+      if (el.hasAttribute('data-optional') || (el.readOnly && !viewing)) return;
       if (!visible(el)) return;
       (groups[name] = groups[name] || []).push(el);
     });

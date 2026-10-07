@@ -1,8 +1,12 @@
 /* 本病治疗史 - 新增/编辑表单（西药 / 中药汤剂 / 非药物疗法 / 中成药 共用）
-   结构（按 PDF）：无 / 有 → [ 名称及用法（各类不同）, 开始日期, 是否沿用至今：是 / 否 → [结束日期, 停用原因] ]
+   结构（按新版 PDF）：无 / 有 →
+     西药：药品 → 频次、用量(片/粒)；开始日期；是否沿用至今：是 / 否 → [结束日期, 停用原因]
+     中药汤剂：开始日期；是否沿用至今：是 / 否 → [结束日期, 停用原因]
+     非药物疗法：名称（其他→名称/具体治疗）→ 单次时长(分钟)、频次；开始日期；是否沿用至今 → [结束日期, 停用原因]
+     中成药：药品 → 频次、用量(片/粒)、开始时间、结束时间（无“是否沿用至今/停用原因”）
    数据写入病例草稿 jbxx.treatmentHistory.<类别数组>，“无/有”写 has<类别>（见 store.js）。
-   记录字段：name, dose, unit, frequency, startDate, ongoing, endDate, reason, duration(非药物单次时长)；
-   另：spec(规格)、route(给药方式)、durationUnit；西药同时写 medication（=name，对应结构体 medication）。 */
+   记录字段：name, dose, unit(固定“片/粒”), frequency, startDate, ongoing, endDate, reason, duration(非药物单次时长), durationUnit；
+   西药同时写 medication（=name，对应结构体 medication）。 */
 (function () {
   var D = window.BenbingData;
   var S = window.BenbingStore;
@@ -58,23 +62,13 @@
     if (el) el.textContent = value;
   }
 
-  /* 选中某个药品后，按字典生成该药品的规格 / 单次剂量 / 单位 / 频次 / 给药方式 */
+  /* 选中某个药品后，按字典生成该药品的 频次 / 用量 选项（PDF 各药品相同） */
   function buildDrug(item) {
     if (builtFor === item.name) return;
     builtFor = item.name;
-    setOptions(els.dose, item.doses, '请选择单次剂量');
     setOptions(els.frequency, item.freqs, '请选择频次');
+    setOptions(els.dose, item.doses, '请选择用量');
     text('doseUnit', item.unit);
-    var specRow = document.getElementById('specRow');
-    if (specRow) {
-      specRow.hidden = !item.spec;
-      text('specValue', item.spec || '');
-    }
-    var unitRow = document.getElementById('unitRow');
-    if (unitRow) {
-      unitRow.hidden = !item.hasUnitField;
-      text('unitValue', item.unit);
-    }
   }
 
   function refresh() {
@@ -88,7 +82,7 @@
       toggle(itemDetail, !!els.name.value);
       toggle(customRow, els.name.value === '其他');
     }
-    toggle(stopped, els.ongoing.value === '否');
+    if (els.ongoing) toggle(stopped, els.ongoing.value === '否');
   }
 
 
@@ -99,7 +93,7 @@
     setOptions(els.duration, D.FEI_YAOWU.durations, '请选择单次时长');
     setOptions(els.frequency, D.FEI_YAOWU.freqs, '请选择频次');
   }
-  setOptions(els.reason, D.STOP_REASONS, '请选择停用原因');
+  if (els.reason) setOptions(els.reason, D.STOP_REASONS, '请选择停用原因');
 
   var items = S.items(kind);
   var params = new URLSearchParams(location.search);
@@ -126,7 +120,9 @@
       if (els[f] && rec[f]) els[f].value = rec[f];
     });
     refresh();
-    if (rec.ongoing === '否') {
+    if (!els.ongoing) {
+      if (rec.endDate) els.endDate.value = rec.endDate;
+    } else if (rec.ongoing === '否') {
       if (rec.endDate) els.endDate.value = rec.endDate;
       if (rec.reason) els.reason.value = rec.reason;
     }
@@ -176,7 +172,7 @@
       if (kind === 'fei-yaowu-liaofa') {
         if (nm === '其他') {
           nm = els.customName.value.trim();
-          if (!nm) { message.textContent = '请填写其他非药物名称'; return; }
+          if (!nm) { message.textContent = '请填写其他非药物疗法的名称（具体治疗）'; return; }
         }
         if (!els.duration.value || !els.frequency.value) { message.textContent = '请选择单次时长和频次'; return; }
         data.name = nm;
@@ -185,20 +181,22 @@
         data.frequency = els.frequency.value;
       } else {
         var item = findItem(nm);
-        if (!els.dose.value || !els.frequency.value) { message.textContent = '请选择单次剂量和频次'; return; }
+        if (!els.frequency.value || !els.dose.value) { message.textContent = '请选择频次和用量'; return; }
         data.name = nm;
         if (kind === 'xiyao') data.medication = nm;
-        if (item.spec) data.spec = item.spec;
+        data.frequency = els.frequency.value;
         data.dose = els.dose.value;
         data.unit = item.unit;
-        data.frequency = els.frequency.value;
-        if (item.route) data.route = item.route;
       }
     }
     data.startDate = els.startDate.value;
-    data.ongoing = els.ongoing.value;
-    data.endDate = data.ongoing === '否' ? els.endDate.value : '';
-    data.reason = data.ongoing === '否' ? els.reason.value : '';
+    if (els.ongoing) {
+      data.ongoing = els.ongoing.value;
+      data.endDate = data.ongoing === '否' ? els.endDate.value : '';
+      data.reason = data.ongoing === '否' ? els.reason.value : '';
+    } else {
+      data.endDate = els.endDate.value; // 中成药：开始时间 / 结束时间
+    }
     if (data.startDate && data.endDate && data.endDate < data.startDate) { message.textContent = '结束日期不能早于开始日期'; return; }
     if (edit >= 0) items[edit] = data;
     else { items.push(data); edit = items.length - 1; } // 提交失败重试时不重复新增

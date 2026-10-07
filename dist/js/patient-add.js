@@ -6,6 +6,24 @@ const idErr = document.getElementById("idErr");
 
 
 
+const existNotice = document.getElementById("existNotice");
+
+function showExisting(p, enteredName, cardNo) {
+  const name = p.name || p.patientName || enteredName;
+  const masked = cardNo.slice(0, 6) + '********' + cardNo.slice(-4);
+  existNotice.querySelector('.exist-who').textContent = name + '（' + masked + '）';
+  existNotice.querySelector('#backToList').href = './patient-list.html?' + new URLSearchParams({ keyword: name });
+  existNotice.hidden = false;
+  createBtn.hidden = true;
+  existNotice.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+// 修改姓名或身份证号后收起"已存在"提示，允许重新查询
+[nameInput, idInput].forEach(el => el.addEventListener('input', () => {
+  existNotice.hidden = true;
+  createBtn.hidden = false;
+}));
+
 function validID(v) {
   return /^\d{17}[\dXx]$/.test(v);
 }
@@ -37,13 +55,9 @@ createBtn.addEventListener("click", async function () {
     // 查重失败不能自动解释为患者不存在；成功且无数据时才继续新建。
     if (result.success === false) throw new Error(result.message || '暂时无法确认患者是否存在，请稍后重试');
     const existed = !!(result.data && typeof result.data === 'object' && !Array.isArray(result.data) && Object.keys(result.data).length);
-    // 已建档的患者不再新建首诊病例：进入该患者的随访记录，在那里新增随访
+    // 身份证号已建档：不再新建，提示患者已存在，引导回患者列表找到该患者后在随访记录中添加信息
     if (existed) {
-      const p = result.data;
-      const pid = p.patientId ?? p.id ?? '';
-      if (window.confirm('该患者已建档（' + (p.name || patientName) + '），将进入其随访记录，可在那里新增随访。')) {
-        window.location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name: p.name || patientName, cardno: p.cardno || p.cardNo || patientId.toUpperCase() });
-      }
+      showExisting(result.data, patientName, patientId.toUpperCase());
       return;
     }
     sessionStorage.setItem('fms_patient_prefill', JSON.stringify({

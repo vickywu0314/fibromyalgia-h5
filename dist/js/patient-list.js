@@ -1,6 +1,9 @@
 const list = document.getElementById('patientList');
 const empty = document.getElementById('empty');
 const searchInput = document.getElementById('search');
+// 从新增患者页“患者已存在”返回时带入关键字，直接筛出该患者
+const presetKeyword = new URLSearchParams(location.search).get('keyword');
+if (presetKeyword) searchInput.value = presetKeyword;
 let requestId = 0;
 document.getElementById('addPatient').onclick = () => { location.href = './patient-add.html'; };
 function showState(message) {

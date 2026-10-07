@@ -38,15 +38,10 @@
         "q2": "3",
         "q3": "3",
         "q4": "3",
-        "q5": "健康问题对我的工作没有影响",
-        "q5Score": "0",
-        "q6": "健康问题对我的日常活动没有影响",
-        "q6Score": "0"
+        "q5": "健康问题对我的工作没有影响（0-4分）",
+        "q6": "健康问题对我的日常活动没有影响（0-4分）"
       },
-      "absenteeism": "50",
-      "presenteeism": "0",
-      "workImpairment": "50",
-      "activityImpairment": "0"
+      "absenteeism": "50"
     },
     "bodyComposition": {
       "finish": true,
@@ -173,6 +168,7 @@
         "s10_4_amt": "少于或等于100ml",
         "dha_used": "有",
         "dha_brand": "爱维乐",
+        "dha_dose": "1粒/天",
         "other_food_used": "有",
         "other_food_1_name": "测试",
         "other_food_1_weight": "3",
@@ -200,7 +196,11 @@
     "drinkTypes": [
       "白酒"
     ],
+    "baijiuAmount": 3,
+    "beerAmount": "",
+    "wineAmount": "",
     "drinkAmount": 3,
+    "signature": "data:image/png;base64,iVBORw0KGgo...",
     "tpc": {
       "finish": true,
       "score": "9",
@@ -268,11 +268,9 @@
         {
           "name": "普瑞巴林胶囊",
           "medication": "普瑞巴林胶囊",
-          "spec": "75mg/150mg",
-          "dose": "75",
-          "unit": "mg",
           "frequency": "日1次",
-          "route": "口服",
+          "dose": "1",
+          "unit": "片/粒",
           "startDate": "2024-05-01",
           "ongoing": "否",
           "endDate": "2024-05-01",
@@ -306,13 +304,11 @@
       "zhongchengyao": [
         {
           "name": "乌灵胶囊",
-          "dose": "1",
-          "unit": "粒",
           "frequency": "日1次",
+          "dose": "1",
+          "unit": "片/粒",
           "startDate": "2024-05-01",
-          "ongoing": "否",
-          "endDate": "2024-05-01",
-          "reason": "疗效不佳或无效"
+          "endDate": "2024-05-01"
         }
       ],
       "hasZhongchengyao": "有",
@@ -322,22 +318,13 @@
       {
         "category": "huxi",
         "categoryLabel": "呼吸系统疾病",
-        "name": "慢性阻塞性肺疾病",
-        "months": "3",
-        "diagnosisDate": "2024-05-01"
+        "name": "慢性阻塞性肺疾病"
       }
     ],
     "diseaseHistoryFinish": true,
     "concomitantMedication": [
       {
-        "name": "测试",
-        "dose": "3",
-        "unit": "测试",
-        "frequency": "日1次",
-        "startDate": "2024-05-01",
-        "endDate": "2024-05-01",
-        "reason": "疗效不佳或无效",
-        "ongoing": "否"
+        "name": "测试"
       }
     ],
     "concomitantMedicationFinish": true,
@@ -364,9 +351,11 @@
     "systemic": [
       "焦虑易怒"
     ],
-    "menstrualItems": [
-      "正常"
-    ],
+    "menstrualStage": "围绝经期",
+    "periodTiming": "月经先期",
+    "periodColor": "淡红",
+    "periodAmount": "月经过多",
+    "dysmenorrhea": "有",
     "finish": true
   },
   "zhpd": {
@@ -394,18 +383,32 @@
     "urine_protein_status": "已查",
     "urine_occult_value": "3",
     "urine_occult_status": "已查",
-    "alt_value": "3",
-    "alt_status": "已查",
-    "ast_value": "3",
-    "ast_status": "已查",
-    "bun_value": "3",
-    "bun_status": "已查",
-    "cr_value": "3",
-    "cr_status": "已查",
-    "glucose_value": "3",
-    "glucose_status": "已查",
+    "stool_appearance": "正常",
+    "stool_wbc_status": "数值",
+    "stool_wbc_value": "3",
+    "stool_rbc_status": "正常",
+    "stool_rbc_value": "",
+    "alt_status": "异常",
+    "alt_value": "80",
+    "ast_status": "正常",
+    "ast_value": "",
+    "bun_status": "正常",
+    "bun_value": "",
+    "cr_status": "正常",
+    "cr_value": "",
+    "cholesterol": "3",
+    "cholesterol_status": "已查",
+    "triglyceride": "3",
+    "triglyceride_status": "已查",
+    "ldl": "3",
+    "ldl_status": "已查",
+    "hdl": "3",
+    "hdl_status": "已查",
+    "apob": "3",
+    "apob_status": "已查",
+    "apoa": "3",
+    "apoa_status": "已查",
     "stool_occult": "阴性",
-    "stool_status": "已查",
     "ecg": "正常",
     "labReportImages": [],
     "ecgReportImages": [],
@@ -416,6 +419,8 @@
     "finish": true,
     "vas": {
       "finish": true,
+      "answered": 5,
+      "total": 5,
       "score": "5",
       "result": "中度",
       "answers": {
@@ -423,11 +428,17 @@
         "pain1": "5",
         "pain2": "5",
         "pain3": "5",
-        "pain4": "5"
+        "pain4": "5",
+        "painNature": [
+          "酸痛",
+          "刺痛"
+        ]
       }
     },
     "fiqr": {
       "finish": true,
+      "answered": 25,
+      "total": 25,
       "score": "50.0",
       "result": "",
       "answers": {
@@ -452,10 +463,10 @@
         "fiqr_3_8": "5",
         "fiqr_3_9": "5",
         "fiqr_3_10": "5",
-        "fiqr_3_11": "5",
-        "fiqr_3_12": "5",
-        "fiqr_3_13": "5",
-        "fiqr_3_14": "5"
+        "fiqr_3_10_1": "5",
+        "fiqr_3_10_2": "5",
+        "fiqr_3_10_3": "5",
+        "fiqr_3_10_4": "5"
       },
       "functionScore": "15.0",
       "impactScore": "10",
@@ -464,6 +475,8 @@
     },
     "pcs": {
       "finish": true,
+      "answered": 13,
+      "total": 13,
       "score": "0",
       "result": "否",
       "answers": {
@@ -487,29 +500,31 @@
     },
     "mfi20": {
       "finish": true,
+      "answered": 20,
+      "total": 20,
       "score": "60",
       "result": "",
       "answers": {
-        "mfi1": "0",
-        "mfi2": "0",
-        "mfi3": "0",
-        "mfi4": "0",
-        "mfi5": "0",
-        "mfi6": "0",
-        "mfi7": "0",
-        "mfi8": "0",
-        "mfi9": "0",
-        "mfi10": "0",
-        "mfi11": "0",
-        "mfi12": "0",
-        "mfi13": "0",
-        "mfi14": "0",
-        "mfi15": "0",
-        "mfi16": "0",
-        "mfi17": "0",
-        "mfi18": "0",
-        "mfi19": "0",
-        "mfi20": "0"
+        "mfi1": "1",
+        "mfi2": "1",
+        "mfi3": "1",
+        "mfi4": "1",
+        "mfi5": "1",
+        "mfi6": "1",
+        "mfi7": "1",
+        "mfi8": "1",
+        "mfi9": "1",
+        "mfi10": "1",
+        "mfi11": "1",
+        "mfi12": "1",
+        "mfi13": "1",
+        "mfi14": "1",
+        "mfi15": "1",
+        "mfi16": "1",
+        "mfi17": "1",
+        "mfi18": "1",
+        "mfi19": "1",
+        "mfi20": "1"
       },
       "generalFatigue": "12",
       "physicalFatigue": "12",
@@ -519,13 +534,17 @@
     },
     "psqi": {
       "finish": true,
-      "score": "6",
+      "answered": 18,
+      "total": 18,
+      "score": "1",
       "result": "否",
       "answers": {
-        "bedtime": "22:30",
+        "bedtimeHour": "22",
+        "bedtimeMinute": "30",
         "latency": "0",
-        "waketime": "22:30",
-        "hours": "3",
+        "waketimeHour": "6",
+        "waketimeMinute": "30",
+        "hours": "7",
         "psqi5_1": "0",
         "psqi5_2": "0",
         "psqi5_3": "0",
@@ -536,16 +555,19 @@
         "psqi5_8": "0",
         "psqi5_9": "0",
         "psqi5_10": "0",
+        "psqi5_10_note": "",
         "psqi6": "0",
         "psqi7": "0",
         "psqi8": "0",
-        "psqi9": "0"
+        "psqi9": "0",
+        "bedtime": "22:30",
+        "waketime": "06:30"
       },
       "components": {
         "sleepQuality": 0,
         "sleepLatency": 0,
-        "sleepDuration": 3,
-        "sleepEfficiency": 3,
+        "sleepDuration": 1,
+        "sleepEfficiency": 0,
         "sleepDisturbance": 0,
         "sleepMedication": 0,
         "daytimeDysfunction": 0
@@ -553,6 +575,8 @@
     },
     "had": {
       "finish": true,
+      "answered": 14,
+      "total": 14,
       "score": "0",
       "result": "否",
       "answers": {
@@ -578,6 +602,8 @@
     },
     "sf12": {
       "finish": true,
+      "answered": 12,
+      "total": 12,
       "score": "",
       "result": "",
       "answers": {
@@ -597,6 +623,8 @@
     },
     "painDetect": {
       "finish": true,
+      "answered": 12,
+      "total": 12,
       "score": "0",
       "result": "阴性",
       "answers": {
@@ -617,6 +645,8 @@
     },
     "cfq": {
       "finish": true,
+      "answered": 25,
+      "total": 25,
       "score": "0",
       "result": "",
       "answers": {
@@ -650,21 +680,64 @@
   },
   "zlfa": {
     "finish": true,
+    "hasXiyao": "有",
     "xiyao": [
       {
         "name": "普瑞巴林胶囊",
-        "category": "",
+        "category": "改善纤维肌痛综合征病情药物",
         "dose": "75",
         "unit": "mg",
         "frequency": "日1次",
-        "spec": "75mg/150mg",
-        "route": "口服",
         "instructions": "",
         "adjust": "是",
         "adjustment": "加量",
         "reason": "疗效不佳或无效"
+      },
+      {
+        "name": "布洛芬",
+        "category": "非甾体抗炎类药物",
+        "dose": "",
+        "unit": "",
+        "frequency": "",
+        "instructions": "",
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
+      },
+      {
+        "name": "测试药",
+        "category": "其他",
+        "dose": "10",
+        "unit": "mg",
+        "frequency": "必要时",
+        "instructions": "",
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
       }
     ],
+    "xiyaoCategoryAdjust": {
+      "改善纤维肌痛综合征病情药物": {
+        "adjust": "是",
+        "adjustment": "加量",
+        "reason": "疗效不佳或无效"
+      },
+      "非甾体抗炎类药物": {
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
+      },
+      "其他": {
+        "adjust": "否",
+        "adjustment": "",
+        "reason": ""
+      }
+    },
+    "xiyaoAdjust": {
+      "adjust": "是",
+      "adjustment": "改善纤维肌痛综合征病情药物：加量",
+      "reason": "改善纤维肌痛综合征病情药物：疗效不佳或无效"
+    },
     "zhongchengyao": [
       {
         "name": "乌灵胶囊",
@@ -694,7 +767,7 @@
     ],
     "zhongyaoYinpian": [
       {
-        "name": "中药饮片",
+        "name": "中药汤剂",
         "syndrome": "肝郁气滞证",
         "recipe": "逍遥散",
         "composition": [
@@ -711,11 +784,6 @@
         "image": ""
       }
     ],
-    "xiyaoAdjust": {
-      "adjust": "是",
-      "adjustment": "加量",
-      "reason": "疗效不佳或无效"
-    },
     "hasZhongchengyao": "有",
     "zhongchengyaoAdjust": {
       "adjust": "是",
@@ -733,8 +801,10 @@
     "finish": true,
     "hasAdverseEvent": "有",
     "adverseEvents": [
-      "肝功能损伤"
+      "肝功能损伤",
+      "其他"
     ],
+    "adverseEventOther": "测试",
     "startDate": "2024-05-01",
     "endDate": "2024-05-01",
     "saeCategory": "致命",

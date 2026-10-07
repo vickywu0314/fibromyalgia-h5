@@ -2,9 +2,11 @@
  const form=document.getElementById('conditionForm');
  const reveals=[...form.querySelectorAll('.reveal[data-when]')];
  // 按 PDF：「周身疼痛发病时间 / 是否确诊 / 确诊时间」在病史病情页填写，按提交结构体存到 jbxx 下；其余字段写 bsbq。
- const JBXX_FIELDS=['painOnsetDate','diagnosed','diagnosisDate'];
- const ARRAY_FIELDS=['onsetTriggers','aggravatingTriggers','painNature','systemic','menstrualItems'];
- const TEXT_FIELDS=['stool','urine','tongueColor','tongueShape','coatColor','coatShape'];
+ const JBXX_FIELDS=['painOnsetDate','diagnosed','diagnosisDate','hospitalLevel'];
+ const ARRAY_FIELDS=['onsetTriggers','aggravatingTriggers','painNature','systemic'];
+ // 月经情况：menstrualStage 单选（绝经期/围绝经期/育龄期）；经期/经色/经量/痛经 仅「围绝经期」时填写，其他分期清空
+ const MENSTRUAL_SUB=['periodTiming','periodColor','periodAmount','dysmenorrhea'];
+ const TEXT_FIELDS=['stool','urine','tongueColor','tongueShape','coatColor','coatShape','menstrualStage'].concat(MENSTRUAL_SUB);
 
  function isChosen(rule){
    const i=rule.indexOf('='),name=rule.slice(0,i),value=rule.slice(i+1);
@@ -24,7 +26,7 @@
    updateProgress();
  }
 
- // 互斥选项（如“无”“男性”）：选中它时取消同组其他项；选中其他项时取消它。
+ // 互斥选项（如“无”）：选中它时取消同组其他项；选中其他项时取消它。
  form.addEventListener('change',e=>{
    const t=e.target;
    if(t.type==='checkbox'&&t.checked){
@@ -41,11 +43,13 @@
    const jbxx={
      painOnsetDate:d.painOnsetDate||'',
      diagnosed:d.diagnosed||'',
-     diagnosisDate:d.diagnosed==='是'?(d.diagnosisDate||''):''
+     diagnosisDate:d.diagnosed==='是'?(d.diagnosisDate||''):'',
+     hospitalLevel:d.diagnosed==='是'?(d.hospitalLevel||''):''
    };
    const bsbq={};
    TEXT_FIELDS.forEach(k=>{bsbq[k]=d[k]||'';});
    ARRAY_FIELDS.forEach(k=>{bsbq[k]=Array.isArray(d[k])?d[k]:(d[k]?[d[k]]:[]);});
+   if(bsbq.menstrualStage!=='围绝经期')MENSTRUAL_SUB.forEach(k=>{bsbq[k]='';});
    return {jbxx,bsbq};
  }
 
@@ -65,7 +69,7 @@
    TEXT_FIELDS.concat(ARRAY_FIELDS).forEach(k=>setValue(k,bsbq[k]));
    refresh();
    setValue('painOnsetDate',jbxx.painOnsetDate);
-   if(jbxx.diagnosed==='是')setValue('diagnosisDate',jbxx.diagnosisDate);
+   if(jbxx.diagnosed==='是'){setValue('diagnosisDate',jbxx.diagnosisDate);setValue('hospitalLevel',jbxx.hospitalLevel);}
  }
 
  // 进度：9 项中已填写的项数
@@ -74,7 +78,8 @@
    const d=FmsCase.formData(form);
    const has=k=>Array.isArray(d[k])?d[k].length>0:!!d[k];
    const items=[has('painOnsetDate'),has('diagnosed'),has('onsetTriggers'),has('aggravatingTriggers'),has('painNature'),has('systemic'),has('stool')&&has('urine'),
-     has('tongueColor')&&has('tongueShape')&&has('coatColor')&&has('coatShape'),has('menstrualItems')];
+     has('tongueColor')&&has('tongueShape')&&has('coatColor')&&has('coatShape'),
+     has('menstrualStage')&&(d.menstrualStage!=='围绝经期'||MENSTRUAL_SUB.every(has))];
    const pct=Math.round(items.filter(Boolean).length/items.length*100);
    const bar=document.getElementById('progressBar'),txt=document.getElementById('progressText');
    if(bar)bar.style.width=pct+'%';

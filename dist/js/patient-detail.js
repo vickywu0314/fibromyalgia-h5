@@ -48,6 +48,25 @@ modules.forEach(m => {
   state.textContent = finished ? '✓' : '○';
   if (saved && !finished) state.title = '有改动尚未提交，点击完成录入时会自动提交';
 });
+// 病情评估：9 个量表边填边暂存在草稿里；未全部完成（或有未提交改动）时显示已完成量表数 x/9
+{
+  const m = modules.find(x => x.dataset.part === 'bqpg');
+  const p = draft.bqpg || {};
+  const scales = FmsCase.BQPG_SCALES;
+  const doneN = scales.filter(k => p[k] && p[k].finish).length;
+  const started = scales.some(k => p[k] && (p[k].finish || Number(p[k].answered) > 0));
+  const state = m && m.querySelector('.state');
+  if (state && started && !state.classList.contains('done')) {
+    state.textContent = doneN + '/' + scales.length;
+    state.classList.add('partial');
+    state.title = doneN === scales.length ? '9 个量表已填完，有改动尚未提交' : '已完成 ' + doneN + ' 个量表，共 ' + scales.length + ' 个';
+    state.style.cssText = 'width:auto;min-width:28px;padding:0 4px;font-size:11px;background:#fff4e5;color:#b26a00;font-weight:600';
+    const desc = m.querySelector('.mdesc');
+    if (desc) desc.textContent = '已完成 ' + doneN + '/' + scales.length + ' 个量表';
+  }
+}
+// 从模块页返回时若命中浏览器页面缓存（bfcache），重新加载以刷新各模块完成状态
+window.addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
 progressNum.textContent = done + ' / ' + modules.length;
 progressBar.style.width = (done / modules.length * 100).toFixed(1) + '%';
 

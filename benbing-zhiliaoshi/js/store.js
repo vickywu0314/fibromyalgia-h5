@@ -31,6 +31,7 @@
     var stop = item.ongoing === '是' ? '沿用至今' : item.ongoing === '否' ? '已停用' : '';
     if (kind === 'zhongyao-tangji') return [item.startDate ? '开始 ' + item.startDate : '', stop].filter(Boolean).join('，');
     if (kind === 'fei-yaowu-liaofa') return [item.frequency, item.duration ? '单次' + item.duration + (item.durationUnit || '分钟') : '', stop].filter(Boolean).join('，');
+    if (kind === 'zhongchengyao') return [item.frequency, item.dose ? '单次' + item.dose + (item.unit || '') : '', [item.startDate, item.endDate].some(Boolean) ? (item.startDate || '') + ' ~ ' + (item.endDate || '') : ''].filter(Boolean).join('，');
     return [item.frequency, item.dose ? '单次' + item.dose + (item.unit || '') : '', stop].filter(Boolean).join('，');
   }
   /* 页面顶部进度条 */

@@ -258,12 +258,6 @@
     "status": "pending"
   },
   {
-    "source": "jiwang-bingshi/qita.html",
-    "title": "其他",
-    "route": "/legacy/jiwang-bingshi/qita",
-    "status": "pending"
-  },
-  {
     "source": "jiwang-bingshi/shen.html",
     "title": "肾病系统",
     "route": "/legacy/jiwang-bingshi/shen",

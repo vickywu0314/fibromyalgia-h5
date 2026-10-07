@@ -6,13 +6,11 @@
 <div id="details" hidden>
 <label class="field"><span class="field-label">中成药药物</span><select class="control" name="name"></select></label>
 <div class="item-detail" id="itemDetail" hidden>
-<label class="field"><span class="field-label">单次剂量</span><span class="form-row"><select class="control" name="dose"></select><span class="unit" id="doseUnit"></span></span></label>
-<div class="field" id="unitRow" hidden><span class="field-label">单位</span><div class="readonly" id="unitValue"></div></div>
 <label class="field"><span class="field-label">频次</span><select class="control" name="frequency"></select></label>
+<label class="field"><span class="field-label">用量</span><span class="form-row"><select class="control" name="dose"></select><span class="unit" id="doseUnit">片/粒</span></span></label>
+<label class="field"><span class="field-label">开始时间</span><input class="control" type="date" name="startDate" aria-label="开始时间"></label>
+<label class="field"><span class="field-label">结束时间</span><input class="control" type="date" name="endDate" aria-label="结束时间"></label>
 </div>
-<label class="field"><span class="field-label">开始日期</span><input class="control" type="date" name="startDate" aria-label="开始日期"></label>
-<fieldset class="choice-group"><legend>是否沿用至今</legend><label><input type="radio" name="ongoing" value="是">是</label><label><input type="radio" name="ongoing" value="否">否</label></fieldset>
-<div class="stopped" id="stopped" hidden><label class="inline-field"><span>结束日期</span><input class="control" type="date" name="endDate" aria-label="结束日期"></label><label class="inline-field"><span>停用原因</span><select class="control" name="reason"></select></label></div>
 </div>
 <div class="form-actions"><button type="submit" class="primary">保存</button><p class="hint" id="message" role="alert"></p></div>
 </form></main><script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script><script src="./js/store.js"></script><script src="./js/drug-data.js"></script><script src="./js/entry-form.js"></script></body></html>

@@ -3,7 +3,6 @@
 .intro{font-size:14px;color:#555;line-height:1.55;margin:12px 8px 26px}.section{border-bottom:0;padding:16px 0}.section>h2{font-size:19px;font-weight:500;margin:0 0 14px}.section-question,.amount-heading{font-size:17px;font-weight:400;margin:18px 0 20px}.food{padding:12px 8px 18px;border:0}.food h3{font-size:16px;font-weight:400;line-height:1.5;margin:0 0 14px}.options{padding-left:clamp(15px,20%,90px)}.options label{min-height:45px;gap:10px;line-height:1.4;font-size:16px;padding:8px 2px}.options input{flex:none;width:20px;height:20px;margin:0}.extra{margin:8px 0 0 clamp(16px,20%,90px);font-size:14px}.extra input{max-width:110px;min-width:0}.extra:not(.visible){display:none}.amount-heading{margin:30px 8px 8px}.portion-reference{margin:12px auto 20px;max-width:620px}.amount-food{margin-bottom:10px}.bottom{margin-top:24px}.bottom p{font-size:13px;color:#5f6c78;min-height:20px}h1{font-weight:500;line-height:1.5}@media(max-width:360px){.options{padding-left:12px}.extra{margin-left:12px}}
 
 .add-food{min-height:44px;padding:8px 20px;border:0;border-radius:5px;background:#317e80;color:#fff;font:inherit}.other-food-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:12px 0}.other-food-row input{min-width:0;width:100%;height:42px;border:1px solid #cfd5d9;padding:8px}.other-food-row button{border:0;background:#fff;color:#b3343d}.section [hidden]{display:none!important}
-.product-photo{display:block;max-width:210px;width:auto;height:150px;object-fit:contain;object-position:left center;margin:8px 0}.options label:has(.product-photo){align-items:flex-start}.options label:has(.product-photo) input{margin-top:5px}
 
 /* 统一：条件显示区域 / 其他食物固定 5 条 */
 .sub-block{margin:6px 0 0;padding:12px 8px;border-radius:8px;background:#f7f8fa}
@@ -16,3 +15,13 @@
 .other-food-row label span{flex:none}
 .other-food-row input{min-width:0;width:100%;height:40px;border:1px solid #cfd5d9;border-radius:5px;padding:6px 8px;font:inherit;background:#fff}
 .other-food-row b{flex:none;font-weight:400}
+
+/* 鱼油/DHA 品牌：按 PDF 图片顺序两列网格 */
+.brand-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-left:0}
+.brand-options label.brand{position:relative;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:10px 6px;border:1px solid #e3e6ea;border-radius:8px;background:#fff;text-align:center}
+.brand-options label.brand input{position:absolute;top:8px;left:8px;margin:0}
+.brand-options label.brand img{display:block;width:100%;max-width:120px;aspect-ratio:1/1;object-fit:contain}
+.brand-options label.brand:has(input:checked){border-color:#168bdd;background:#f2f8fd}
+.brand-options label.brand-other{justify-content:center;min-height:60px}
+.sub-block .extra{margin-left:0}
+.sub-block .dose-heading{margin-top:22px}

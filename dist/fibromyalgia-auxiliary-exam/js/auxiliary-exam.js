@@ -2,13 +2,18 @@
   const form=document.getElementById("examForm");
   const PATH="fzjc";
   const BACK="../patient-detail.html";
-  const NOT_DONE=["cbc_notDone","urine_notDone","stool_notDone","biochem_notDone"];
-  // 页面输入 name → 结构体 key 前缀（写 <key>_value / <key>_status），以及所属“未查”组
+  // 血常规、尿常规：整组「未查」开关（写 <key>_status = 未查/已查）
+  const NOT_DONE=["cbc_notDone","urine_notDone"];
   const VALUE_FIELDS=[
     ["cbc_wbc","cbc_notDone"],["cbc_rbc","cbc_notDone"],["cbc_hgb","cbc_notDone"],
-    ["urine_wbc","urine_notDone"],["urine_rbc","urine_notDone"],["urine_protein","urine_notDone"],["urine_occult","urine_notDone"],
-    ["alt","biochem_notDone"],["ast","biochem_notDone"],["bun","biochem_notDone"],["cr","biochem_notDone"],["glucose","biochem_notDone"]
+    ["urine_wbc","urine_notDone"],["urine_rbc","urine_notDone"],["urine_protein","urine_notDone"],["urine_occult","urine_notDone"]
   ];
+  // 生化肝肾功能：<key>_status 为 未查/正常/异常，异常时填 <key>_value
+  const BIOCHEM=["alt","ast","bun","cr"];
+  // 便常规白细胞/红细胞：<key>_status 为 正常/数值/未查，选「数值」时填 <key>_value
+  const STOOL_CELLS=["stool_wbc","stool_rbc"];
+  // 血脂：值写结构体原有 key（cholesterol 等），<key>_status 为 未查/已查
+  const LIPIDS=["cholesterol","triglyceride","ldl","hdl","apob","apoa"];
   // 暂无上传接口：图片以 dataURL 存在草稿里（labReportImages / ecgReportImages）
   const images={labReport:[],ecgReport:[]};
   const MAX_SIDE=1600,QUALITY=0.82;
@@ -69,28 +74,54 @@
     });
   }
 
+  const radio=n=>{const el=form.querySelector(`input[name="${n}"]:checked`);return el?el.value:""};
+  function setRadio(n,v){form.querySelectorAll(`input[name="${n}"]`).forEach(i=>{i.checked=v!=null&&v!==""&&i.value===String(v)})}
+
   function sync(){
     NOT_DONE.forEach(n=>{
       const cb=form.elements[n];
       cb.closest(".badge-toggle").classList.toggle("is-checked",cb.checked);
       setArea(document.getElementById(n+"Body"),!cb.checked);
     });
-    setArea(document.getElementById("ecgUploadBody"),form.elements.ecg.value!=="未查");
+    LIPIDS.forEach(k=>{
+      const cb=form.elements[k+"_notDone"];
+      cb.closest(".badge-toggle").classList.toggle("is-checked",cb.checked);
+      setArea(document.getElementById(k+"_notDoneBody"),!cb.checked);
+    });
+    // 条件数值：.value[data-when="name=值"] 仅在对应单选选中时显示
+    form.querySelectorAll(".value[data-when]").forEach(v=>{
+      const i=v.dataset.when.indexOf("=");
+      setArea(v,radio(v.dataset.when.slice(0,i))===v.dataset.when.slice(i+1));
+    });
+    setArea(document.getElementById("ecgUploadBody"),radio("ecg")!=="未查");
   }
-  form.addEventListener("change",e=>{if(NOT_DONE.includes(e.target.name)||e.target.name==="ecg")sync()});
+  form.addEventListener("change",e=>{if(e.target.type==="radio"||e.target.type==="checkbox")sync()});
 
   function collect(){
     const data={finish:true};
     const notDone=n=>form.elements[n].checked;
+    const val=n=>{const el=form.elements[n];return el&&!el.disabled?String(el.value||"").trim():""};
     VALUE_FIELDS.forEach(([k,group])=>{
-      const v=notDone(group)?"":String(form.elements[k].value||"").trim();
+      const v=notDone(group)?"":val(k);
       data[k+"_value"]=v;
       data[k+"_status"]=notDone(group)?"未查":(v?"已查":"");
     });
-    // 便常规：只剩潜血；整组未查时写新 key stool_status
-    data.stool_occult=notDone("stool_notDone")?"":(form.elements.stool_occult.value||"");
-    data.stool_status=notDone("stool_notDone")?"未查":(data.stool_occult?"已查":"");
-    data.ecg=form.elements.ecg.value||"";
+    data.stool_appearance=radio("stool_appearance");
+    STOOL_CELLS.forEach(k=>{
+      data[k+"_status"]=radio(k+"_status");
+      data[k+"_value"]=data[k+"_status"]==="数值"?val(k+"_value"):"";
+    });
+    data.stool_occult=radio("stool_occult");
+    BIOCHEM.forEach(k=>{
+      data[k+"_status"]=radio(k+"_status");
+      data[k+"_value"]=data[k+"_status"]==="异常"?val(k+"_value"):"";
+    });
+    LIPIDS.forEach(k=>{
+      const nd=notDone(k+"_notDone");
+      data[k]=nd?"":val(k);
+      data[k+"_status"]=nd?"未查":(data[k]?"已查":"");
+    });
+    data.ecg=radio("ecg");
     data.labReportImages=images.labReport.slice();
     data.ecgReportImages=data.ecg==="未查"?[]:images.ecgReport.slice();
     data.lab_report_url="";
@@ -98,22 +129,24 @@
     return data;
   }
 
-  // 回显：window.fillForm(FmsCase.get("fzjc"))（结构体 key）
+  // 回显：window.fillForm(FmsCase.get("fzjc"))（结构体 key）。先恢复单选/未查开关，再写数值
   window.fillForm=function(data){
     data=data||{};
     const groupNotDone={};
     VALUE_FIELDS.forEach(([k,group])=>{if(data[k+"_status"]==="未查")groupNotDone[group]=true});
-    if(data.stool_status==="未查")groupNotDone.stool_notDone=true;
     NOT_DONE.forEach(n=>{form.elements[n].checked=!!groupNotDone[n]});
-    form.elements.ecg.value=data.ecg||"";
+    LIPIDS.forEach(k=>{form.elements[k+"_notDone"].checked=data[k+"_status"]==="未查"});
+    setRadio("stool_appearance",data.stool_appearance);
+    setRadio("stool_occult",data.stool_occult);
+    STOOL_CELLS.concat(BIOCHEM).forEach(k=>setRadio(k+"_status",data[k+"_status"]));
+    setRadio("ecg",data.ecg);
     images.labReport=Array.isArray(data.labReportImages)?data.labReportImages.filter(Boolean):[];
     images.ecgReport=Array.isArray(data.ecgReportImages)?data.ecgReportImages.filter(Boolean):[];
     sync();
-    VALUE_FIELDS.forEach(([k])=>{
-      const el=form.elements[k];
-      if(el&&!el.disabled)el.value=data[k+"_value"]!=null?data[k+"_value"]:"";
-    });
-    if(!form.elements.stool_notDone.checked)form.elements.stool_occult.value=data.stool_occult||"";
+    const put=(name,v)=>{const el=form.elements[name];if(el&&!el.disabled)el.value=v!=null?v:""};
+    VALUE_FIELDS.forEach(([k])=>put(k,data[k+"_value"]));
+    STOOL_CELLS.concat(BIOCHEM).forEach(k=>put(k+"_value",data[k+"_value"]));
+    LIPIDS.forEach(k=>put(k,data[k]));
     showPreview("labReport","labPreview");
     showPreview("ecgReport","ecgPreview");
   };

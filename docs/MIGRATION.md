@@ -47,7 +47,6 @@
 | pending | `jiwang-bingshi/huxi.html` | `/legacy/jiwang-bingshi/huxi` | 呼吸系统疾病 |
 | pending | `jiwang-bingshi/index.html` | `/legacy/jiwang-bingshi/index` | 既往疾病史 |
 | pending | `jiwang-bingshi/neifenmi.html` | `/legacy/jiwang-bingshi/neifenmi` | 内分泌和代谢性疾病 |
-| pending | `jiwang-bingshi/qita.html` | `/legacy/jiwang-bingshi/qita` | 其他 |
 | pending | `jiwang-bingshi/shen.html` | `/legacy/jiwang-bingshi/shen` | 肾病系统 |
 | pending | `jiwang-bingshi/shengzhi.html` | `/legacy/jiwang-bingshi/shengzhi` | 生殖系统 |
 | pending | `jiwang-bingshi/tengtong.html` | `/legacy/jiwang-bingshi/tengtong` | 慢性重叠疼痛综合征 |

@@ -88,3 +88,24 @@
   .submodule-section{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
   .submodule-heading{gap:8px}
 }
+
+/* 表单内嵌的子模块入口（按需求顺序穿插在字段之间） */
+.submodule-row.inline-row{
+  border:1px solid #eceef1;
+  border-radius:9px;
+}
+.submodule-row.inline-row:last-child{border-bottom:1px solid #eceef1}
+/* 条件区域：.conditional 为 grid 布局，需显式处理 hidden */
+.conditional[hidden]{display:none}
+.conditional .sub-label{margin:0}
+.region-fields select{min-width:0}
+.region-fields select:disabled{background:#f5f6f7;color:#9aa0a8}
+.choices input[type=checkbox]{width:18px;height:18px;margin:0}
+.drink-list{display:grid;gap:14px}
+.drink-item{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px}
+.drink-item>label{display:flex!important;align-items:center;gap:8px;min-height:30px}
+.drink-item input[type=checkbox]{width:18px;height:18px;margin:0}
+.drink-item .amount-line{margin-top:0}
+.field input:disabled{background:#f5f6f7}
+.conditional .choices label{display:flex;gap:8px}
+.conditional input[type=radio],.conditional input[type=checkbox]{width:18px;height:18px;min-height:0;padding:0;border:0;margin:0;flex:none}

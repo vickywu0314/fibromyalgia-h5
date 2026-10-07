@@ -1,2 +1,11 @@
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#222}body{margin:0}.page{max-width:720px;margin:auto;padding:16px 16px calc(28px + env(safe-area-inset-bottom))}.progress-block{margin-bottom:24px}.progress{height:24px;background:#d8d8d8}.progress span{display:block;width:30%;height:100%;background:#168bdd}.progress-block p{margin:6px 0 0;font-size:14px}h1{font-size:18px;line-height:1.55;margin:0 0 12px}.section{padding:18px 0;border-bottom:1px solid #dfe3e7}.section>h2{font-size:16px;margin:0 0 8px}.food{padding:15px 0;border-bottom:1px solid #eef0f2}.food:last-child{border-bottom:0}.food h3{font-size:15px;margin:0 0 10px}.sub{margin:10px 0 15px}.sub h4{font-size:14px;font-weight:500;margin:0 0 5px;color:#555}.options{display:flex;flex-direction:column}.options label{display:flex;align-items:center;min-height:40px;padding:6px 4px;font-size:14px}.options input{width:18px;height:18px;margin:0 10px 0 0;accent-color:#168bdd}.extra,.text-line{display:flex;align-items:center;gap:8px;font-size:13px;color:#666;margin-top:8px}.extra input,.text-line input{width:100px;min-height:38px;border:1px solid #d5d9de;border-radius:5px;padding:7px 9px}.extra b{font-weight:400}.bottom{padding-top:22px}.bottom button{width:100%;min-height:46px;border:0;border-radius:4px;background:#168bdd;color:#fff;font:inherit}@media(max-width:360px){.page{padding-left:12px;padding-right:12px}}
 .portion-reference{display:block;width:100%;height:auto;margin:12px 0 18px;border-radius:10px;background:#f7f8fa}
+
+.intro{font-size:14px;color:#555;line-height:1.55;margin:0 0 6px}
+.extra[hidden],.conditional[hidden]{display:none!important}
+.text-extra input{width:160px}
+.hint{font-size:13px;color:#666;margin:10px 0 4px}
+.other-food-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;padding:6px 0;border-bottom:1px dashed #eef0f2}
+.other-food-row .row-no{width:18px;font-size:14px;color:#555}
+.other-food-row .text-line{margin-top:4px}
+.other-food-row .text-line input[type=text]{width:140px}

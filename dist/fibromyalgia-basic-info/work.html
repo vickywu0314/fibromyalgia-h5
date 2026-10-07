@@ -24,12 +24,13 @@
           <label><input type="radio" name="q1" value="是">是</label>
           <label><input type="radio" name="q1" value="否">否</label>
         </div>
+        <p class="help skip-hint">如果为“否”，请跳转第6题。</p>
       </fieldset>
 
       <div id="workQuestions">
         <fieldset class="question">
           <legend>2. 过去7天内，您因健康问题缺勤了多少小时？</legend>
-          <p class="help">包括病假、迟到、早退等因健康问题减少的工作时间；不包括参加本研究所占用的时间。</p>
+          <p class="help">包括病假、迟到、早退等因健康问题减少工作的时间；不包括参加本研究所占用的时间。</p>
           <label class="number-line">
             <input type="number" name="q2" min="0" step="0.5" inputmode="decimal" aria-label="因健康问题缺勤小时数">
             <span>小时</span>
@@ -37,7 +38,7 @@
         </fieldset>
 
         <fieldset class="question">
-          <legend>3. 过去7天内，您因其他原因缺勤多少小时？</legend>
+          <legend>3. 过去7天内，您因其他原因缺勤了多少小时？</legend>
           <p class="help">例如休假、节假日、参加本研究等。</p>
           <label class="number-line">
             <input type="number" name="q3" min="0" step="0.5" inputmode="decimal" aria-label="因其他原因缺勤小时数">
@@ -51,24 +52,46 @@
             <input id="actualHours" type="number" name="q4" min="0" step="0.5" inputmode="decimal" aria-label="实际工作小时数">
             <span>小时</span>
           </label>
+          <p class="help skip-hint">如果为0小时，请跳转第6题。</p>
         </fieldset>
 
         <fieldset class="question" id="q5">
           <legend>5. 过去7天内，健康问题在多大程度上影响了您工作时的工作效率？</legend>
-          <div class="options endpoint-options">
-            <label><input type="radio" name="q5" value="健康问题对我的工作没有影响">健康问题对我的工作没有影响</label>
-            <label><input type="radio" name="q5" value="健康问题使我完全无法工作">健康问题使我完全无法工作</label>
+          <p class="help">请考虑工作时因健康问题导致工作量或工作种类受限、完成得比预期少，或无法像平常一样仔细工作的情况。</p>
+          <div class="scale" role="radiogroup" aria-label="工作效率受影响程度 0-10 分">
+            <label><input type="radio" name="q5" value="0"><span>0</span></label>
+            <label><input type="radio" name="q5" value="1"><span>1</span></label>
+            <label><input type="radio" name="q5" value="2"><span>2</span></label>
+            <label><input type="radio" name="q5" value="3"><span>3</span></label>
+            <label><input type="radio" name="q5" value="4"><span>4</span></label>
+            <label><input type="radio" name="q5" value="5"><span>5</span></label>
+            <label><input type="radio" name="q5" value="6"><span>6</span></label>
+            <label><input type="radio" name="q5" value="7"><span>7</span></label>
+            <label><input type="radio" name="q5" value="8"><span>8</span></label>
+            <label><input type="radio" name="q5" value="9"><span>9</span></label>
+            <label><input type="radio" name="q5" value="10"><span>10</span></label>
           </div>
+          <div class="scale-anchors"><span>0 = 健康问题对我的工作没有影响</span><span>10 = 健康问题使我完全无法工作</span></div>
         </fieldset>
       </div>
 
       <fieldset class="question" id="q6">
         <legend>6. 过去7天内，健康问题在多大程度上影响了您进行日常活动的能力（不包括有偿工作）？</legend>
-        <p class="help">日常活动包括做家务、购物、照顾孩子、锻炼、学习等。</p>
-        <div class="options endpoint-options">
-          <label><input type="radio" name="q6" value="健康问题对我的日常活动没有影响">健康问题对我的日常活动没有影响</label>
-          <label><input type="radio" name="q6" value="健康问题使我完全无法进行日常活动">健康问题使我完全无法进行日常活动</label>
-        </div>
+        <p class="help">日常活动包括家务、购物、照护儿童、运动、学习等通常会做的活动。</p>
+          <div class="scale" role="radiogroup" aria-label="日常活动受影响程度 0-10 分">
+            <label><input type="radio" name="q6" value="0"><span>0</span></label>
+            <label><input type="radio" name="q6" value="1"><span>1</span></label>
+            <label><input type="radio" name="q6" value="2"><span>2</span></label>
+            <label><input type="radio" name="q6" value="3"><span>3</span></label>
+            <label><input type="radio" name="q6" value="4"><span>4</span></label>
+            <label><input type="radio" name="q6" value="5"><span>5</span></label>
+            <label><input type="radio" name="q6" value="6"><span>6</span></label>
+            <label><input type="radio" name="q6" value="7"><span>7</span></label>
+            <label><input type="radio" name="q6" value="8"><span>8</span></label>
+            <label><input type="radio" name="q6" value="9"><span>9</span></label>
+            <label><input type="radio" name="q6" value="10"><span>10</span></label>
+          </div>
+          <div class="scale-anchors"><span>0 = 健康问题对我的日常活动没有影响</span><span>10 = 健康问题使我完全无法进行日常活动</span></div>
       </fieldset>
 
       <div class="bottom-action">

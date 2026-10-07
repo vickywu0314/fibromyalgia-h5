@@ -2,19 +2,21 @@
   const form=document.getElementById("syndromeForm");
   const secondary=document.getElementById("secondaryOptions");
 
+  // 兼证不可与主证相同：禁用与主证相同的兼证选项
   function updateSecondary(){
-    const value=form.querySelector('input[name="hasSecondary"]:checked')?.value;
-    const disabled=value==="否";
-    secondary.classList.toggle("is-disabled",disabled);
+    const main=form.querySelector('input[name="mainSyndrome"]:checked')?.value;
     secondary.querySelectorAll("input").forEach(input=>{
-      input.disabled=disabled;
-      if(disabled) input.checked=false;
+      const same=input.value===main;
+      input.disabled=same;
+      input.parentElement.classList.toggle("is-disabled",same);
+      if(same) input.checked=false;
     });
   }
 
-  form.querySelectorAll('input[name="hasSecondary"]').forEach(input=>{
+  form.querySelectorAll('input[name="mainSyndrome"]').forEach(input=>{
     input.addEventListener("change",updateSecondary);
   });
+  updateSecondary();
 
   form.addEventListener("submit",e=>{
     e.preventDefault();

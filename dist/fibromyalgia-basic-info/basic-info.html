@@ -35,12 +35,13 @@
         </div>
 
         <div class="field">
-          <label for="phone">手机号</label>
-          <input id="phone" name="phone" type="tel" inputmode="tel" placeholder="请输入手机号">
+          <button type="button" class="submodule-row menu-row inline-row" data-page="csi">
+            <span class="submodule-copy"><strong>4. 中枢敏化程度：中枢敏化指数（CSI-9）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
         </div>
 
         <fieldset class="field">
-          <legend>3. 性别</legend>
+          <legend>5. 性别</legend>
           <div class="choices inline">
             <label><input type="radio" name="gender" value="男"> 男</label>
             <label><input type="radio" name="gender" value="女"> 女</label>
@@ -48,128 +49,159 @@
         </fieldset>
 
         <div class="field">
-          <label>17. 常住地</label>
-          <div class="inline-fields">
-            <select name="province" aria-label="常住地省份">
-              <option value="">请选择</option>
-              <option>北京市</option><option>天津市</option><option>河北省</option>
-              <option>山西省</option><option>内蒙古自治区</option><option>辽宁省</option>
-              <option>吉林省</option><option>黑龙江省</option><option>上海市</option>
-              <option>江苏省</option><option>浙江省</option><option>安徽省</option>
-              <option>福建省</option><option>江西省</option><option>山东省</option>
-              <option>河南省</option><option>湖北省</option><option>湖南省</option>
-              <option>广东省</option><option>广西壮族自治区</option><option>海南省</option>
-              <option>重庆市</option><option>四川省</option><option>贵州省</option>
-              <option>云南省</option><option>西藏自治区</option><option>陕西省</option>
-              <option>甘肃省</option><option>青海省</option><option>宁夏回族自治区</option>
-              <option>新疆维吾尔自治区</option><option>香港特别行政区</option>
-              <option>澳门特别行政区</option><option>台湾省</option>
+          <label for="province">6. 常住地</label>
+          <div class="inline-fields region-fields">
+            <select id="province" name="province" aria-label="常住地省份">
+              <option value="">请选择省份</option>
             </select>
-            <span>省</span>
+            <select id="city" name="city" aria-label="常住地城市" disabled>
+              <option value="">请选择城市</option>
+            </select>
           </div>
         </div>
 
         <fieldset class="field">
-          <legend>9. 婚姻</legend>
+          <legend>7. 婚姻</legend>
           <div class="choices">
-            <label><input type="radio" name="marriage" value="已婚"> 已婚</label>
             <label><input type="radio" name="marriage" value="未婚"> 未婚</label>
+            <label><input type="radio" name="marriage" value="已婚"> 已婚</label>
             <label><input type="radio" name="marriage" value="离婚"> 离婚</label>
             <label><input type="radio" name="marriage" value="丧偶"> 丧偶</label>
           </div>
         </fieldset>
 
         <div class="field">
-          <label for="education">教育程度</label>
+          <label for="education">8. 教育程度</label>
           <select id="education" name="education">
+            <option value="">请选择</option>
             <option>未上过学</option>
-            <option>小学</option>
-            <option>初中</option>
-            <option>高中/中专</option>
-            <option>大专</option>
-            <option>本科</option>
-            <option>硕士及以上</option>
+            <option>小学及初中</option>
+            <option>高中或中专</option>
+            <option>大学本科或大专</option>
+            <option>研究生</option>
           </select>
         </div>
 
         <div class="field">
-          <label for="workStatus">工作情况</label>
+          <label for="workStatus">9. 工作情况</label>
           <select id="workStatus" name="workStatus">
+            <option value="">请选择</option>
             <option>在职人员</option>
             <option>退休人员</option>
             <option>家庭主妇</option>
             <option>无业人员</option>
-            <option>其他</option>
           </select>
         </div>
-      </section>
 
-      <section class="form-section">
         <fieldset class="field">
-          <legend>吸烟史</legend>
+          <legend>10. 吸烟史</legend>
           <div class="choices">
             <label><input type="radio" name="smoking" value="无或偶尔有"> 无或偶尔有</label>
             <label class="with-input">
               <input type="radio" name="smoking" value="经常有">
-              经常有 <input class="mini" name="smokingYears" type="number" min="0" inputmode="numeric" aria-label="吸烟年数"> 年
+              经常有 <input class="mini" id="smokingYears" name="smokingYears" type="number" min="0" inputmode="numeric" aria-label="吸烟年数" disabled> 年
             </label>
           </div>
-          <p class="sub-label">每日</p>
-          <div class="choices">
-            <label><input type="radio" name="smokingAmount" value="10支以下"> 10支以下</label>
-            <label><input type="radio" name="smokingAmount" value="10-20支"> 10-20支</label>
-            <label><input type="radio" name="smokingAmount" value="20支及以上"> 20支及以上</label>
+          <div id="smokingDetail" class="conditional" hidden>
+            <p class="sub-label">每日吸烟量</p>
+            <div class="choices">
+              <label><input type="radio" name="smokingAmount" value="10支以下" disabled> 每日：10支以下</label>
+              <label><input type="radio" name="smokingAmount" value="10-20支" disabled> 每日：10-20支</label>
+              <label><input type="radio" name="smokingAmount" value="20支及以上" disabled> 每日：20支及以上</label>
+            </div>
           </div>
         </fieldset>
 
         <fieldset class="field">
-          <legend>饮酒史</legend>
+          <legend>11. 饮酒史</legend>
           <div class="choices">
             <label><input type="radio" name="drinking" value="无或偶尔有"> 无或偶尔有</label>
             <label class="with-input">
               <input type="radio" name="drinking" value="经常有">
-              经常有 <input class="mini" name="drinkingYears" type="number" min="0" inputmode="numeric" aria-label="饮酒年数"> 年
+              经常有 <input class="mini" id="drinkingYears" name="drinkingYears" type="number" min="0" inputmode="numeric" aria-label="饮酒年数" disabled> 年
             </label>
           </div>
-          <p class="sub-label">每日</p>
-          <div class="choices">
-            <label><input type="radio" name="drinkType" value="白酒"> 白酒</label>
-            <label><input type="radio" name="drinkType" value="啤酒"> 啤酒</label>
-            <label><input type="radio" name="drinkType" value="红酒"> 红酒</label>
+          <div id="drinkingDetail" class="conditional" hidden>
+            <p class="sub-label">饮酒种类（可多选）</p>
+            <div class="drink-list">
+              <div class="drink-item">
+                <label><input type="checkbox" name="drinkType" value="白酒" data-amount="baijiuAmount" disabled> 白酒</label>
+                <span class="amount-line">每天用量 <input class="mini wide" id="baijiuAmount" name="baijiuAmount" type="number" min="0" inputmode="decimal" aria-label="白酒每天用量" disabled> ml</span>
+              </div>
+              <div class="drink-item">
+                <label><input type="checkbox" name="drinkType" value="啤酒" data-amount="beerAmount" disabled> 啤酒</label>
+                <span class="amount-line">每天用量 <input class="mini wide" id="beerAmount" name="beerAmount" type="number" min="0" inputmode="decimal" aria-label="啤酒每天用量" disabled> ml</span>
+              </div>
+              <div class="drink-item">
+                <label><input type="checkbox" name="drinkType" value="红酒" data-amount="wineAmount" disabled> 红酒</label>
+                <span class="amount-line">每天用量 <input class="mini wide" id="wineAmount" name="wineAmount" type="number" min="0" inputmode="decimal" aria-label="红酒每天用量" disabled> ml</span>
+              </div>
+            </div>
           </div>
-          <label class="amount-line">每天用量 <input class="mini wide" name="drinkAmount" type="number" min="0" inputmode="decimal"> ml</label>
         </fieldset>
 
         <div class="field">
-          <label for="painOnsetDate">周身疼痛发病时间</label>
+          <button type="button" class="submodule-row menu-row inline-row" data-page="work">
+            <span class="submodule-copy"><strong>12. 间接成本评估：工作生产力及活动受损问卷</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+        </div>
+        <div class="field">
+          <button type="button" class="submodule-row menu-row inline-row" data-page="body">
+            <span class="submodule-copy"><strong>13. 人体成分分析</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+        </div>
+        <div class="field">
+          <button type="button" class="submodule-row menu-row inline-row" data-page="tipi">
+            <span class="submodule-copy"><strong>14. 人格评估：中国版10项目大五人格量表（TIPI-C）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+        </div>
+        <div class="field">
+          <button type="button" class="submodule-row menu-row inline-row" data-page="sffq">
+            <span class="submodule-copy"><strong>15. 膳食摄入评估：半定量膳食频率问卷（SFFQ）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+        </div>
+
+        <div class="field">
+          <label for="painOnsetDate">16. 周身疼痛发病时间</label>
           <input id="painOnsetDate" name="painOnsetDate" type="date">
         </div>
 
         <fieldset class="field">
-          <legend>是否曾确诊纤维肌痛综合征</legend>
+          <legend>17. 是否曾确诊纤维肌痛综合征</legend>
           <div class="choices inline">
             <label><input type="radio" name="diagnosed" value="是"> 是</label>
             <label><input type="radio" name="diagnosed" value="否"> 否</label>
           </div>
           <div id="diagnosisDetail" class="conditional" hidden>
-            <label>确诊时间 <input name="diagnosisDate" type="date"></label>
+            <label>确诊时间 <input name="diagnosisDate" type="date" disabled></label>
             <label>确诊医疗机构级别
-              <select name="hospitalLevel">
+              <select name="hospitalLevel" disabled>
                 <option value="">请选择</option>
                 <option>1级</option><option>2级</option><option>3级</option><option>无级别</option>
               </select>
             </label>
           </div>
         </fieldset>
+
+        <div class="field">
+          <button type="button" class="submodule-row menu-row inline-row" data-page="tpc">
+            <span class="submodule-copy"><strong>18. 压痛点（TPC）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+        </div>
+        <div class="field">
+          <button type="button" class="submodule-row menu-row inline-row" data-page="fs">
+            <span class="submodule-copy"><strong>19. 纤维肌痛症状量表（FS）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+        </div>
       </section>
 
       <section class="submodule-section" aria-labelledby="submoduleTitle">
         <div class="submodule-heading">
           <div>
-            <h2 id="submoduleTitle">患者评估与病史</h2>
+            <h2 id="submoduleTitle">患者病史与用药</h2>
             <p>请逐项完善患者相关信息</p>
           </div>
-          <div class="submodule-count">已完成 <strong>0/10</strong></div>
+          <div class="submodule-count" title="本页全部评估与病史子模块">全部子模块已完成 <strong id="submoduleCount">0/10</strong></div>
         </div>
 
         <div class="submodule-list">
@@ -182,34 +214,13 @@
           <button type="button" class="submodule-row menu-row" data-page="concomitant-medication">
             <span class="submodule-copy"><strong>合并药物</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
-          <button type="button" class="submodule-row menu-row" data-page="csi">
-            <span class="submodule-copy"><strong>中枢敏化程度：中枢敏化指数（CSI-9）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
-          </button>
-          <button type="button" class="submodule-row menu-row" data-page="work">
-            <span class="submodule-copy"><strong>间接成本评估：工作生产力及活动受损问卷</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
-          </button>
-          <button type="button" class="submodule-row menu-row" data-page="body">
-            <span class="submodule-copy"><strong>人体成分分析</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
-          </button>
-          <button type="button" class="submodule-row menu-row" data-page="tipi">
-            <span class="submodule-copy"><strong>人格评估：中国版10项目大五人格量表（TIPI-C）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
-          </button>
-          <button type="button" class="submodule-row menu-row" data-page="sffq">
-            <span class="submodule-copy"><strong>膳食摄入评估：半定量膳食频率问卷（SFFQ）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
-          </button>
-          <button type="button" class="submodule-row menu-row" data-page="tpc">
-            <span class="submodule-copy"><strong>压痛点（TPC）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
-          </button>
-          <button type="button" class="submodule-row menu-row" data-page="fs">
-            <span class="submodule-copy"><strong>纤维肌痛症状量表（FS）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
-          </button>
         </div>
       </section>
 
       <section class="form-section consent">
         <h2>20. 患者知情同意告知与签署</h2>
         <button type="button" id="signatureBtn" class="signature-box">
-          <span id="signatureText">点击签字</span>
+          <span id="signatureText">点击签字（电子签字）</span>
         </button>
       </section>
 
@@ -220,6 +231,7 @@
   </main>
 
   <script src="js/basic-info-bridge.js"></script>
+  <script src="js/region-data.js"></script>
   <script src="js/basic-info.js"></script>
 </body>
 </html>

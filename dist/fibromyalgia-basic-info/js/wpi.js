@@ -1,5 +1,14 @@
 (function(){
   const form=document.querySelector("form");
+  const countText=document.getElementById("wpiCountText");
+  const scoreInput=document.getElementById("wpiScore");
+  // WPI = 勾选的疼痛部位数（0-19）
+  function updateCount(){
+    const n=form.querySelectorAll('input[name="painArea"]:checked').length;
+    countText.textContent=String(n);
+    scoreInput.value=String(n);
+  }
+  form.addEventListener("change",updateCount);
   form.addEventListener("submit",e=>{
     e.preventDefault();
     const fd=new FormData(form), data={};

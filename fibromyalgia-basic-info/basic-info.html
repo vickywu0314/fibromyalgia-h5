@@ -116,13 +116,21 @@
             <label class="amount-line">已饮 <input class="mini" name="drinkingYears" type="number" min="0" step="1" inputmode="numeric" aria-label="饮酒年数"> 年</label>
             <div>
               <p class="sub-label">酒类（可多选）</p>
-              <div class="choices inline">
-                <label><input type="checkbox" name="drinkType" value="白酒"> 白酒</label>
-                <label><input type="checkbox" name="drinkType" value="啤酒"> 啤酒</label>
-                <label><input type="checkbox" name="drinkType" value="红酒"> 红酒</label>
+              <div class="drink-list">
+                <div class="drink-item">
+                  <label><input type="checkbox" name="drinkType" value="白酒" data-amount="baijiuAmount"> 白酒</label>
+                  <label class="amount-line drink-amount" hidden>每天用量 <input class="mini wide" id="baijiuAmount" name="baijiuAmount" type="number" min="0" inputmode="decimal" aria-label="白酒每天用量"> ml</label>
+                </div>
+                <div class="drink-item">
+                  <label><input type="checkbox" name="drinkType" value="啤酒" data-amount="beerAmount"> 啤酒</label>
+                  <label class="amount-line drink-amount" hidden>每天用量 <input class="mini wide" id="beerAmount" name="beerAmount" type="number" min="0" inputmode="decimal" aria-label="啤酒每天用量"> ml</label>
+                </div>
+                <div class="drink-item">
+                  <label><input type="checkbox" name="drinkType" value="红酒" data-amount="wineAmount"> 红酒</label>
+                  <label class="amount-line drink-amount" hidden>每天用量 <input class="mini wide" id="wineAmount" name="wineAmount" type="number" min="0" inputmode="decimal" aria-label="红酒每天用量"> ml</label>
+                </div>
               </div>
             </div>
-            <label class="amount-line">每天用量 <input class="mini wide" name="drinkAmount" type="number" min="0" inputmode="decimal" aria-label="每天饮酒用量"> ml</label>
           </div>
         </fieldset>
 
@@ -169,6 +177,19 @@
           <button type="button" class="submodule-row menu-row" data-page="concomitantMedication" data-key="concomitantMedication">
             <span class="submodule-copy"><strong>合并药物</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
+        </div>
+      </section>
+
+      <section class="form-section consent" aria-labelledby="consentTitle">
+        <h2 id="consentTitle">患者知情同意告知与签署</h2>
+        <p class="consent-tip">请患者在下方框内手写电子签名</p>
+        <div class="signature-pad" id="signaturePad">
+          <canvas id="signatureCanvas" aria-label="电子签字区域"></canvas>
+          <img id="signatureImg" alt="患者电子签名" hidden>
+          <span class="signature-placeholder" id="signaturePlaceholder">请在此处签字</span>
+        </div>
+        <div class="signature-actions">
+          <button type="button" class="link-btn" id="signatureClear">重新签字</button>
         </div>
       </section>
 

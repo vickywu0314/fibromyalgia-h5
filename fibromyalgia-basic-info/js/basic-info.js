@@ -33,9 +33,14 @@
   function update(){
     U.toggle(document.getElementById("smokingDetail"), checked("smoking") === "经常有");
     U.toggle(document.getElementById("drinkingDetail"), checked("drinking") === "经常有");
+    // 饮酒史：每种酒勾选后才出现「每天用量」，取消勾选时清空
+    form.querySelectorAll('input[name="drinkType"]').forEach(cb => {
+      const amount = document.getElementById(cb.dataset.amount);
+      U.toggle(amount && amount.closest(".drink-amount"), cb.checked && !cb.disabled);
+    });
   }
   form.addEventListener("change", e => {
-    if (e.target.name === "smoking" || e.target.name === "drinking") update();
+    if (e.target.name === "smoking" || e.target.name === "drinking" || e.target.name === "drinkType") update();
   });
 
   function validId(value){
@@ -93,12 +98,73 @@
     U.fill(form, d);
     update();
     renderCities(d.city || "");
+    sizeCanvas();
+    showSignature(typeof d.signature === "string" ? d.signature : "");
   };
 
   function num(v){
     if (v === undefined || v === null || String(v).trim() === "") return "";
     const n = Number(v);
     return isNaN(n) ? String(v) : n;
+  }
+
+  // 患者知情同意告知与签署：电子签字（canvas 手写，存为 PNG dataURL → jbxx.signature）
+  const sigPad = document.getElementById("signaturePad");
+  const sigCanvas = document.getElementById("signatureCanvas");
+  const sigImg = document.getElementById("signatureImg");
+  const sigHolder = document.getElementById("signaturePlaceholder");
+  const sigClear = document.getElementById("signatureClear");
+  let signature = typeof jbxx.signature === "string" ? jbxx.signature : "";
+  let drawing = false, drawn = false, last = null;
+  const ctx = sigCanvas.getContext("2d");
+  function sizeCanvas(){
+    const r = sigPad.getBoundingClientRect(), ratio = window.devicePixelRatio || 1;
+    sigCanvas.width = Math.max(1, Math.round(r.width * ratio));
+    sigCanvas.height = Math.max(1, Math.round(r.height * ratio));
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    ctx.lineWidth = 2.4; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#222";
+    drawn = false;
+  }
+  function showSignature(src){
+    signature = src || "";
+    sigImg.hidden = !signature;
+    if (signature) sigImg.src = signature; else sigImg.removeAttribute("src");
+    sigHolder.hidden = !!signature;
+  }
+  function pos(e){ const r = sigCanvas.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; }
+  function readonly(){ return !!(window.FmsCase && FmsCase.isViewMode && FmsCase.isViewMode()); }
+  sigCanvas.addEventListener("pointerdown", e => {
+    if (readonly() || signature) return;
+    e.preventDefault();
+    drawing = true; last = pos(e);
+    try { sigCanvas.setPointerCapture(e.pointerId); } catch (err) {}
+    sigHolder.hidden = true;
+    ctx.beginPath(); ctx.arc(last.x, last.y, 1.2, 0, Math.PI * 2); ctx.fillStyle = "#222"; ctx.fill();
+    drawn = true;
+  });
+  sigCanvas.addEventListener("pointermove", e => {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    last = p; drawn = true;
+  });
+  function endStroke(){ drawing = false; }
+  sigCanvas.addEventListener("pointerup", endStroke);
+  sigCanvas.addEventListener("pointercancel", endStroke);
+  sigClear.addEventListener("click", () => {
+    if (readonly()) return;
+    showSignature("");
+    sizeCanvas();
+  });
+  // 有已保存签名时显示图片（重新签字才清空）；查看模式不可签
+  sizeCanvas();
+  showSignature(signature);
+  if (readonly()) sigClear.hidden = true;
+  function currentSignature(){
+    if (signature) return signature;
+    if (!drawn) return "";
+    try { return sigCanvas.toDataURL("image/png"); } catch (e) { return ""; }
   }
 
   // 本页字段（不含 finish）
@@ -123,8 +189,16 @@
       drinkingYears: num(d.drinkingYears),
       drinkType: drinkTypes.join("、"),
       drinkTypes: drinkTypes,
-      drinkAmount: num(d.drinkAmount)
+      // 每种酒每天用量（ml），未勾选的酒类为空串
+      baijiuAmount: num(d.baijiuAmount),
+      beerAmount: num(d.beerAmount),
+      wineAmount: num(d.wineAmount),
+      drinkAmount: "",
+      signature: currentSignature()
     };
+    // drinkAmount（原结构体字段）保留为三种酒每天用量之和，都没填时为空串
+    const amounts = [value.baijiuAmount, value.beerAmount, value.wineAmount].filter(v => typeof v === "number");
+    if (amounts.length) value.drinkAmount = Math.round(amounts.reduce((a, b) => a + b, 0) * 100) / 100;
     return value;
   }
 

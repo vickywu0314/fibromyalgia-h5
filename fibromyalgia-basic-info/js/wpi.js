@@ -4,7 +4,11 @@
   const form=document.getElementById("wpiForm");
   const boxes=[...form.querySelectorAll('input[name="painArea"]')];
 
-  function progress(){ FsScore.setProgress(Math.round(boxes.filter(b=>b.checked).length/boxes.length*100)); }
+  function progress(){
+    const n=boxes.filter(b=>b.checked).length;
+    FsScore.setProgress(Math.round(n/boxes.length*100));
+    const c=document.getElementById("wpiCount"); if(c) c.textContent=String(n);
+  }
   const saved=FmsCase.get("jbxx.fs.wpi");
   if(saved && saved.answers) FmsCase.fillForm(form, saved.answers);
   progress();

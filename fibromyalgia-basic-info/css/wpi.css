@@ -14,3 +14,4 @@ h1{margin:0 0 10px;font-size:18px;font-weight:600;line-height:1.5}
 .group input{width:19px;height:19px;margin:0 11px 0 0;accent-color:#168bdd;flex:none}
 .result{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:22px 0 6px;padding:15px 14px;border-radius:7px;background:#f6f8fa;font-size:15px}
 .result strong{color:#168bdd}
+.wpi-count{margin:-4px 0 12px;color:#555;font-size:14px}.wpi-count strong{color:#168bdd}

@@ -50,6 +50,29 @@ const applyAdjust = z => {
   });
   return z;
 };
+/* ---------- 各类别完成状态（入口页状态、进度共用） ----------
+ * 西药 / 中成药 / 非药物疗法：选“无” → 已完成；选“有”且至少 1 条记录、是否调整已答（选“是”时调整内容/原因也已选） → 已完成；
+ *   已选“有”但缺记录或缺是否调整 → 填写中；什么都没选 → 未填写。
+ * 中药汤剂页面没有“无/有”：有记录 → 已完成；没有记录时，治疗方案整体已保存（zlfa.finish）视为“无” → 已完成，否则未填写。 */
+const ORDER = ['xiyao', 'zhongyao-yinpian', 'zhongchengyao', 'fei-yaowu'];
+const REQUIRED = ['xiyao', 'zhongchengyao', 'fei-yaowu'];
+const adjDone = a => !!(a && a.adjust) && (a.adjust !== '是' || (!!a.adjustment && !!a.reason));
+const catState = (z, k) => {
+  const c = KIND[k], n = z[c.key].length;
+  if (!c.hasKey) return n ? ['done', `已添加 ${n} 条`] : z.finish ? ['done', '无'] : ['none', '尚未添加'];
+  const use = z[c.hasKey] || (n ? '有' : '');
+  if (use === '无') return ['done', '无'];
+  if (!use) return ['none', '尚未选择无/有'];
+  if (!n) return ['doing', '已选“有”，尚未添加记录'];
+  const ok = c.catAdjKey
+    ? XI_CATS.filter(cat => z[c.key].some(r => catOf(r) === cat)).every(cat => adjDone((z[c.catAdjKey] || {})[cat]))
+    : adjDone(z[c.adjKey]);
+  return ok ? ['done', `已添加 ${n} 条`] : ['doing', `已添加 ${n} 条，是否调整未填写完整`];
+};
+const doneCount = z => ORDER.filter(k => catState(z, k)[0] === 'done').length;
+const allRequiredDone = z => REQUIRED.every(k => catState(z, k)[0] === 'done');
+/* 已保存（finish=true）后若某类又变得不完整，取消 finish，入口页回到“填写中” */
+const keepFinish = z => { if (z.finish && !allRequiredDone(z)) z.finish = false; return z };
 const read = k => loadZ()[KIND[k].key];
 const el = (tag, text = '', cls = '') => { const n = document.createElement(tag); n.textContent = text; if (cls) n.className = cls; return n };
 const opts = (select, list, placeholder) => select.replaceChildren(new Option(placeholder, ''), ...list.map(v => new Option(v, v)));
@@ -82,25 +105,31 @@ const kind = page.dataset.kind;
 
 /* ---------- 入口页：各类填写状态 + 保存并返回 ---------- */
 if (page.dataset.page === 'index') {
-  const z = loadZ();
-  const statusOf = k => {
-    const c = KIND[k], n = z[c.key].length;
-    if (c.hasKey && z[c.hasKey] === '无') return ['无', true];
-    if (n) return [`已填 ${n} 条`, true];
-    if (c.hasKey && z[c.hasKey] === '有') return ['已选“有”，未添加', false];
-    return ['未填', false];
+  const LABEL = { none: '未填写', doing: '填写中', done: '已完成' };
+  /* 进度 = 已完成类别数 / 4；从类别页返回（含浏览器页面缓存）时重新读取草稿刷新 */
+  const render = () => {
+    const z = loadZ();
+    document.querySelectorAll('[data-kind-link]').forEach(a => {
+      const [state, detail] = catState(z, a.dataset.kindLink);
+      let s = a.querySelector('.status');
+      if (!s) { s = el('span'); a.insertBefore(s, a.querySelector('.arrow')) }
+      s.textContent = LABEL[state]; s.title = detail; s.className = 'status ' + state;
+    });
+    FmsProgress.set(doneCount(z), ORDER.length);
   };
-  document.querySelectorAll('[data-kind-link]').forEach(a => {
-    const [text, done] = statusOf(a.dataset.kindLink);
-    const s = el('span', text, 'status' + (done ? ' done' : ''));
-    a.insertBefore(s, a.querySelector('.arrow'));
-  });
+  render();
+  window.addEventListener('pageshow', e => { if (e.persisted) render() });
   const btn = document.getElementById('saveAll');
   btn.addEventListener('click', () => {
-    FmsCase.save('zlfa', Object.assign(applyAdjust(loadZ()), { finish: true }), { back: '../patient-detail.html', button: btn });
+    const z = applyAdjust(loadZ());
+    const missing = REQUIRED.filter(k => catState(z, k)[0] !== 'done').map(k => META[k].title);
+    if (missing.length) { FmsCase.toast(`请先完成：${missing.join('、')}`); return }
+    FmsCase.save('zlfa', Object.assign(z, { finish: true }), { back: '../patient-detail.html', button: btn });
   });
   return;
 }
+/* 类别页 / 添加页：从下一级页面通过浏览器返回（页面缓存）时重新加载，显示最新草稿 */
+window.addEventListener('pageshow', e => { if (e.persisted) location.reload() });
 
 /* ---------- 西药类别页：无/有 → 各药物分类（是否调整西药 + 药品列表 + 添加） ---------- */
 if (page.dataset.page === 'list' && kind === 'xiyao') {
@@ -146,7 +175,9 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
     used.forEach(([, ci]) => toggle(document.getElementById(`adjustDetails${ci}`), checked(`是否调整${ci}`) === '是'));
   };
   sync();
-  form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', build(false)) } catch {} });
+  /* 进度：是否使用 + 各已有记录分类的是否调整（选“是”再加调整内容/原因）；选“有”时“至少添加 1 条药品”另算一项 */
+  FmsProgress.track(form, { extra: () => checked('是否使用') === '有' ? { total: 1, answered: z0.xiyao.length ? 1 : 0 } : {} });
+  form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
     const use = checked('是否使用');
@@ -158,7 +189,7 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
         if (a === '是' && (!checked(`调整内容${ci}`) || !checked(`调整原因${ci}`))) { error.textContent = `请选择${cat}的调整内容和调整原因`; return }
       }
     }
-    FmsCase.save('zlfa', build(true), { back: 'index.html', button: form.querySelector('button[type=submit]') });
+    FmsCase.save('zlfa', keepFinish(build(true)), { back: 'index.html', button: form.querySelector('button[type=submit]') });
   });
   return;
 }
@@ -168,7 +199,9 @@ if (page.dataset.page === 'list') {
   const items = read(kind), list = document.getElementById('records');
   document.getElementById('empty').hidden = items.length > 0;
   items.forEach((v, i) => { const a = el('a'); a.href = `add-${kind}.html?edit=${i}`; const t = el('span'); t.append(el('strong', titleOf(kind, v)), el('small', describe(kind, v))); a.append(t, el('span', '›', 'arrow')); const li = el('li'); li.append(a); list.append(li) });
-  const form = document.getElementById('metaForm'); if (!form) return;
+  const form = document.getElementById('metaForm');
+  /* 中药汤剂没有“无/有”问题：进度按是否已添加记录（或治疗方案已保存视为“无”） */
+  if (!form) { FmsProgress.set(catState(loadZ(), kind)[0] === 'done' ? 1 : 0, 1); return }
   const cfg = META[kind], ck = KIND[kind], z0 = loadZ(), error = document.getElementById('error');
   const meta = Object.assign({ use: ck.hasKey ? z0[ck.hasKey] || '' : '' }, z0[ck.adjKey] || {});
   const details = document.getElementById('details'), adjust = document.getElementById('adjustDetails');
@@ -191,8 +224,10 @@ if (page.dataset.page === 'list') {
     toggle(adjust, checked('是否调整') === '是');
   };
   sync();
+  /* 进度：是否使用、是否调整（选“是”再加调整内容/原因）；选“有”时“至少添加 1 条记录”另算一项 */
+  FmsProgress.track(form, { extra: () => cfg.hasUse && checked('是否使用') === '有' ? { total: 1, answered: items.length ? 1 : 0 } : {} });
   /* 选项变化即写草稿（不提交），便于跳转到“添加”页面后返回不丢失 */
-  form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', build(false)) } catch {} });
+  form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
     const m = current();
@@ -201,7 +236,7 @@ if (page.dataset.page === 'list') {
       if (!m.adjust) { error.textContent = `请选择${cfg.adjustLegend}`; return }
       if (m.adjust === '是' && (!m.adjustment || !m.reason)) { error.textContent = '请选择调整内容和调整原因'; return }
     }
-    FmsCase.save('zlfa', build(true), { back: 'index.html', button: form.querySelector('button[type=submit]') });
+    FmsCase.save('zlfa', keepFinish(build(true)), { back: 'index.html', button: form.querySelector('button[type=submit]') });
   });
   return;
 }
@@ -209,6 +244,8 @@ if (page.dataset.page === 'list') {
 /* ---------- 汇总页（读草稿） ---------- */
 if (page.dataset.page === 'summary') {
   const root = document.getElementById('summary'), z = loadZ();
+  /* 进度同入口页：已完成类别数 / 4 */
+  FmsProgress.set(doneCount(z), ORDER.length);
   ['xiyao', 'zhongyao-yinpian', 'zhongchengyao', 'fei-yaowu'].forEach(k => {
     const cfg = META[k], ck = KIND[k], section = el('section', '', 'summary-section'); section.append(el('h2', cfg.title));
     const none = !!ck.hasKey && z[ck.hasKey] === '无';
@@ -257,11 +294,14 @@ const editItem = editing ? records[index] : null;
 /* 新增成功写入草稿后记住下标：提交失败再点保存时改为覆盖，避免重复新增 */
 let slot = editing ? index : null, deleted = false;
 const submitBtn = form.querySelector('button[type=submit]');
+/* 进度：本条记录当前显示的必填项（补充药物、图片为选填）；回显完成后再统计一次 */
+const progress = FmsProgress.track(form, { optional: ['supplement'] });
+setTimeout(progress.refresh, 0);
 const save = item => {
   const z = loadZ();
   if (slot != null && slot < z[listKey].length) z[listKey][slot] = item;
   else { z[listKey].push(item); slot = z[listKey].length - 1 }
-  FmsCase.save('zlfa', applyAdjust(z), { back: listPage, button: submitBtn });
+  FmsCase.save('zlfa', keepFinish(applyAdjust(z)), { back: listPage, button: submitBtn });
 };
 const del = document.getElementById('deleteItem');
 if (del) {
@@ -270,7 +310,7 @@ if (del) {
     if (!deleted && !confirm('确定删除该记录？')) return;
     const z = loadZ();
     if (!deleted) { z[listKey].splice(index, 1); deleted = true }
-    FmsCase.save('zlfa', applyAdjust(z), { back: listPage, button: del });
+    FmsCase.save('zlfa', keepFinish(applyAdjust(z)), { back: listPage, button: del });
   });
 }
 

@@ -1,5 +1,8 @@
 // 病情评估：9 个量表共用。数据只存取在病例草稿（FmsCase）的 bqpg.<key> 下：
-//   { finish: true, score: "数字字符串或空串", result: "判定或空串", answers: { 原始作答 }, ...维度分 }
+//   { finish, answered, total, score: "数字字符串或空串", result: "判定或空串", answers: { 原始作答 }, ...维度分 }
+// 量表页边填边自动写入草稿（只写本地草稿，不调接口）：未答完时 finish=false，只有 answers/answered/total；
+// 全部答完时 finish=true 并带上计分。点「保存并返回」时再按原逻辑提交接口。查看模式不自动保存。
+// 滑块题只有被拖动/点击过才算作答（未作答的滑块不写入 answers）。
 // 依赖 ../js/fms-api.js 与 ../js/fms-case.js（页面里先于本文件引入）。
 (function () {
   'use strict';
@@ -36,8 +39,8 @@
     //   整体影响 impactScore = 第 2 部分 2 题总和（0–20）
     //   症状 symptomScore = 第 3 部分标准 10 题（页面 fiqr_3_1 … fiqr_3_10）总和 / 2（0–50）
     //   总分 = 三者之和（0–100），保留 1 位小数。
-    // 页面症状部分有 14 题：第 10 题“对噪音、明亮光线、异味和寒冷的敏感度”即标准 FIQR 第 10 题，
-    // 第 11–14 题是它的拆分细项（噪音/光线/异味/寒冷），不计分，只存 answers。
+    // 页面症状部分 10 题 + 4 个细项：第 10 题“对噪音、明亮光线、异味和寒冷的敏感度”即标准 FIQR 第 10 题，
+    // 10-1～10-4（fiqr_3_10_1 … fiqr_3_10_4）是它的拆分细项（噪音/光线/异味/寒冷），不计分，只存 answers。
     // severity（另加 key）：<39 轻度；39–<59 中度；≥59 重度（任务给定分级）。
     // result 留空（FIQR 无公认二分判定）。
     fiqr: function (a) {
@@ -65,16 +68,16 @@
       };
     },
 
-    // MFI-20（Smets 1995）：页面 value 0–4 对应选项“1 不符合 … 5 完全符合”。
-    //   疲劳方向条目 2,5,9,10,13,14,16,17,18,19：得分 = value + 1（1–5）
-    //   正向表述条目 1,3,4,6,7,8,11,12,15,20（感觉良好/有活力等）反向：得分 = 5 - value（5–1）
+    // MFI-20（Smets 1995）：页面 value 1–5 即选项“1 不符合 … 5 完全符合”。
+    //   疲劳方向条目 2,5,9,10,13,14,16,17,18,19：得分 = value（1–5）
+    //   正向表述条目 1,3,4,6,7,8,11,12,15,20（感觉良好/有活力等）反向：得分 = 6 - value（5–1）
     //   分越高越疲劳。总分 20–100；5 个维度各 4 题 4–20：
     //   generalFatigue 综合疲劳 1,5,12,16；physicalFatigue 躯体疲劳 2,8,14,20；
     //   reducedActivity 活动减少 3,6,10,17；reducedMotivation 动力下降 4,9,15,18；
     //   mentalFatigue 脑力疲劳 7,11,13,19。result 留空。
     mfi20: function (a) {
       var REVERSE = [1, 3, 4, 6, 7, 8, 11, 12, 15, 20];
-      function item(i) { var v = num(a['mfi' + i]) || 0; return REVERSE.indexOf(i) !== -1 ? 5 - v : v + 1; }
+      function item(i) { var v = num(a['mfi' + i]); if (v == null) return 0; return REVERSE.indexOf(i) !== -1 ? 6 - v : v; }
       function dim(list) { return String(list.reduce(function (t, i) { return t + item(i); }, 0)); }
       var total = 0; for (var i = 1; i <= 20; i++) total += item(i);
       return {
@@ -89,7 +92,7 @@
     //   C1 主观睡眠质量 = 第 6 题（0 很好 … 3 很差）
     //   C2 入睡时间 = 第 2 题（0 ≤15min,1 16–30,2 31–60,3 >60）+ 5a（0–3）之和：0→0,1–2→1,3–4→2,5–6→3
     //   C3 睡眠时间 = 第 4 题小时数：>7→0，6–7→1，5–<6→2，<5→3
-    //   C4 睡眠效率 = 实际睡眠小时 / 卧床时间（起床时间 − 上床时间，跨午夜 +24h）：
+    //   C4 睡眠效率 = 实际睡眠小时 / 卧床时间（起床时间 − 上床时间，跨午夜 +24h；时间由页面“时/分”下拉合成 bedtime/waketime “HH:MM”）：
     //      ≥85%→0，75–84%→1，65–74%→2，<65%→3
     //   C5 睡眠障碍 = 5b–5j（9 题，各 0–3）之和：0→0,1–9→1,10–18→2,19–27→3
     //   C6 催眠药物 = 第 7 题（0–3）
@@ -163,43 +166,65 @@
     var v = window.FmsCase ? FmsCase.get('bqpg.' + key) : null;
     return v && typeof v === 'object' ? v : null;
   }
+  function viewMode() { return !!(window.FmsCase && FmsCase.isViewMode && FmsCase.isViewMode()); }
 
-  // 进度条：已完成量表数 / 9
-  function updateProgress() {
-    var done = SCALES.filter(function (k) { var d = draft(k); return d && d.finish; }).length;
-    var pct = Math.round(done / SCALES.length * 100);
+  // 进度条：bar 宽度 pct%，文字 text
+  function setProgress(pct, text) {
     document.querySelectorAll('.progress-block').forEach(function (b) {
       var bar = b.querySelector('.progress'), span = bar && bar.querySelector('span'), p = b.querySelector('p');
       if (bar) bar.setAttribute('aria-valuenow', pct);
       if (span) span.style.width = pct + '%';
-      if (p) p.textContent = '已完成' + pct + '%（' + done + '/' + SCALES.length + '）';
+      if (p) p.textContent = text;
     });
   }
 
+  // 某量表的状态：done（已完成）/ partial（已填 x/N）/ empty（未填写）
+  function scaleState(d) {
+    if (d && d.finish) return { state: 'done', answered: d.total || null, total: d.total || null };
+    var n = d ? Number(d.answered) || 0 : 0;
+    if (n > 0) return { state: 'partial', answered: n, total: Number(d.total) || null };
+    return { state: 'empty', answered: 0, total: d ? Number(d.total) || null : null };
+  }
+
   // ---------------------------------------------------------------------------
-  // 首页：显示每个量表的完成状态
+  // 首页：显示每个量表的状态（未填写 / 已填 x/N / ✓ 已完成）和整体进度（已完成量表数 / 9）。
+  // 从量表页返回时（含浏览器页面缓存 bfcache 恢复）在 pageshow 里重新读取草稿刷新。
   // ---------------------------------------------------------------------------
   var menu = document.querySelector('.menu');
   if (menu) {
-    updateProgress();
-    menu.querySelectorAll('a[href]').forEach(function (link) {
-      var name = link.getAttribute('href').replace(/\.html.*$/, '');
-      var key = KEY_MAP[name];
-      if (!key) return;
-      var d = draft(key);
-      var badge = document.createElement('em');
-      badge.className = 'status' + (d && d.finish ? ' done' : '');
-      var text = d && d.finish ? '已完成' : '未填写';
-      if (d && d.finish && d.score !== '' && d.score != null) text += ' · ' + d.score + '分';
-      if (d && d.finish && d.result) text += ' · ' + d.result;
-      badge.textContent = text;
-      var arrow = link.querySelector('span');
-      var wrap = document.createElement('div');
-      wrap.className = 'menu-text';
-      while (link.firstChild && link.firstChild !== arrow) wrap.appendChild(link.firstChild);
-      wrap.appendChild(badge);
-      link.insertBefore(wrap, arrow);
-    });
+    var renderList = function () {
+      var done = 0;
+      menu.querySelectorAll('a[href]').forEach(function (link) {
+        var name = link.getAttribute('href').replace(/\.html.*$/, '');
+        var key = KEY_MAP[name];
+        if (!key) return;
+        var badge = link.querySelector('em.status');
+        if (!badge) {
+          badge = document.createElement('em');
+          var arrow = link.querySelector('span');
+          var wrap = document.createElement('div');
+          wrap.className = 'menu-text';
+          while (link.firstChild && link.firstChild !== arrow) wrap.appendChild(link.firstChild);
+          wrap.appendChild(badge);
+          link.insertBefore(wrap, arrow);
+        }
+        var d = draft(key), st = scaleState(d), text;
+        if (st.state === 'done') {
+          done++;
+          text = '✓ 已完成';
+          if (d.score !== '' && d.score != null) text += ' · ' + d.score + '分';
+          if (d.result) text += ' · ' + d.result;
+        } else if (st.state === 'partial') {
+          text = '已填 ' + st.answered + (st.total ? '/' + st.total : '');
+        } else text = '未填写';
+        badge.className = 'status' + (st.state === 'empty' ? '' : ' ' + st.state);
+        badge.textContent = text;
+      });
+      var pct = Math.round(done / SCALES.length * 100);
+      setProgress(pct, '已完成' + pct + '%（' + done + '/' + SCALES.length + '）');
+    };
+    renderList();
+    window.addEventListener('pageshow', renderList);
     return;
   }
 
@@ -212,60 +237,145 @@
   var scorer = SCORERS[key];
   var errorEl = form.querySelector('.error');
 
-  function updateRanges() {
-    form.querySelectorAll('input[type=range]').forEach(function (input) {
-      var out = input.nextElementSibling && input.nextElementSibling.querySelector('output');
-      if (out) out.value = input.value;
+  // 选填、不计入进度的题目：人体图选区、肌肉疼痛性质（可多选，可能一项都不符合）
+  var OPTIONAL = { painRegions: 1, painNature: 1 };
+  // 条件必填：PSQI 5j 选了⑵～⑷时需填写说明
+  var CONDITIONAL = { psqi5_10_note: function (a) { return ['1', '2', '3'].indexOf(String(a.psqi5_10)) !== -1; } };
+  var touched = {}; // 被拖动/点击过的滑块
+
+  function fields() {
+    return Array.from(form.elements).filter(function (el) { return el.name && el.type !== 'submit' && el.type !== 'button'; });
+  }
+  // 题目单元：同 name 为一题；data-q 相同的合并为一题（PSQI 的「时」「分」）
+  function units() {
+    var map = {}, list = [];
+    fields().forEach(function (el) {
+      var id = el.dataset.q || el.name;
+      if (!map[id]) { map[id] = { id: id, els: [] }; list.push(map[id]); }
+      map[id].els.push(el);
     });
+    return list;
+  }
+  function isRequired(u, a) {
+    if (OPTIONAL[u.id] || u.els[0].type === 'hidden') return false;
+    if (CONDITIONAL[u.id]) return CONDITIONAL[u.id](a);
+    return true;
+  }
+  function isAnswered(u) {
+    var first = u.els[0];
+    if (first.type === 'radio' || first.type === 'checkbox') return u.els.some(function (x) { return x.checked; });
+    if (first.type === 'range') return !!touched[first.name];
+    return u.els.every(function (x) { return String(x.value).trim() !== '' && (x.type !== 'number' || x.checkValidity()); });
+  }
+  function progress(a) {
+    var answered = 0, total = 0, missing = [];
+    units().forEach(function (u) {
+      if (!isRequired(u, a)) return;
+      total++;
+      if (isAnswered(u)) answered++; else missing.push(u.els[0]);
+    });
+    return { answered: answered, total: total, missing: missing };
   }
 
-  // 回显草稿（painDETECT 的 painRegions 隐藏域在这里写回，随后 pain-detect.js 按它恢复人体图选区）
-  var saved = draft(key);
-  if (saved && saved.answers) FmsCase.fillForm(form, saved.answers);
-  updateRanges();
-  updateProgress();
-  form.addEventListener('input', updateRanges);
-  form.addEventListener('change', function () { if (errorEl) errorEl.textContent = ''; });
-
+  function pad(x) { return String(x).padStart(2, '0'); }
   function collect() {
     var a = {};
-    Array.from(form.elements).forEach(function (el) {
-      if (!el.name || el.disabled) return;
+    fields().forEach(function (el) {
+      if (el.disabled) return;
       if (el.type === 'radio') { if (el.checked) a[el.name] = el.value; else if (!(el.name in a)) a[el.name] = ''; }
       else if (el.type === 'checkbox') { if (!Array.isArray(a[el.name])) a[el.name] = []; if (el.checked) a[el.name].push(el.value); }
+      else if (el.type === 'range') a[el.name] = touched[el.name] ? el.value : '';
       else a[el.name] = el.value;
+    });
+    // PSQI：时/分下拉合成 "HH:MM"，供计分（C4 睡眠效率）与原有 bedtime / waketime 字段
+    ['bedtime', 'waketime'].forEach(function (n) {
+      if (!(n + 'Hour' in a)) return;
+      var h = a[n + 'Hour'], m = a[n + 'Minute'];
+      a[n] = h !== '' && m !== '' && h != null && m != null ? pad(h) + ':' + pad(m) : '';
     });
     return a;
   }
 
-  // 计分需要的题目必须作答：所有单选组 + PSQI 的时间/小时数（人体图选区不强制）
-  function firstMissing(a) {
-    var missing = [];
-    var seen = {};
-    form.querySelectorAll('input[type=radio]').forEach(function (r) {
-      if (seen[r.name]) return; seen[r.name] = 1;
-      if (a[r.name] === '') missing.push(r);
+  function updateRanges() {
+    form.querySelectorAll('input[type=range]').forEach(function (input) {
+      var out = input.nextElementSibling && input.nextElementSibling.querySelector('output');
+      var on = !!touched[input.name];
+      input.classList.toggle('untouched', !on);
+      if (out) out.value = on ? input.value : '未选';
     });
-    form.querySelectorAll('input[type=time], input[type=number]').forEach(function (el) {
-      if (el.value === '' || (el.type === 'number' && !el.checkValidity())) missing.push(el);
-    });
-    missing.sort(function (x, y) { return x.compareDocumentPosition(y) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1; });
-    return { count: missing.length, el: missing[0] };
   }
+
+  function showProgress(p) {
+    var pct = p.total ? Math.round(p.answered / p.total * 100) : 0;
+    setProgress(pct, '已填 ' + p.answered + '/' + p.total + '（' + pct + '%）');
+  }
+
+  function scoredValue(answers, p) {
+    var scored = scorer(answers);
+    var value = { finish: true, score: scored.score, result: scored.result, answers: answers, answered: p.answered, total: p.total };
+    Object.keys(scored).forEach(function (k) { if (k !== 'score' && k !== 'result') value[k] = scored[k]; });
+    return value;
+  }
+
+  // 回显草稿（painDETECT 的 painRegions 隐藏域在这里写回，随后 pain-detect.js 按它恢复人体图选区）
+  var saved = draft(key);
+  if (saved && saved.answers) {
+    var ans = saved.answers;
+    // 旧数据只有 bedtime / waketime "HH:MM" 时拆回时/分下拉
+    ['bedtime', 'waketime'].forEach(function (n) {
+      var m = /^(\d{1,2}):(\d{2})/.exec(ans[n] || '');
+      if (m && ans[n + 'Hour'] == null) { ans[n + 'Hour'] = String(Number(m[1])); ans[n + 'Minute'] = String(Number(m[2])); }
+    });
+    FmsCase.fillForm(form, ans);
+    form.querySelectorAll('input[type=range]').forEach(function (r) {
+      var v = ans[r.name];
+      if (v != null && v !== '') touched[r.name] = true;
+    });
+  }
+  updateRanges();
+  showProgress(progress(collect()));
+
+  // 自动保存：作答即写入病例草稿（不调接口）；查看模式不写
+  var timer = null;
+  function autosave() {
+    clearTimeout(timer); timer = null;
+    if (viewMode()) return;
+    var a = collect();
+    var p = progress(a);
+    showProgress(p);
+    if (!draft(key) && !FmsCase.hasData(a)) return;
+    var value = p.answered === p.total ? scoredValue(a, p) : { finish: false, answers: a, answered: p.answered, total: p.total };
+    try { FmsCase.set('bqpg.' + key, value); } catch (e) { if (errorEl) errorEl.textContent = e.message || '暂存失败'; }
+  }
+  function schedule() { clearTimeout(timer); timer = setTimeout(autosave, 150); }
+  function onEdit(e) {
+    var t = e.target;
+    if (t && t.type === 'range' && !t.disabled) touched[t.name] = true;
+    if (errorEl && e.type === 'change') errorEl.textContent = '';
+    updateRanges();
+    schedule();
+  }
+  form.addEventListener('input', onEdit);
+  form.addEventListener('change', onEdit);
+  // 点一下滑块（不拖动、值不变）也算作答
+  form.addEventListener('click', function (e) { if (e.target && e.target.type === 'range') onEdit(e); });
+  // 离开页面前把尚未写入的改动立刻写入
+  window.addEventListener('pagehide', function () { if (timer) autosave(); });
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden' && timer) autosave(); });
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
+    clearTimeout(timer); timer = null;
     var answers = collect();
-    var miss = firstMissing(answers);
-    if (miss.count) {
-      if (errorEl) errorEl.textContent = '还有 ' + miss.count + ' 题未作答或填写有误，请完成后保存';
-      var box = miss.el.closest('.question, .scale-item') || miss.el;
+    var p = progress(answers);
+    showProgress(p);
+    if (p.missing.length) {
+      autosave();
+      if (errorEl) errorEl.textContent = '还有 ' + p.missing.length + ' 题未作答或填写有误，请完成后保存（已填部分已暂存）';
+      var box = p.missing[0].closest('.question, .scale-item') || p.missing[0];
       box.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    var scored = scorer(answers);
-    var value = { finish: true, score: scored.score, result: scored.result, answers: answers };
-    Object.keys(scored).forEach(function (k) { if (k !== 'score' && k !== 'result') value[k] = scored[k]; });
-    FmsCase.save('bqpg.' + key, value, { back: 'index.html', button: form.querySelector('button[type=submit]') });
+    FmsCase.save('bqpg.' + key, scoredValue(answers, p), { back: 'index.html', button: form.querySelector('button[type=submit]') });
   });
 })();

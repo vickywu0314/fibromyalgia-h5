@@ -9,3 +9,9 @@
 .other-food-row .row-no{width:18px;font-size:14px;color:#555}
 .other-food-row .text-line{margin-top:4px}
 .other-food-row .text-line input[type=text]{width:140px}
+.brand-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.brand-options label.brand{position:relative;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;padding:10px 6px;border:1px solid #e3e6ea;border-radius:8px;text-align:center}
+.brand-options label.brand input{position:absolute;top:8px;left:8px;margin:0}
+.brand-options label.brand img{display:block;width:100%;max-width:120px;aspect-ratio:1/1;object-fit:contain}
+.brand-options label.brand:has(input:checked){border-color:#168bdd;background:#f2f8fd}
+.brand-options label.brand-other{justify-content:center;min-height:60px}

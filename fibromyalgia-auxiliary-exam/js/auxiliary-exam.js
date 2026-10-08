@@ -14,30 +14,9 @@
   const STOOL_CELLS=["stool_wbc","stool_rbc"];
   // 血脂：值写结构体原有 key（cholesterol 等），<key>_status 为 未查/已查
   const LIPIDS=["cholesterol","triglyceride","ldl","hdl","apob","apoa"];
-  // 暂无上传接口：图片以 dataURL 存在草稿里（labReportImages / ecgReportImages）
+  // 选图后先上传到 /api/upload/image，草稿和提交里只存返回的图片 URL（labReportImages / ecgReportImages，同时写 lab_report_url / ecg_report_url）
   const images={labReport:[],ecgReport:[]};
-  const MAX_SIDE=1600,QUALITY=0.82;
-
-  function readAsDataURL(file){
-    return new Promise((resolve,reject)=>{
-      const r=new FileReader();
-      r.onload=()=>resolve(r.result);r.onerror=()=>reject(r.error);
-      r.readAsDataURL(file);
-    });
-  }
-  // 压缩到最长边 1600px 的 JPEG，避免 localStorage 草稿超出容量
-  async function compress(file){
-    const src=await readAsDataURL(file);
-    try{
-      const img=await new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src});
-      const scale=Math.min(1,MAX_SIDE/Math.max(img.naturalWidth,img.naturalHeight));
-      const w=Math.max(1,Math.round(img.naturalWidth*scale)),h=Math.max(1,Math.round(img.naturalHeight*scale));
-      const c=document.createElement("canvas");c.width=w;c.height=h;
-      const ctx=c.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);
-      const out=c.toDataURL("image/jpeg",QUALITY);
-      return out.length<src.length?out:src;
-    }catch(e){return src}
-  }
+  let uploading=0;
 
   function showPreview(id,previewId){
     const box=document.getElementById(previewId),img=box.querySelector("img");
@@ -50,9 +29,14 @@
     f.onchange=async()=>{
       const x=f.files[0];
       if(!x)return;
-      if(x.size>5*1024*1024){FmsCase.toast("图片大小不能超过5M");f.value="";return}
-      try{images[id]=[await compress(x)]}catch(e){FmsCase.toast("图片读取失败");}
       f.value="";
+      const box=document.getElementById(previewId),img=box.querySelector("img");
+      const local=URL.createObjectURL(x);
+      img.src=local;box.hidden=false;uploading++;
+      FmsCase.toast("图片上传中…");
+      try{images[id]=[await FmsUpload.image(x)];FmsCase.toast("图片已上传");}
+      catch(e){FmsCase.toast(e.message||"图片上传失败");}
+      finally{uploading--;URL.revokeObjectURL(local);}
       showPreview(id,previewId);
       autosave();
     };
@@ -125,8 +109,8 @@
     data.ecg=radio("ecg");
     data.labReportImages=images.labReport.slice();
     data.ecgReportImages=data.ecg==="未查"?[]:images.ecgReport.slice();
-    data.lab_report_url="";
-    data.ecg_report_url="";
+    data.lab_report_url=data.labReportImages[0]||"";
+    data.ecg_report_url=data.ecgReportImages[0]||"";
     return data;
   }
 
@@ -141,8 +125,10 @@
     setRadio("stool_occult",data.stool_occult);
     STOOL_CELLS.concat(BIOCHEM).forEach(k=>setRadio(k+"_status",data[k+"_status"]));
     setRadio("ecg",data.ecg);
-    images.labReport=Array.isArray(data.labReportImages)?data.labReportImages.filter(Boolean):[];
-    images.ecgReport=Array.isArray(data.ecgReportImages)?data.ecgReportImages.filter(Boolean):[];
+    // 只回显已上传的 URL（旧草稿里的 base64 不再提交）；数组为空时用 lab_report_url / ecg_report_url
+    const urls=(list,one)=>{const a=(Array.isArray(list)?list:[]).filter(x=>x&&!/^data:/.test(x));return a.length?a:(one&&!/^data:/.test(one)?[one]:[])};
+    images.labReport=urls(data.labReportImages,data.lab_report_url);
+    images.ecgReport=urls(data.ecgReportImages,data.ecg_report_url);
     sync();
     const put=(name,v)=>{const el=form.elements[name];if(el&&!el.disabled)el.value=v!=null?v:""};
     VALUE_FIELDS.forEach(([k])=>put(k,data[k+"_value"]));
@@ -174,6 +160,7 @@
 
   form.onsubmit=e=>{
     e.preventDefault();
+    if(uploading>0){FmsCase.toast("图片还在上传，请稍候");return}
     clearTimeout(timer);
     FmsCase.save(PATH,collect(),{back:BACK,button:form.querySelector('button[type="submit"]')});
   };

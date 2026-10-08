@@ -322,37 +322,37 @@ if (kind === 'zhongyao-yinpian') {
   const renderHerbs = () => { const herbs = recipes[checked('中医证型')]?.[checked('方剂')] || []; herbList.replaceChildren(...herbs.map(h => el('li', h))); herbBox.hidden = !herbs.length };
   form.addEventListener('change', e => { if (e.target.name === '中医证型') renderRecipes(); if (e.target.name === '方剂') renderHerbs() });
   const supplement = field('supplement'), upload = document.getElementById('treatmentPhoto'), camera = document.getElementById('cameraPhoto'), preview = document.getElementById('photoPreview'), container = document.getElementById('photoContainer'), status = document.getElementById('photoStatus');
+  let photoUrl = '', photoUploading = false;
   const showPhoto = (src, message) => { preview.src = src; container.hidden = false; status.textContent = message };
   renderRecipes();
   if (editItem) {
     const r = form.querySelector(`[name="中医证型"][value="${editItem.syndrome}"]`); if (r) { r.checked = true; renderRecipes() }
     const p = form.querySelector(`[name="方剂"][value="${editItem.recipe}"]`); if (p) { p.checked = true; renderHerbs() }
-    supplement.value = editItem.prescription || ''; if (editItem.image) showPhoto(editItem.image, '已上传处方图片');
+    supplement.value = editItem.prescription || ''; if (editItem.image && !/^data:/.test(editItem.image)) { photoUrl = editItem.image; showPhoto(editItem.image, '已上传处方图片') }
   }
   document.getElementById('choosePhoto').addEventListener('click', () => upload.click());
   document.getElementById('takePhoto').addEventListener('click', () => camera.click());
-  document.getElementById('removePhoto').addEventListener('click', () => { preview.removeAttribute('src'); container.hidden = true; upload.value = ''; camera.value = ''; status.textContent = '已删除图片，可重新上传'; error.textContent = '' });
-  const handleImage = input => {
+  document.getElementById('removePhoto').addEventListener('click', () => { photoUrl = ''; preview.removeAttribute('src'); container.hidden = true; upload.value = ''; camera.value = ''; status.textContent = '已删除图片，可重新上传'; error.textContent = '' });
+  // 选图后上传到 /api/upload/image，记录里只存返回的图片 URL
+  const handleImage = async input => {
     const f = input.files?.[0]; if (!f) return;
-    if (!['image/jpeg', 'image/png', 'image/gif'].includes(f.type) || f.size > 5 * 1024 * 1024) { error.textContent = '请选择不超过 5MB 的 JPG、PNG 或 GIF 图片'; input.value = ''; return }
-    error.textContent = ''; status.textContent = '正在处理图片…';
-    const reader = new FileReader(); reader.onerror = () => { error.textContent = '图片读取失败，请重新选择'; status.textContent = '尚未上传图片' };
-    reader.onload = () => {
-      const original = reader.result;
-      if (f.type === 'image/gif') { showPhoto(original, '已选择处方图片：' + f.name); return }
-      const image = new Image(); image.onerror = () => { error.textContent = '图片无法预览，请重新选择'; status.textContent = '尚未上传图片' };
-      image.onload = () => { const ratio = Math.min(1, 1600 / Math.max(image.width, image.height)); const canvas = document.createElement('canvas'); canvas.width = Math.round(image.width * ratio); canvas.height = Math.round(image.height * ratio); canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height); showPhoto(canvas.toDataURL('image/jpeg', 0.78), '已选择处方图片：' + f.name) };
-      image.src = original;
-    }; reader.readAsDataURL(f);
+    input.value = '';
+    if (!['image/jpeg', 'image/png', 'image/gif'].includes(f.type) || f.size > 5 * 1024 * 1024) { error.textContent = '请选择不超过 5MB 的 JPG、PNG 或 GIF 图片'; return }
+    error.textContent = ''; status.textContent = '正在上传图片…'; photoUploading = true;
+    const local = URL.createObjectURL(f); preview.src = local; container.hidden = false;
+    try { photoUrl = await FmsUpload.image(f); showPhoto(photoUrl, '已上传处方图片：' + f.name); }
+    catch (e) { error.textContent = e.message || '图片上传失败，请重试'; if (photoUrl) showPhoto(photoUrl, '已上传处方图片'); else { preview.removeAttribute('src'); container.hidden = true; status.textContent = '尚未上传图片' } }
+    finally { photoUploading = false; URL.revokeObjectURL(local) }
   };
   upload.addEventListener('change', () => handleImage(upload)); camera.addEventListener('change', () => handleImage(camera));
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
+    if (photoUploading) { error.textContent = '图片还在上传，请稍候'; return }
     const syndrome = checked('中医证型'), recipe = checked('方剂');
     if (!syndrome) { error.textContent = '请选择中医证型'; return }
     if (!recipe) { error.textContent = '请选择方剂'; return }
-    /* image：暂无图片上传接口，存压缩后的 dataURL */
-    save({ name: '中药汤剂', syndrome, recipe, composition: (recipes[syndrome][recipe] || []).slice(), prescription: supplement.value.trim(), image: !container.hidden && preview.getAttribute('src') ? preview.src : '' });
+    /* image：上传接口返回的图片 URL */
+    save({ name: '中药汤剂', syndrome, recipe, composition: (recipes[syndrome][recipe] || []).slice(), prescription: supplement.value.trim(), image: !container.hidden ? photoUrl : '' });
   });
   return;
 }

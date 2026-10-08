@@ -82,7 +82,11 @@
   }
   rows.forEach(btn => {
     // 进入子模块前把本页已填内容暂存到草稿（不提交、不改完成状态），返回时能回显
-    btn.addEventListener("click", () => { FmsCase.set("jbxx", collect(), true); NativeBridge.openPage(btn.dataset.page); });
+    btn.addEventListener("click", async () => {
+      // 进入子模块前先把已手写但未上传的签名传上去，草稿里只存图片 URL
+      try { await uploadSignature(); } catch (e) { FmsCase.toast(e.message || "签名上传失败"); return; }
+      FmsCase.set("jbxx", collect(), true); NativeBridge.openPage(btn.dataset.page);
+    });
   });
   renderEntries();
 
@@ -109,7 +113,7 @@
     update();
     renderCities(d.city || "");
     sizeCanvas();
-    showSignature(typeof d.signature === "string" ? d.signature : "");
+    showSignature(typeof d.signature === "string" && !/^data:/.test(d.signature) ? d.signature : "");
     tracker.refresh();
   };
 
@@ -119,13 +123,14 @@
     return isNaN(n) ? String(v) : n;
   }
 
-  // 患者知情同意告知与签署：电子签字（canvas 手写，存为 PNG dataURL → jbxx.signature）
+  // 患者知情同意告知与签署：电子签字（canvas 手写 → 上传 /api/upload/image → jbxx.signature 存图片 URL）
   const sigPad = document.getElementById("signaturePad");
   const sigCanvas = document.getElementById("signatureCanvas");
   const sigImg = document.getElementById("signatureImg");
   const sigHolder = document.getElementById("signaturePlaceholder");
   const sigClear = document.getElementById("signatureClear");
-  let signature = typeof jbxx.signature === "string" ? jbxx.signature : "";
+  // 旧草稿里的 base64 签名不再使用，需重新签字
+  let signature = typeof jbxx.signature === "string" && !/^data:/.test(jbxx.signature) ? jbxx.signature : "";
   let drawing = false, drawn = false, last = null;
   const ctx = sigCanvas.getContext("2d");
   function sizeCanvas(){
@@ -172,10 +177,19 @@
   sizeCanvas();
   showSignature(signature);
   if (readonly()) sigClear.hidden = true;
-  function currentSignature(){
-    if (signature) return signature;
-    if (!drawn) return "";
-    try { return sigCanvas.toDataURL("image/png"); } catch (e) { return ""; }
+  // 提交和草稿里只放已上传的签名 URL
+  function currentSignature(){ return signature; }
+  // 手写了但还没上传时，把画布转成 PNG 上传，成功后显示为图片
+  let sigUploading = null;
+  function uploadSignature(){
+    if (signature || !drawn || readonly()) return Promise.resolve(signature);
+    if (!sigUploading) {
+      sigUploading = FmsUpload.canvasToBlob(sigCanvas)
+        .then(blob => FmsUpload.image(blob, {compress: false, filename: "signature.png"}))
+        .then(url => { showSignature(url); drawn = false; tracker.refresh(); return url; })
+        .finally(() => { sigUploading = null; });
+    }
+    return sigUploading;
   }
 
   // 进度：本页直填字段（可见、可用的题目，含电子签名）+ 已完成的子模块入口
@@ -223,12 +237,20 @@
     return value;
   }
 
-  form.addEventListener("submit", e => {
+  form.addEventListener("submit", async e => {
     e.preventDefault();
     const name = nameInput.value.trim();
     const id = idCard.value.trim();
     if (!name) { nameError.hidden = false; nameInput.focus(); FmsCase.toast("请输入姓名"); return; }
     if (!validId(id)) { idCardError.hidden = false; idCard.focus(); FmsCase.toast("请输入正确的身份证号"); return; }
+    const btn = form.querySelector('button[type="submit"]');
+    if (drawn && !signature) {
+      btn.disabled = true;
+      FmsCase.toast("签名上传中…");
+      try { await uploadSignature(); }
+      catch (err) { FmsCase.toast(err.message || "签名上传失败，请重试"); return; }
+      finally { btn.disabled = false; }
+    }
     const value = Object.assign(collect(), {finish: true});
     // merge：保留 jbxx 下各子模块（csi/tpc/fs/work/bodyComposition/tipi/sffq/treatmentHistory/diseaseHistory/concomitantMedication）
     FmsCase.save("jbxx", value, {merge: true, back: "../patient-detail.html", button: form.querySelector('button[type="submit"]')});

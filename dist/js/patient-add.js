@@ -13,6 +13,11 @@ function showExisting(p, enteredName, cardNo) {
   const masked = cardNo.slice(0, 6) + '********' + cardNo.slice(-4);
   existNotice.querySelector('.exist-who').textContent = name + '（' + masked + '）';
   existNotice.querySelector('#backToList').href = './patient-list.html?' + new URLSearchParams({ keyword: name });
+  // 直接进入该患者的随访记录，在那里「新增随访记录」录入病情变化；查不到患者 id 时退回患者列表
+  const pid = p.patientId ?? p.id ?? '';
+  existNotice.querySelector('#goFollowUp').href = pid !== ''
+    ? './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name, cardno: p.cardno || p.cardNo || cardNo })
+    : './patient-list.html?' + new URLSearchParams({ keyword: name });
   existNotice.hidden = false;
   createBtn.hidden = true;
   existNotice.scrollIntoView({ block: 'nearest', behavior: 'smooth' });

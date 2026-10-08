@@ -72,7 +72,8 @@ const catState = (z, k) => {
 const doneCount = z => ORDER.filter(k => catState(z, k)[0] === 'done').length;
 const allRequiredDone = z => REQUIRED.every(k => catState(z, k)[0] === 'done');
 /* 已保存（finish=true）后若某类又变得不完整，取消 finish，入口页回到“填写中” */
-const keepFinish = z => { if (z.finish && !allRequiredDone(z)) z.finish = false; return z };
+/* 各类别非必填：保存过的治疗方案不会因为类别没填完而变回未完成 */
+const keepFinish = z => z;
 const read = k => loadZ()[KIND[k].key];
 const el = (tag, text = '', cls = '') => { const n = document.createElement(tag); n.textContent = text; if (cls) n.className = cls; return n };
 const opts = (select, list, placeholder) => select.replaceChildren(new Option(placeholder, ''), ...list.map(v => new Option(v, v)));
@@ -122,8 +123,7 @@ if (page.dataset.page === 'index') {
   const btn = document.getElementById('saveAll');
   btn.addEventListener('click', () => {
     const z = applyAdjust(loadZ());
-    const missing = REQUIRED.filter(k => catState(z, k)[0] !== 'done').map(k => META[k].title);
-    if (missing.length) { FmsCase.toast(`请先完成：${missing.join('、')}`); return }
+    /* 各类别都不是必填：添没添加、添加几个都可以直接保存返回 */
     FmsCase.save('zlfa', Object.assign(z, { finish: true }), { back: '../patient-detail.html', button: btn });
   });
   return;
@@ -180,15 +180,7 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
   form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
-    const use = checked('是否使用');
-    if (!use) { error.textContent = '请选择“无”或“有”'; return }
-    if (use === '有') {
-      for (const [cat, ci] of used) {
-        const a = checked(`是否调整${ci}`);
-        if (!a) { error.textContent = `请选择${cat}的是否调整西药`; return }
-        if (a === '是' && (!checked(`调整内容${ci}`) || !checked(`调整原因${ci}`))) { error.textContent = `请选择${cat}的调整内容和调整原因`; return }
-      }
-    }
+    /* 非必填：未选择或未填完也可以保存返回 */
     FmsCase.save('zlfa', keepFinish(build(true)), { back: 'index.html', button: form.querySelector('button[type=submit]') });
   });
   return;
@@ -230,12 +222,7 @@ if (page.dataset.page === 'list') {
   form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
-    const m = current();
-    if (cfg.hasUse && !m.use) { error.textContent = '请选择“无”或“有”'; return }
-    if (m.use !== '无') {
-      if (!m.adjust) { error.textContent = `请选择${cfg.adjustLegend}`; return }
-      if (m.adjust === '是' && (!m.adjustment || !m.reason)) { error.textContent = '请选择调整内容和调整原因'; return }
-    }
+    /* 非必填：未选择或未填完也可以保存返回 */
     FmsCase.save('zlfa', keepFinish(build(true)), { back: 'index.html', button: form.querySelector('button[type=submit]') });
   });
   return;

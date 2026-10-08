@@ -72,7 +72,8 @@ const catState = (z, k) => {
 const doneCount = z => ORDER.filter(k => catState(z, k)[0] === 'done').length;
 const allRequiredDone = z => REQUIRED.every(k => catState(z, k)[0] === 'done');
 /* 已保存（finish=true）后若某类又变得不完整，取消 finish，入口页回到“填写中” */
-const keepFinish = z => { if (z.finish && !allRequiredDone(z)) z.finish = false; return z };
+/* 各类别非必填：保存过的治疗方案不会因为类别没填完而变回未完成 */
+const keepFinish = z => z;
 const read = k => loadZ()[KIND[k].key];
 const el = (tag, text = '', cls = '') => { const n = document.createElement(tag); n.textContent = text; if (cls) n.className = cls; return n };
 const opts = (select, list, placeholder) => select.replaceChildren(new Option(placeholder, ''), ...list.map(v => new Option(v, v)));
@@ -122,8 +123,7 @@ if (page.dataset.page === 'index') {
   const btn = document.getElementById('saveAll');
   btn.addEventListener('click', () => {
     const z = applyAdjust(loadZ());
-    const missing = REQUIRED.filter(k => catState(z, k)[0] !== 'done').map(k => META[k].title);
-    if (missing.length) { FmsCase.toast(`请先完成：${missing.join('、')}`); return }
+    /* 各类别都不是必填：添没添加、添加几个都可以直接保存返回 */
     FmsCase.save('zlfa', Object.assign(z, { finish: true }), { back: '../patient-detail.html', button: btn });
   });
   return;
@@ -180,15 +180,7 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
   form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
-    const use = checked('是否使用');
-    if (!use) { error.textContent = '请选择“无”或“有”'; return }
-    if (use === '有') {
-      for (const [cat, ci] of used) {
-        const a = checked(`是否调整${ci}`);
-        if (!a) { error.textContent = `请选择${cat}的是否调整西药`; return }
-        if (a === '是' && (!checked(`调整内容${ci}`) || !checked(`调整原因${ci}`))) { error.textContent = `请选择${cat}的调整内容和调整原因`; return }
-      }
-    }
+    /* 非必填：未选择或未填完也可以保存返回 */
     FmsCase.save('zlfa', keepFinish(build(true)), { back: 'index.html', button: form.querySelector('button[type=submit]') });
   });
   return;
@@ -230,12 +222,7 @@ if (page.dataset.page === 'list') {
   form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
-    const m = current();
-    if (cfg.hasUse && !m.use) { error.textContent = '请选择“无”或“有”'; return }
-    if (m.use !== '无') {
-      if (!m.adjust) { error.textContent = `请选择${cfg.adjustLegend}`; return }
-      if (m.adjust === '是' && (!m.adjustment || !m.reason)) { error.textContent = '请选择调整内容和调整原因'; return }
-    }
+    /* 非必填：未选择或未填完也可以保存返回 */
     FmsCase.save('zlfa', keepFinish(build(true)), { back: 'index.html', button: form.querySelector('button[type=submit]') });
   });
   return;
@@ -322,37 +309,37 @@ if (kind === 'zhongyao-yinpian') {
   const renderHerbs = () => { const herbs = recipes[checked('中医证型')]?.[checked('方剂')] || []; herbList.replaceChildren(...herbs.map(h => el('li', h))); herbBox.hidden = !herbs.length };
   form.addEventListener('change', e => { if (e.target.name === '中医证型') renderRecipes(); if (e.target.name === '方剂') renderHerbs() });
   const supplement = field('supplement'), upload = document.getElementById('treatmentPhoto'), camera = document.getElementById('cameraPhoto'), preview = document.getElementById('photoPreview'), container = document.getElementById('photoContainer'), status = document.getElementById('photoStatus');
+  let photoUrl = '', photoUploading = false;
   const showPhoto = (src, message) => { preview.src = src; container.hidden = false; status.textContent = message };
   renderRecipes();
   if (editItem) {
     const r = form.querySelector(`[name="中医证型"][value="${editItem.syndrome}"]`); if (r) { r.checked = true; renderRecipes() }
     const p = form.querySelector(`[name="方剂"][value="${editItem.recipe}"]`); if (p) { p.checked = true; renderHerbs() }
-    supplement.value = editItem.prescription || ''; if (editItem.image) showPhoto(editItem.image, '已上传处方图片');
+    supplement.value = editItem.prescription || ''; if (editItem.image && !/^data:/.test(editItem.image)) { photoUrl = editItem.image; showPhoto(editItem.image, '已上传处方图片') }
   }
   document.getElementById('choosePhoto').addEventListener('click', () => upload.click());
   document.getElementById('takePhoto').addEventListener('click', () => camera.click());
-  document.getElementById('removePhoto').addEventListener('click', () => { preview.removeAttribute('src'); container.hidden = true; upload.value = ''; camera.value = ''; status.textContent = '已删除图片，可重新上传'; error.textContent = '' });
-  const handleImage = input => {
+  document.getElementById('removePhoto').addEventListener('click', () => { photoUrl = ''; preview.removeAttribute('src'); container.hidden = true; upload.value = ''; camera.value = ''; status.textContent = '已删除图片，可重新上传'; error.textContent = '' });
+  // 选图后上传到 /api/upload/image，记录里只存返回的图片 URL
+  const handleImage = async input => {
     const f = input.files?.[0]; if (!f) return;
-    if (!['image/jpeg', 'image/png', 'image/gif'].includes(f.type) || f.size > 5 * 1024 * 1024) { error.textContent = '请选择不超过 5MB 的 JPG、PNG 或 GIF 图片'; input.value = ''; return }
-    error.textContent = ''; status.textContent = '正在处理图片…';
-    const reader = new FileReader(); reader.onerror = () => { error.textContent = '图片读取失败，请重新选择'; status.textContent = '尚未上传图片' };
-    reader.onload = () => {
-      const original = reader.result;
-      if (f.type === 'image/gif') { showPhoto(original, '已选择处方图片：' + f.name); return }
-      const image = new Image(); image.onerror = () => { error.textContent = '图片无法预览，请重新选择'; status.textContent = '尚未上传图片' };
-      image.onload = () => { const ratio = Math.min(1, 1600 / Math.max(image.width, image.height)); const canvas = document.createElement('canvas'); canvas.width = Math.round(image.width * ratio); canvas.height = Math.round(image.height * ratio); canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height); showPhoto(canvas.toDataURL('image/jpeg', 0.78), '已选择处方图片：' + f.name) };
-      image.src = original;
-    }; reader.readAsDataURL(f);
+    input.value = '';
+    if (!['image/jpeg', 'image/png', 'image/gif'].includes(f.type) || f.size > 5 * 1024 * 1024) { error.textContent = '请选择不超过 5MB 的 JPG、PNG 或 GIF 图片'; return }
+    error.textContent = ''; status.textContent = '正在上传图片…'; photoUploading = true;
+    const local = URL.createObjectURL(f); preview.src = local; container.hidden = false;
+    try { photoUrl = await FmsUpload.image(f); showPhoto(photoUrl, '已上传处方图片：' + f.name); }
+    catch (e) { error.textContent = e.message || '图片上传失败，请重试'; if (photoUrl) showPhoto(photoUrl, '已上传处方图片'); else { preview.removeAttribute('src'); container.hidden = true; status.textContent = '尚未上传图片' } }
+    finally { photoUploading = false; URL.revokeObjectURL(local) }
   };
   upload.addEventListener('change', () => handleImage(upload)); camera.addEventListener('change', () => handleImage(camera));
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
+    if (photoUploading) { error.textContent = '图片还在上传，请稍候'; return }
     const syndrome = checked('中医证型'), recipe = checked('方剂');
     if (!syndrome) { error.textContent = '请选择中医证型'; return }
     if (!recipe) { error.textContent = '请选择方剂'; return }
-    /* image：暂无图片上传接口，存压缩后的 dataURL */
-    save({ name: '中药汤剂', syndrome, recipe, composition: (recipes[syndrome][recipe] || []).slice(), prescription: supplement.value.trim(), image: !container.hidden && preview.getAttribute('src') ? preview.src : '' });
+    /* image：上传接口返回的图片 URL */
+    save({ name: '中药汤剂', syndrome, recipe, composition: (recipes[syndrome][recipe] || []).slice(), prescription: supplement.value.trim(), image: !container.hidden ? photoUrl : '' });
   });
   return;
 }

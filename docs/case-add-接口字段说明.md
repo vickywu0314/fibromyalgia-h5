@@ -29,7 +29,7 @@
 | `city` | string | 常住地「市」，与 `province` 联动 |
 | `drinkTypes` | string[] | 酒类多选，可选白酒、啤酒、红酒。`drinkType` 仍保留，是用「、」拼接的字符串 |
 | `baijiuAmount / beerAmount / wineAmount` | number | 按 PDF 每种酒分别填写「每天用量」（ml），只有勾选了该酒类才有值，否则为空串。原来的 `drinkAmount` 保留，值为三者之和（ml/天），都没填时为空串 |
-| `signature` | string | 患者知情同意告知与签署：电子签字，页面手写后存为 PNG 的 base64 dataURL；未签为空串（结构体原有字段，PDF 新版要求后重新提交） |
+| `signature` | string | 患者知情同意告知与签署：电子签字，页面手写后上传 `/api/upload/image`，存返回的图片 URL；未签为空串（结构体原有字段，PDF 新版要求后重新提交） |
 | `diseaseHistoryFinish` | bool | 合并疾病列表已保存 |
 | `concomitantMedicationFinish` | bool | 合并药物列表已保存 |
 | `csi/work/tipi/sffq/tpc.answers` | object | 各问卷的原始作答 |
@@ -145,12 +145,13 @@
 
 ## 四、其他请后端注意
 
-1. **图片**：目前没有上传接口，以下字段放的是压缩后的 base64 dataURL（JPEG，最长边 1600px）：
-   - 人体成分 `bodyComposition.reportImages[]`
-   - 辅助检查 `fzjc.labReportImages[] / ecgReportImages[]`
+1. **图片**：沿用老前端做法，选图后前端直接 `POST /api/upload/image`（`multipart/form-data`，只有一个字段 `file`，不带鉴权头，靠同域 Cookie），拿到返回的图片 URL 后写进表单数据，随 `case/add` 一起提交：
+   - 人体成分 `bodyComposition.reportImages[]`（同时写 `imageUrl`）
+   - 辅助检查 `fzjc.labReportImages[] / ecgReportImages[]`（同时写 `lab_report_url / ecg_report_url`）
    - 中药汤剂 `zlfa.zhongyaoYinpian[].image`
+   - 电子签字 `jbxx.signature`（手写签名转 PNG 上传，保存基本信息或进入子模块前上传）
 
-   对应的 `imageUrl / lab_report_url / ecg_report_url` 为空。如果提供上传接口，前端改为先上传、再填 url。
+   上传返回值兼容 `data` 为字符串，或 `data.url / data.path / data.src / data.fileUrl` 等写法；请后端确认实际返回格式。普通图片上传前压缩为最长边 1600px 的 JPEG，单张不超过 5M。
 2. **数值类型**：大部分数值以字符串传，与原结构体一致，例如化验值 `"5.2"`、分数 `"22"`。`smokingYears / drinkingYears / drinkAmount / baijiuAmount / beerAmount / wineAmount` 为数字，没填时为空串；`psqi.components` 里是数字。
 3. **answers 内的取值**：answers 里的值是页面选项的 value。有的是数字字符串，比如 CSI 的 `"0"~"4"`；有的是选项文字，比如 SSS 的 `"0（没有）"`。后端以 `score / result` 为准即可。
 4. **日期格式**：一律 `yyyy-MM-dd`。时间（PSQI 上床/起床）格式为 `HH:mm`。

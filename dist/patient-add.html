@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ffffff"><title>新增患者</title><link rel="stylesheet" href="./css/common.css"><style>.exist-notice{margin-top:14px;border-color:#f3c98b;background:#fffaf2;cursor:default}.exist-notice[hidden]{display:none}.exist-title{font-size:15px;font-weight:600;color:#b26a00}.exist-who{margin-top:6px;font-size:14px;color:#111827}.exist-text{margin:8px 0 14px;font-size:13px;line-height:1.6;color:#4b5563}.exist-link{display:block;margin-top:12px;text-align:center;font-size:14px;color:#0b57d0;text-decoration:none}.exist-back{display:flex;justify-content:center;align-items:center;text-decoration:none;min-height:44px;border-radius:10px}.bottom .primary[hidden]{display:none}</style></head><body>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ffffff"><title>新增患者</title><link rel="stylesheet" href="./css/common.css"><style>.exist-mask{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(17,24,39,.45)}.exist-mask[hidden]{display:none}.exist-dialog{width:100%;max-width:340px;padding:22px 20px 16px;border-radius:14px;background:#fff;box-shadow:0 12px 32px rgba(0,0,0,.18);text-align:center}.exist-title{font-size:17px;font-weight:600;color:#111827}.exist-who{margin-top:10px;font-size:14px;color:#111827}.exist-text{margin:8px 0 18px;font-size:13px;line-height:1.6;color:#4b5563}.exist-back{display:flex;justify-content:center;align-items:center;text-decoration:none;min-height:44px;border-radius:10px}.exist-link{display:block;margin-top:12px;font-size:14px;color:#0b57d0;text-decoration:none}.exist-close{display:block;width:100%;margin-top:6px;padding:10px 0;border:0;background:none;font-size:14px;color:#6b7280}</style></head><body>
 
 <main>
 <div class="eyebrow">患者建档</div><div class="lead">建立患者档案</div><div class="sub">填写患者姓名与身份证号，创建档案后继续录入患者的临床资料。</div>
@@ -6,13 +6,17 @@
  <div class="field"><div class="label">患者姓名 <span class="req">*</span></div><input class="input" id="name" placeholder="请输入患者姓名" autocomplete="name"><div class="error-text" id="nameErr">请输入患者姓名</div></div>
  <div class="field"><div class="label">身份证号 <span class="req">*</span></div><input class="input" id="idno" placeholder="请输入18位身份证号码" maxlength="18" inputmode="text"><div class="hint">18 位身份证号：前 17 位为数字，最后 1 位为数字或 X。</div><div class="error-text" id="idErr">身份证号码格式不正确</div></div>
 </section>
-<section class="card exist-notice" id="existNotice" role="alert" hidden>
- <div class="exist-title">该患者已存在</div>
- <div class="exist-who"></div>
- <p class="exist-text">患者已经存在，请在该患者下增加病情变化。</p>
- <a class="primary exist-back" id="goFollowUp" href="./patient-list.html">去该患者下增加病情变化</a>
- <a class="exist-link" id="backToList" href="./patient-list.html">返回患者列表</a>
-</section>
+
 </main>
+<div class="exist-mask" id="existNotice" hidden>
+ <div class="exist-dialog" role="alertdialog" aria-modal="true" aria-labelledby="existTitle" aria-describedby="existText">
+  <div class="exist-title" id="existTitle">当前患者已经存在</div>
+  <div class="exist-who"></div>
+  <p class="exist-text" id="existText">该身份证号已建档，请在该患者下增加病情变化。</p>
+  <a class="primary exist-back" id="goFollowUp" href="./patient-list.html">去该患者下增加病情变化</a>
+  <a class="exist-link" id="backToList" href="./patient-list.html">返回患者列表</a>
+  <button type="button" class="exist-close" id="existClose">取消</button>
+ </div>
+</div>
 <div class="bottom"><button class="primary" id="createBtn">下一步</button></div>
 <script src="./js/fms-api.js"></script><script src="./js/fms-case.js"></script><script src="./js/patient-add.js"></script></body></html>

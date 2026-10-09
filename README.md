@@ -16,7 +16,12 @@ npm run dev
 ```
 
 打开开发地址自动进入 `patient-list.html`。旧 `/#/patients` 和 `/#/patients/add` 入口仍可跳转。
-Vite 仅用于开发服务和 `/api` 代理。localhost 开发医生 ID 为 5065，App 通过 WenwenClass.getUserId() 获取。
+Vite 仅用于开发服务和 `/api` 代理。
+
+医生 ID（doctorId）取值顺序：
+1. App 内：`WenwenClass.getUserId()`
+2. 老前端菜单跳转带入：`index.html?doctorId=xxx`（`?userId=xxx` 也可以），读到后存入 sessionStorage，同一标签页后续页面沿用；换医生时自动清空上一位医生未提交的病例草稿
+3. localhost 本地开发：默认 5065
 
 ## 部署
 

@@ -55,6 +55,7 @@ if (isBaseline) {
     ['饮酒史', j.drinking === '经常有' ? ['经常有', withUnit(j.drinkingYears, '年'), ...(has(j.baijiuAmount) || has(j.beerAmount) || has(j.wineAmount)
       ? [['白酒', j.baijiuAmount], ['啤酒', j.beerAmount], ['红酒', j.wineAmount]].filter(([t]) => (j.drinkTypes || []).includes(t)).map(([t, v]) => has(v) ? t + ' ' + v + 'ml/天' : t)
       : [join(j.drinkTypes || j.drinkType), withUnit(j.drinkAmount, 'ml/天')])].filter(has).join('，') : j.drinking],
+    ['周身疼痛发病时间', j.painOnsetDate], ['是否曾确诊', j.diagnosed === '是' ? ['是', j.diagnosisDate, j.hospitalLevel && '确诊医疗机构 ' + j.hospitalLevel].filter(has).join('，') : j.diagnosed],
     ['电子签字', j.signature ? '已签字' : '']
   ]);
   const fs = j.fs || {}, w = j.work || {}, b = j.bodyComposition || {}, t = j.tipi || {};
@@ -87,10 +88,9 @@ if (isBaseline) {
 {
   const s = section('病史病情'), q = c.bsbq || {};
   const n = rows(s, [
-    ['周身疼痛发病时间', j.painOnsetDate], ['是否曾确诊', j.diagnosed === '是' ? ['是', j.diagnosisDate, j.hospitalLevel && '确诊医疗机构 ' + j.hospitalLevel].filter(has).join('，') : j.diagnosed],
     ['发病诱因', q.onsetTriggers], ['加重诱因', q.aggravatingTriggers], ['肌肉疼痛性质', q.painNature], ['全身症状', q.systemic],
     ['大便', q.stool], ['小便', q.urine], ['舌色', q.tongueColor], ['舌形', q.tongueShape], ['苔色', q.coatColor], ['苔质', q.coatShape],
-    ['月经情况', q.menstrualStage === '围绝经期' ? ['围绝经期', q.periodTiming && '经期 ' + q.periodTiming, q.periodColor && '经色 ' + q.periodColor, q.periodAmount && '经量 ' + q.periodAmount, q.dysmenorrhea && '痛经 ' + q.dysmenorrhea].filter(has).join('，') : q.menstrualStage]
+    ['月经情况', q.periodTiming || q.periodColor || q.periodAmount || q.dysmenorrhea ? [q.menstrualStage, q.periodTiming && '经期 ' + q.periodTiming, q.periodColor && '经色 ' + q.periodColor, q.periodAmount && '经量 ' + q.periodAmount, q.dysmenorrhea && '痛经 ' + q.dysmenorrhea].filter(has).join('，') : q.menstrualStage]
   ]);
   if (!n) empty(s);
 }

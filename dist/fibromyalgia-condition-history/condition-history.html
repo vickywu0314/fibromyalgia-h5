@@ -13,85 +13,13 @@
   <section class="progress-block"><div class="progress"><span id="progressBar" style="width:0%"></span></div><p id="progressText">已完成0%</p></section>
   <form id="conditionForm">
 
+    <!-- 顺序与选项按产品原型：全身症状 → 二便 → 舌象 → 月经情况。
+         周身疼痛发病时间、是否曾确诊已移到基本信息页；发病诱因、加重诱因、肌肉疼痛性质原型中没有，已去掉。 -->
     <section class="section">
-      <h2>1.周身疼痛发病时间</h2>
-      <label class="field"><span class="sr-only">周身疼痛发病时间</span><input class="control" type="date" name="painOnsetDate"></label>
-    </section>
+      <h2>1.全身症状</h2>
 
-    <section class="section">
-      <h2>2.是否曾确诊纤维肌痛综合征</h2>
-      <div class="radios">
-        <label><input type="radio" name="diagnosed" value="是">是</label>
-        <div class="reveal" data-when="diagnosed=是" hidden>
-          <label class="field"><span>确诊时间</span><input class="control" type="date" name="diagnosisDate"></label>
-          <div class="field" style="align-items:flex-start"><span style="padding-top:10px">确诊医疗机构</span>
-            <div class="radios" style="padding-left:0">
-              <label><input type="radio" name="hospitalLevel" value="1级">1级</label>
-              <label><input type="radio" name="hospitalLevel" value="2级">2级</label>
-              <label><input type="radio" name="hospitalLevel" value="3级">3级</label>
-              <label><input type="radio" name="hospitalLevel" value="无级别">无级别</label>
-            </div>
-          </div>
-        </div>
-        <label><input type="radio" name="diagnosed" value="否">否</label>
-      </div>
-    </section>
-
-
-
-
-    <section class="section">
-      <h2>3.发病诱因（可多选）</h2>
-      <div class="radios">
-        <label><input type="checkbox" name="onsetTriggers" value="无" data-exclusive>无</label>
-        <label><input type="checkbox" name="onsetTriggers" value="车祸">车祸</label>
-        <label><input type="checkbox" name="onsetTriggers" value="手术">手术</label>
-        <label><input type="checkbox" name="onsetTriggers" value="外伤">外伤</label>
-        <label><input type="checkbox" name="onsetTriggers" value="感染">感染</label>
-        <label><input type="checkbox" name="onsetTriggers" value="妊娠">妊娠</label>
-        <label><input type="checkbox" name="onsetTriggers" value="生产或流产">生产或流产</label>
-        <label><input type="checkbox" name="onsetTriggers" value="其他">其他</label>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>4.加重诱因（可多选）</h2>
-      <div class="radios">
-        <label><input type="checkbox" name="aggravatingTriggers" value="无" data-exclusive>无</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="体力劳动">体力劳动</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="情绪波动">情绪波动</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="睡眠不足">睡眠不足</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="精神压力">精神压力</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="感冒">感冒</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="感染">感染</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="身体伤害">身体伤害</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="过敏">过敏</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="月经来潮">月经来潮</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="饮食不当">饮食不当</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="自然界因素">自然界因素</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="非自然界因素">非自然界因素</label>
-        <label><input type="checkbox" name="aggravatingTriggers" value="其他">其他</label>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>5.肌肉疼痛性质（可多选）</h2>
-      <div class="radios">
-        <label><input type="checkbox" name="painNature" value="酸痛">酸痛</label>
-        <label><input type="checkbox" name="painNature" value="胀痛">胀痛</label>
-        <label><input type="checkbox" name="painNature" value="冷痛">冷痛</label>
-        <label><input type="checkbox" name="painNature" value="刺痛">刺痛</label>
-        <label><input type="checkbox" name="painNature" value="钝痛">钝痛</label>
-        <label><input type="checkbox" name="painNature" value="灼痛">灼痛</label>
-        <label><input type="checkbox" name="painNature" value="窜痛">窜痛</label>
-      </div>
-    </section>
-
-    <section class="section">
-      <h2>6.全身症状（可多选）</h2>
-
-      <div class="branch">
-        <h3>肝郁气滞</h3>
+      <div class="branch" data-group>
+        <label class="check parent"><input type="checkbox" data-parent>肝郁气滞</label>
         <div class="children">
           <label class="check"><input type="checkbox" name="systemic" value="焦虑易怒">焦虑易怒</label>
           <label class="check"><input type="checkbox" name="systemic" value="胸胁胀闷或刺痛">胸胁胀闷或刺痛</label>
@@ -103,16 +31,16 @@
         </div>
       </div>
 
-      <div class="branch">
-        <h3>寒湿痹阻</h3>
+      <div class="branch" data-group>
+        <label class="check parent"><input type="checkbox" data-parent>寒湿痹阻</label>
         <div class="children">
           <label class="check"><input type="checkbox" name="systemic" value="四肢重着无力">四肢重着无力</label>
           <label class="check"><input type="checkbox" name="systemic" value="每遇寒则冷痛，遇温痛减">每遇寒则冷痛，遇温痛减</label>
         </div>
       </div>
 
-      <div class="branch">
-        <h3>痰热扰心</h3>
+      <div class="branch" data-group>
+        <label class="check parent"><input type="checkbox" data-parent>痰热扰心</label>
         <div class="children">
           <label class="check"><input type="checkbox" name="systemic" value="惊悸不安">惊悸不安</label>
           <label class="check"><input type="checkbox" name="systemic" value="口苦心烦">口苦心烦</label>
@@ -124,8 +52,8 @@
         </div>
       </div>
 
-      <div class="branch">
-        <h3>肝肾不足</h3>
+      <div class="branch" data-group>
+        <label class="check parent"><input type="checkbox" data-parent>肝肾不足</label>
         <div class="children">
           <label class="check"><input type="checkbox" name="systemic" value="肌肉无力">肌肉无力</label>
           <label class="check"><input type="checkbox" name="systemic" value="腰膝痠软，劳累加重">腰膝痠软，劳累加重</label>
@@ -138,7 +66,7 @@
     </section>
 
     <section class="section">
-      <h2>7.二便</h2>
+      <h2>2.二便</h2>
       <h3>大便</h3>
       <div class="radios">
         <label><input type="radio" name="stool" value="稀溏">稀溏</label>
@@ -159,64 +87,95 @@
     </section>
 
     <section class="section">
-      <h2>8.舌象</h2>
+      <h2>3.舌象</h2>
       <h3>舌质</h3>
       <h4>舌色</h4>
       <div class="radios">
-        <label><input type="radio" name="tongueColor" value="淡红">淡红</label><label><input type="radio" name="tongueColor" value="淡白">淡白</label><label><input type="radio" name="tongueColor" value="红">红</label><label><input type="radio" name="tongueColor" value="绛">绛</label><label><input type="radio" name="tongueColor" value="紫">紫</label><label><input type="radio" name="tongueColor" value="暗">暗</label>
+        <label><input type="radio" name="tongueColor" value="淡红">淡红</label>
+        <label><input type="radio" name="tongueColor" value="淡白">淡白</label>
+        <label><input type="radio" name="tongueColor" value="红">红</label>
+        <label><input type="radio" name="tongueColor" value="绛">绛</label>
+        <label><input type="radio" name="tongueColor" value="紫">紫</label>
+        <label><input type="radio" name="tongueColor" value="暗">暗</label>
       </div>
       <h4>舌形</h4>
       <div class="radios">
-        <label><input type="radio" name="tongueShape" value="苍老">苍老</label><label><input type="radio" name="tongueShape" value="娇嫩">娇嫩</label><label><input type="radio" name="tongueShape" value="胖大">胖大</label><label><input type="radio" name="tongueShape" value="瘦薄">瘦薄</label><label><input type="radio" name="tongueShape" value="芒刺">芒刺</label><label><input type="radio" name="tongueShape" value="裂纹">裂纹</label><label><input type="radio" name="tongueShape" value="齿痕">齿痕</label><label><input type="radio" name="tongueShape" value="正常">正常</label>
+        <label><input type="radio" name="tongueShape" value="苍老">苍老</label>
+        <label><input type="radio" name="tongueShape" value="娇嫩">娇嫩</label>
+        <label><input type="radio" name="tongueShape" value="胖大">胖大</label>
+        <label><input type="radio" name="tongueShape" value="瘦薄">瘦薄</label>
+        <label><input type="radio" name="tongueShape" value="芒刺">芒刺</label>
+        <label><input type="radio" name="tongueShape" value="裂纹">裂纹</label>
+        <label><input type="radio" name="tongueShape" value="齿痕">齿痕</label>
+        <label><input type="radio" name="tongueShape" value="正常">正常</label>
       </div>
       <h3>舌苔</h3>
       <h4>苔色</h4>
       <div class="radios">
-        <label><input type="radio" name="coatColor" value="白">白</label><label><input type="radio" name="coatColor" value="黄">黄</label><label><input type="radio" name="coatColor" value="灰">灰</label><label><input type="radio" name="coatColor" value="黑">黑</label><label><input type="radio" name="coatColor" value="黄白相间">黄白相间</label>
+        <label><input type="radio" name="coatColor" value="白">白</label>
+        <label><input type="radio" name="coatColor" value="黄">黄</label>
+        <label><input type="radio" name="coatColor" value="灰">灰</label>
+        <label><input type="radio" name="coatColor" value="黑">黑</label>
+        <label><input type="radio" name="coatColor" value="黄白相间">黄白相间</label>
       </div>
       <h4>苔质</h4>
       <div class="radios">
-        <label><input type="radio" name="coatShape" value="厚">厚</label><label><input type="radio" name="coatShape" value="薄">薄</label><label><input type="radio" name="coatShape" value="润">润</label><label><input type="radio" name="coatShape" value="滑">滑</label><label><input type="radio" name="coatShape" value="燥">燥</label><label><input type="radio" name="coatShape" value="腐">腐</label><label><input type="radio" name="coatShape" value="腻">腻</label><label><input type="radio" name="coatShape" value="剥">剥</label><label><input type="radio" name="coatShape" value="无">无</label>
+        <label><input type="radio" name="coatShape" value="厚">厚</label>
+        <label><input type="radio" name="coatShape" value="薄">薄</label>
+        <label><input type="radio" name="coatShape" value="润">润</label>
+        <label><input type="radio" name="coatShape" value="滑">滑</label>
+        <label><input type="radio" name="coatShape" value="燥">燥</label>
+        <label><input type="radio" name="coatShape" value="腐">腐</label>
+        <label><input type="radio" name="coatShape" value="腻">腻</label>
+        <label><input type="radio" name="coatShape" value="剥">剥</label>
+        <label><input type="radio" name="coatShape" value="无">无</label>
       </div>
     </section>
 
     <section class="section" id="menstrualSection">
-      <h2>9.月经情况</h2>
+      <h2>4.月经情况</h2>
       <div class="radios">
         <label><input type="radio" name="menstrualStage" value="绝经期">绝经期</label>
         <label><input type="radio" name="menstrualStage" value="围绝经期">围绝经期</label>
-        <div class="reveal menstrual-details" data-when="menstrualStage=围绝经期" hidden>
-          <h4>经期</h4>
-          <div class="sub-radios">
-            <label><input type="radio" name="periodTiming" value="月经先期">月经先期</label>
-            <label><input type="radio" name="periodTiming" value="月经后期">月经后期</label>
-            <label><input type="radio" name="periodTiming" value="月经先后不定期">月经先后不定期</label>
-            <label><input type="radio" name="periodTiming" value="经期延长">经期延长</label>
-            <label><input type="radio" name="periodTiming" value="正常">正常</label>
+        <label><input type="radio" name="menstrualStage" value="育龄期">育龄期</label>
+        <div class="reveal menstrual-details" data-when="menstrualStage=育龄期" hidden>
+          <div class="menstrual-item" data-group>
+            <label class="check"><input type="checkbox" data-parent>经期</label>
+            <div class="sub-radios">
+              <label><input type="radio" name="periodTiming" value="月经先期">月经先期</label>
+              <label><input type="radio" name="periodTiming" value="月经后期">月经后期</label>
+              <label><input type="radio" name="periodTiming" value="月经先后不定期">月经先后不定期</label>
+              <label><input type="radio" name="periodTiming" value="经期延长">经期延长</label>
+              <label><input type="radio" name="periodTiming" value="正常">正常</label>
+            </div>
           </div>
-          <h4>经色</h4>
-          <div class="sub-radios">
-            <label><input type="radio" name="periodColor" value="淡红">淡红</label>
-            <label><input type="radio" name="periodColor" value="深红">深红</label>
-            <label><input type="radio" name="periodColor" value="紫暗">紫暗</label>
-            <label><input type="radio" name="periodColor" value="正常">正常</label>
+          <div class="menstrual-item" data-group>
+            <label class="check"><input type="checkbox" data-parent>经色</label>
+            <div class="sub-radios">
+              <label><input type="radio" name="periodColor" value="淡红">淡红</label>
+              <label><input type="radio" name="periodColor" value="深红">深红</label>
+              <label><input type="radio" name="periodColor" value="紫暗">紫暗</label>
+              <label><input type="radio" name="periodColor" value="正常">正常</label>
+            </div>
           </div>
-          <h4>经量</h4>
-          <div class="sub-radios">
-            <label><input type="radio" name="periodAmount" value="月经过多">月经过多</label>
-            <label><input type="radio" name="periodAmount" value="月经过少">月经过少</label>
-            <label><input type="radio" name="periodAmount" value="正常">正常</label>
+          <div class="menstrual-item" data-group>
+            <label class="check"><input type="checkbox" data-parent>经量</label>
+            <div class="sub-radios">
+              <label><input type="radio" name="periodAmount" value="月经过多">月经过多</label>
+              <label><input type="radio" name="periodAmount" value="月经过少">月经过少</label>
+              <label><input type="radio" name="periodAmount" value="正常">正常</label>
+            </div>
           </div>
-          <h4>痛经</h4>
-          <div class="sub-radios">
-            <label><input type="radio" name="dysmenorrhea" value="有">有</label>
-            <label><input type="radio" name="dysmenorrhea" value="无">无</label>
+          <div class="menstrual-item" data-group>
+            <label class="check"><input type="checkbox" data-parent>痛经</label>
+            <div class="sub-radios">
+              <label><input type="radio" name="dysmenorrhea" value="有">有</label>
+              <label><input type="radio" name="dysmenorrhea" value="无">无</label>
+            </div>
           </div>
         </div>
-        <label><input type="radio" name="menstrualStage" value="育龄期">育龄期</label>
       </div>
     </section>
-
 
     <div class="bottom"><button type="submit" id="saveBtn">保存并返回</button></div>
   </form>

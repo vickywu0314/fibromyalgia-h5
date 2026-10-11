@@ -49,16 +49,16 @@
 ### bsbq 病史病情
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| `onsetTriggers` | string[] | 发病诱因，多选 |
-| `aggravatingTriggers` | string[] | 加重诱因，多选 |
-| `painNature` | string[] | 肌肉疼痛性质，多选 |
+| `onsetTriggers` | string[] | 发病诱因。**产品原型已去掉，页面不再填写**；已有数据原样保留提交 |
+| `aggravatingTriggers` | string[] | 加重诱因。**产品原型已去掉，页面不再填写**；已有数据原样保留提交 |
+| `painNature` | string[] | 肌肉疼痛性质。**产品原型已去掉，页面不再填写**；已有数据原样保留提交 |
 | `menstrualStage` | string | 月经情况分期，单选：绝经期、围绝经期、育龄期 |
-| `periodTiming / periodColor / periodAmount / dysmenorrhea` | string | 经期（月经先期/月经后期/月经先后不定期/经期延长/正常）、经色（淡红/深红/紫暗/正常）、经量（月经过多/月经过少/正常）、痛经（有/无）。**只有 `menstrualStage` 为「围绝经期」时才填**，其他分期为空串 |
+| `periodTiming / periodColor / periodAmount / dysmenorrhea` | string | 经期（月经先期/月经后期/月经先后不定期/经期延长/正常）、经色（淡红/深红/紫暗/正常）、经量（月经过多/月经过少/正常）、痛经（有/无）。**只有 `menstrualStage` 为「育龄期」时才填**（按产品原型，原来是围绝经期），其他分期为空串 |
 
 `bsbq` 里还有几点：
 - `coatShape` 现在存的是「苔质」（厚、薄、润、滑、燥、腐、腻、剥、无）。
-- 月经情况按新版 PDF 改为「分期 + 围绝经期子问题」，原来的 `menstrualItems`（9 项多选）不再提交。
-- 「周身疼痛发病时间、是否确诊、确诊时间、确诊医疗机构级别」存在 `jbxx.painOnsetDate / diagnosed / diagnosisDate / hospitalLevel`。基本信息页（饮酒史后面）和病史病情页都能填写，读写的是同一组字段，两边互相回显；病史病情保存时会顺带以 `part: "jbxx"` 提交一次（随访同样如此）。`diagnosed` 不是「是」时，`diagnosisDate / hospitalLevel` 为空串。
+- 病史病情页按产品原型只保留：全身症状、二便、舌象、月经情况。月经情况为「分期 + 育龄期子问题」，原来的 `menstrualItems`（9 项多选）不再提交。全身症状的证型（肝郁气滞等）和月经的经期/经色/经量/痛经前面的勾选框只是分组开关，不单独提交。
+- 「周身疼痛发病时间、是否确诊、确诊时间、确诊医疗机构级别」存在 `jbxx.painOnsetDate / diagnosed / diagnosisDate / hospitalLevel`。按产品原型只在基本信息页（饮酒史后面）填写，病史病情页已去掉，随访记录里不再填写。`diagnosed` 不是「是」时，`diagnosisDate / hospitalLevel` 为空串。
 - `jbxx.phone`：手机号，基本信息页填写（身份证号下面），选填，填了须为 11 位大陆手机号。
 
 ### zhpd 证候判断
@@ -135,7 +135,7 @@
 | `jbxx.diseaseHistory[].years / months / diagnosisDate` | 新版 PDF 既往疾病史只有疾病名称，不再有病程、诊断时间 |
 | `jbxx.concomitantMedication[].dose / unit / frequency / startDate / ongoing / endDate / reason` | 新版 PDF 合并药物只有药物名称 |
 | `treatmentHistory.xiyao[].spec / route`、`zhongchengyao[].ongoing / reason` | 新版 PDF 西药没有规格、给药方式（用量统一按 片/粒）；中成药只有开始时间、结束时间 |
-| `bsbq.menstrualItems` | 新版 PDF 月经情况改为分期（`menstrualStage`）+ 围绝经期子问题，不再提交 |
+| `bsbq.menstrualItems` | 月经情况改为分期（`menstrualStage`）+ 育龄期子问题，不再提交 |
 | `fzjc.glucose_value, glucose_status` | 新版 PDF 生化没有血糖 |
 | `fzjc.stool_status` | 新版 PDF 便常规各项分别有「未查」，不再有整组状态 |
 | `treatmentHistory.*[].medication` 等 | 只有西药同时写 `medication`（等于 `name`）。中药汤剂只有开始日期、是否沿用至今、结束日期、停用原因；非药物疗法没有 `dose / unit`；中成药没有 `ongoing / reason`；各类都没有 `duration`（非药物的 `duration` 是单次时长） |

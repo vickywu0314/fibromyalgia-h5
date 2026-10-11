@@ -240,8 +240,8 @@
 
   // 选填、不计入进度的题目：人体图选区、肌肉疼痛性质（可多选，可能一项都不符合）
   var OPTIONAL = { painRegions: 1, painNature: 1 };
-  // 条件必填：PSQI 5j 选了⑵～⑷时需填写说明
-  var CONDITIONAL = { psqi5_10_note: function (a) { return ['1', '2', '3'].indexOf(String(a.psqi5_10)) !== -1; } };
+  // 条件必填的题目（name → 按作答判断是否必填）。PSQI 5j 的「说明」已按需求删除，目前没有。
+  var CONDITIONAL = {};
   var touched = {}; // 被拖动/点击过的滑块
 
   function fields() {

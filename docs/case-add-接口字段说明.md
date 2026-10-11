@@ -110,7 +110,7 @@
 - vas：`answers.painNature`（string[]）新增，肌肉疼痛性质多选：酸痛、胀痛、冷痛、刺痛、钝痛、灼痛、窜痛（选填，不计入进度）。
 - fiqr：症状第 10 题的四个细项改为 `fiqr_3_10_1`~`fiqr_3_10_4`（噪音/明亮光线/异味/寒冷，原 `fiqr_3_11`~`fiqr_3_14`），不计分。
 - mfi20：`answers.mfi1`~`mfi20` 的值改为 1~5（1 不符合 … 5 完全符合，原为 0~4），计分规则不变。
-- psqi：上床/起床时间改为「时」「分」下拉，新增 `bedtimeHour, bedtimeMinute, waketimeHour, waketimeMinute`（不补零的数字字符串）；`bedtime / waketime` 仍保留，由前端合成 "HH:MM"。`hours` 改为 0~24 整数下拉。新增 `psqi5_10_note`（5j 其它影响睡眠的事情的说明，5j 选⑵~⑷时必填）。
+- psqi：上床/起床时间改为「时」「分」下拉，新增 `bedtimeHour, bedtimeMinute, waketimeHour, waketimeMinute`（不补零的数字字符串）；`bedtime / waketime` 仍保留，由前端合成 "HH:MM"。`hours` 改为 0~24 整数下拉。5j「其它影响睡眠的事情」的说明 `psqi5_10_note` 已按需求删除，不再提交。
 - painDetect：第 1 题人体图选区 `painRegions` 选填，不计入进度。
 
 ### zlfa 本次治疗方案

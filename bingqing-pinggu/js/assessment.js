@@ -24,13 +24,13 @@
   // 计分。每个函数接收 answers（name → value），返回 { score, result, ...维度 }。
   // ---------------------------------------------------------------------------
   var SCORERS = {
-    // VAS：range name="vas" 取值 0–10 即疼痛 VAS 分值，score = vas。
+    // VAS：range name="vas" 取值 0–10、0.5 一档，即疼痛 VAS 分值，score = vas（如 "7.5"）。
     // pain1–pain4（24h 最重/最轻/平均/目前，0–10）只放 answers。
-    // result 按页面说明分段：0 无痛；1–3 轻度；4–6 中度；7–9 重度；10 剧痛
+    // result 按页面说明分段：0 无痛；0.5–3 轻度；3.5–6.5 中度；7–9.5 重度；10 剧痛
     // （页面原文“4-7 中度、7-9 重度”在 7 分重叠，7 分归入重度）。
     vas: function (a) {
       var v = num(a.vas);
-      var level = v == null ? '' : v === 0 ? '无痛' : v <= 3 ? '轻度' : v <= 6 ? '中度' : v <= 9 ? '重度' : '剧痛';
+      var level = v == null ? '' : v === 0 ? '无痛' : v <= 3 ? '轻度' : v < 7 ? '中度' : v < 10 ? '重度' : '剧痛';
       return { score: str(v), result: level };
     },
 
@@ -298,7 +298,7 @@
 
   function updateRanges() {
     form.querySelectorAll('input[type=range]').forEach(function (input) {
-      var out = input.nextElementSibling && input.nextElementSibling.querySelector('output');
+      var out = form.querySelector('output[for="' + input.id + '"]') || (input.nextElementSibling && input.nextElementSibling.querySelector('output'));
       var on = !!touched[input.name];
       input.classList.toggle('untouched', !on);
       if (out) out.value = on ? input.value : '未选';

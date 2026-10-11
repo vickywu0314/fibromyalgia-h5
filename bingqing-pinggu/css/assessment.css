@@ -2,3 +2,14 @@
 .menu-text{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}.menu .status{font-style:normal;font-size:12px;line-height:1;padding:5px 8px;border-radius:10px;background:#f2f4f8;color:#8a93a3}.menu .status.partial{background:#fff4e5;color:#b26a00}.menu .status.done{background:#e7f6ec;color:#1e8e3e;font-weight:600}
 .range.untouched{opacity:.55}.ticks output{color:#168bdd;font-weight:600}
 .field-label{display:block;font-size:15px;line-height:1.6;margin:0 0 10px}.note-label{margin:12px 0 6px;padding-left:12px;font-size:14px;color:#555}.control{display:block;width:100%;min-height:44px;padding:8px 10px;border:1px solid #c9d1d9;border-radius:4px;background:#fff;color:#222;font:inherit;font-size:15px}.question>.control#psqi5_10_note,.question .control[type=text]{margin-left:12px;width:calc(100% - 12px)}.time-row{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:15px}.time-row .control{width:auto;min-width:88px;flex:1 1 88px}
+
+/* VAS 标尺：0–10，0.5 一档；整数刻度长、标签在上排，半分刻度短、标签在下排错开，避免手机上挤在一起。
+   左右各留半个滑块宽（约 9px），刻度与滑块圆点位置对齐 */
+.vas-scale{position:relative;height:40px;margin:0 9px 6px}
+.vas-scale span{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.vas-scale i{display:block;width:1px;height:6px;background:#b8bec6}
+.vas-scale .int i{height:10px;background:#7a818b}
+.vas-scale b{font-weight:400;font-size:12px;line-height:14px;color:#333;white-space:nowrap}
+.vas-scale .half b{margin-top:16px;font-size:10px;color:#9aa0a8}
+.vas-value{font-size:14px;color:#555}
+.vas-value output{color:#168bdd;font-weight:600;font-size:16px}

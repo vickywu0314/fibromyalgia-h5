@@ -95,7 +95,7 @@
 | 量表 | 额外字段 | score / result 规则 |
 |---|---|---|
 | vas | — | score：VAS 0~10，**0.5 一档**（如 `"7.5"`）；result：0 无痛、0.5~3 轻度、3.5~6.5 中度、7~9.5 重度、10 剧痛 |
-| fiqr | `functionScore, impactScore, symptomScore, severity` | 总分 0~100；result 为空，`severity` 为轻/中/重度 |
+| fiqr | `functionScore, impactScore, symptomScore, severity` | 各条目 0~10，**0.1 一档**（answers 里如 `"6.5"`）；总分 0~100，各分项和总分保留 1 位小数；result 为空，`severity` 为轻/中/重度 |
 | pcs | `rumination, magnification, helplessness` | 0~52；≥30 为「是」 |
 | mfi20 | `generalFatigue, physicalFatigue, reducedActivity, reducedMotivation, mentalFatigue` | 20~100；result 为空 |
 | psqi | `components{sleepQuality, sleepLatency, sleepDuration, sleepEfficiency, sleepDisturbance, sleepMedication, daytimeDysfunction}`（数字 0~3） | 0~21；>7 为「是」 |

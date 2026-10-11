@@ -38,7 +38,7 @@
     //   功能 functionScore = 第 1 部分 9 题总和 / 3（0–30）
     //   整体影响 impactScore = 第 2 部分 2 题总和（0–20）
     //   症状 symptomScore = 第 3 部分标准 10 题（页面 fiqr_3_1 … fiqr_3_10）总和 / 2（0–50）
-    //   总分 = 三者之和（0–100），保留 1 位小数。
+    //   总分 = 三者之和（0–100），保留 1 位小数。条目按 0.1 一档作答，各分项也按 1 位小数取整，避免浮点误差。
     // 页面症状部分 10 题 + 4 个细项：第 10 题“对噪音、明亮光线、异味和寒冷的敏感度”即标准 FIQR 第 10 题，
     // 10-1～10-4（fiqr_3_10_1 … fiqr_3_10_4）是它的拆分细项（噪音/光线/异味/寒冷），不计分，只存 answers。
     // severity（另加 key）：<39 轻度；39–<59 中度；≥59 重度（任务给定分级）。
@@ -50,7 +50,7 @@
       var total = round1(fn + im + sy);
       return {
         score: total.toFixed(1), result: '',
-        functionScore: round1(fn).toFixed(1), impactScore: String(im), symptomScore: round1(sy).toFixed(1),
+        functionScore: round1(fn).toFixed(1), impactScore: String(round1(im)), symptomScore: round1(sy).toFixed(1),
         severity: total < 39 ? '轻度' : total < 59 ? '中度' : '重度'
       };
     },
@@ -359,6 +359,18 @@
   form.addEventListener('change', onEdit);
   // 点一下滑块（不拖动、值不变）也算作答
   form.addEventListener('click', function (e) { if (e.target && e.target.type === 'range') onEdit(e); });
+  // −/+ 微调（FIQR 0.1 一档）：按 data-delta 调整对应滑块并算作答；未作答时从当前位置开始调
+  form.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest && e.target.closest('.step-btn');
+    if (!btn || viewMode()) return;
+    var input = document.getElementById(btn.dataset.for);
+    if (!input || input.disabled) return;
+    var step = Number(input.step) || 1, min = Number(input.min) || 0, max = Number(input.max) || 10;
+    var v = Math.round((Number(input.value) + Number(btn.dataset.delta)) / step) * step;
+    input.value = String(Math.min(max, Math.max(min, round1(v))));
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  });
   // 离开页面前把尚未写入的改动立刻写入
   window.addEventListener('pagehide', function () { if (timer) autosave(); });
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden' && timer) autosave(); });

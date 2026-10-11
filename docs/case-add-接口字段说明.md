@@ -123,6 +123,7 @@
 | `xiyaoAdjust` | `{adjust, adjustment, reason}` | 西药各分类的汇总：任一分类「是」即为「是」，全部「否」为「否」；`adjustment / reason` 为各「是」分类的「分类：值」，以「；」分隔 |
 | `zhongchengyaoAdjust / feiYaowuAdjust` | `{adjust, adjustment, reason}` | 页面按类别回答一次「是否调整」。同样的值也复制到该类每条记录的 `adjust / adjustment / reason` 上 |
 | `zhongchengyao[].spec / route` | string | 规格、给药方式（页面无输入，传空串） |
+| `zhongchengyao[].name / dose / unit / frequency` | string | 药物取自 RA 中成药药品库（15 种）。其中通络开痹片、元胡止痛滴丸、金匮肾气丸、大活络丸、舒眠胶囊：`dose` 为 `"1"`~`"5"`，`unit` 为「片/粒」，`frequency` 可选 日1次/日2次/日3次；其余按原规格 |
 | `feiYaowu[].customName` | string | 非药物疗法选「其他」时填写的名称；此时 `name` 也是这个名称 |
 | `zhongyaoYinpian[]` | object | 中药汤剂（key 沿用 zhongyaoYinpian，`name` 固定为「中药汤剂」）。`syndrome` 主要中医证型，`recipe` 方剂名，`composition` 方剂组成（string[]），`prescription` 补充药物（分号隔开），`image` 拍照上传的图片 |
 

@@ -213,7 +213,8 @@
           done++;
           text = '✓ 已完成';
           if (d.score !== '' && d.score != null) text += ' · ' + d.score + '分';
-          if (d.result) text += ' · ' + d.result;
+          // PCS 的 result（是/否）按需求不在列表显示，仍随数据提交
+          if (d.result && key !== 'pcs') text += ' · ' + d.result;
         } else if (st.state === 'partial') {
           text = '已填 ' + st.answered + (st.total ? '/' + st.total : '');
         } else text = '未填写';

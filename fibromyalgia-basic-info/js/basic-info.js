@@ -5,6 +5,8 @@
   const nameError = document.getElementById("nameError");
   const idCard = document.getElementById("idCard");
   const idCardError = document.getElementById("idCardError");
+  const phone = document.getElementById("phone");
+  const phoneError = document.getElementById("phoneError");
   const province = document.getElementById("province");
   const city = document.getElementById("city");
   const visitDate = document.getElementById("visitDate");
@@ -33,6 +35,8 @@
   function update(){
     U.toggle(document.getElementById("smokingDetail"), checked("smoking") === "经常有");
     U.toggle(document.getElementById("drinkingDetail"), checked("drinking") === "经常有");
+    // 是否曾确诊：选「是」才出现确诊时间、确诊医疗机构级别
+    U.toggle(document.getElementById("diagnosedDetail"), checked("diagnosed") === "是");
     // 饮酒史：每种酒勾选后才出现「每天用量」，取消勾选时清空
     form.querySelectorAll('input[name="drinkType"]').forEach(cb => {
       const amount = document.getElementById(cb.dataset.amount);
@@ -40,7 +44,7 @@
     });
   }
   form.addEventListener("change", e => {
-    if (e.target.name === "smoking" || e.target.name === "drinking" || e.target.name === "drinkType") update();
+    if (["smoking", "drinking", "drinkType", "diagnosed"].indexOf(e.target.name) !== -1) update();
   });
 
   function validId(value){
@@ -51,6 +55,17 @@
     const ok = !v || validId(v);
     idCardError.hidden = ok;
     idCard.setAttribute("aria-invalid", String(!ok));
+  });
+  // 手机号：选填，填了就校验 11 位大陆手机号
+  function validPhone(value){
+    return /^1[3-9]\d{9}$/.test(value);
+  }
+  phone.addEventListener("input", () => { phone.value = phone.value.replace(/\D/g, "").slice(0, 11); if (!phone.value || validPhone(phone.value)) phoneError.hidden = true; });
+  phone.addEventListener("blur", () => {
+    const v = phone.value.trim();
+    const ok = !v || validPhone(v);
+    phoneError.hidden = ok;
+    phone.setAttribute("aria-invalid", String(!ok));
   });
   nameInput.addEventListener("input", () => { if (nameInput.value.trim()) nameError.hidden = true; });
 
@@ -211,6 +226,7 @@
       visitDate: d.visitDate || "",
       name: nameInput.value.trim(),
       idCard: idCard.value.trim().toUpperCase(),
+      phone: phone.value.trim(),
       gender: d.gender || "",
       province: d.province || "",
       city: d.city || "",
@@ -229,6 +245,11 @@
       beerAmount: num(d.beerAmount),
       wineAmount: num(d.wineAmount),
       drinkAmount: "",
+      // 与病史病情页共用的 jbxx 字段；未选「是」时确诊时间、机构级别写空
+      painOnsetDate: d.painOnsetDate || "",
+      diagnosed: d.diagnosed || "",
+      diagnosisDate: d.diagnosed === "是" ? (d.diagnosisDate || "") : "",
+      hospitalLevel: d.diagnosed === "是" ? (d.hospitalLevel || "") : "",
       signature: currentSignature()
     };
     // drinkAmount（原结构体字段）保留为三种酒每天用量之和，都没填时为空串
@@ -243,6 +264,7 @@
     const id = idCard.value.trim();
     if (!name) { nameError.hidden = false; nameInput.focus(); FmsCase.toast("请输入姓名"); return; }
     if (!validId(id)) { idCardError.hidden = false; idCard.focus(); FmsCase.toast("请输入正确的身份证号"); return; }
+    if (phone.value.trim() && !validPhone(phone.value.trim())) { phoneError.hidden = false; phone.focus(); FmsCase.toast("请输入正确的手机号"); return; }
     const btn = form.querySelector('button[type="submit"]');
     if (drawn && !signature) {
       btn.disabled = true;

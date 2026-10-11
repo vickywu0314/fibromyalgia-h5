@@ -35,6 +35,12 @@
           <p class="error" id="idCardError" hidden>请输入正确的15位或18位身份证号</p>
         </div>
 
+        <div class="field">
+          <label for="phone">手机号</label>
+          <input id="phone" name="phone" type="tel" inputmode="numeric" maxlength="11" placeholder="请输入手机号">
+          <p class="error" id="phoneError" hidden>请输入正确的11位手机号</p>
+        </div>
+
 
         <fieldset class="field">
           <legend>性别</legend>
@@ -134,7 +140,35 @@
           </div>
         </fieldset>
 
+        <!-- 与病史病情页同一组字段（jbxx.painOnsetDate / diagnosed / diagnosisDate / hospitalLevel），两处填写互相回显 -->
+        <div class="field">
+          <label for="painOnsetDate">周身疼痛发病时间</label>
+          <input id="painOnsetDate" name="painOnsetDate" type="date">
+        </div>
 
+        <fieldset class="field">
+          <legend>是否曾确诊纤维肌痛综合征</legend>
+          <div class="choices">
+            <label><input type="radio" name="diagnosed" value="是"> 是</label>
+            <label><input type="radio" name="diagnosed" value="否"> 否</label>
+          </div>
+          <div id="diagnosedDetail" class="conditional" hidden>
+            <div>
+              <p class="sub-label">确诊时间</p>
+              <input id="diagnosisDate" name="diagnosisDate" type="date" aria-label="确诊时间">
+            </div>
+            <div>
+              <p class="sub-label">确诊医疗机构级别</p>
+              <select id="hospitalLevel" name="hospitalLevel" aria-label="确诊医疗机构级别">
+                <option value="">请选择</option>
+                <option value="1级">1级</option>
+                <option value="2级">2级</option>
+                <option value="3级">3级</option>
+                <option value="无级别">无级别</option>
+              </select>
+            </div>
+          </div>
+        </fieldset>
       </section>
 
       <section class="submodule-section" aria-labelledby="submoduleTitle">

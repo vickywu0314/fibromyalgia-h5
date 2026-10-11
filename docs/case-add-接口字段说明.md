@@ -58,7 +58,8 @@
 `bsbq` 里还有几点：
 - `coatShape` 现在存的是「苔质」（厚、薄、润、滑、燥、腐、腻、剥、无）。
 - 月经情况按新版 PDF 改为「分期 + 围绝经期子问题」，原来的 `menstrualItems`（9 项多选）不再提交。
-- 「周身疼痛发病时间、是否确诊、确诊时间」按 PDF 在病史病情页填写，按结构体存在 `jbxx.painOnsetDate / diagnosed / diagnosisDate`；病史病情保存时会顺带以 `part: "jbxx"` 提交一次（随访同样如此）。
+- 「周身疼痛发病时间、是否确诊、确诊时间、确诊医疗机构级别」存在 `jbxx.painOnsetDate / diagnosed / diagnosisDate / hospitalLevel`。基本信息页（饮酒史后面）和病史病情页都能填写，读写的是同一组字段，两边互相回显；病史病情保存时会顺带以 `part: "jbxx"` 提交一次（随访同样如此）。`diagnosed` 不是「是」时，`diagnosisDate / hospitalLevel` 为空串。
+- `jbxx.phone`：手机号，基本信息页填写（身份证号下面），选填，填了须为 11 位大陆手机号。
 
 ### zhpd 证候判断
 | 字段 | 类型 | 说明 |
@@ -129,7 +130,6 @@
 
 | 字段 | 原因 |
 |---|---|
-| `jbxx.phone, jbxx.hospitalLevel` | 基本信息页 PDF 里没有手机号；确诊医疗机构级别属于「是否曾确诊」，该题在病史病情页填写，是否提交以病史病情模块说明为准 |
 | `jbxx.work.answers.q5Score / q6Score`、`jbxx.work.presenteeism / workImpairment / activityImpairment` | WPAI 第5、6题按 PDF 改为两个选项，没有 0~10 分值，无法计算这三项 |
 | `jbxx.bodyComposition.height, weight, bmi, waist, hip, ratio1, ratio2` | 人体成分 PDF 只有体脂百分比、体脂量、骨骼肌量、骨骼肌指数、去脂体重、内脏脂肪等级、腰臀比（`waistHipRatio` 直接填写）、上传检验 |
 | `jbxx.diseaseHistory[].years / months / diagnosisDate` | 新版 PDF 既往疾病史只有疾病名称，不再有病程、诊断时间 |

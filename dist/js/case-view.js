@@ -48,7 +48,7 @@ const j = c.jbxx || {};
 if (isBaseline) {
   const s = section('基本信息');
   let n = rows(s, [
-    ['就诊时间', j.visitDate], ['姓名', j.name], ['身份证号', j.idCard], ['性别', j.gender],
+    ['就诊时间', j.visitDate], ['姓名', j.name], ['身份证号', j.idCard], ['手机号', j.phone], ['性别', j.gender],
     ['常住地', [j.province, j.city && j.city !== j.province ? j.city : ''].filter(has).join(' ')],
     ['婚姻', j.marriage], ['教育程度', j.education], ['工作情况', j.workStatus],
     ['吸烟史', j.smoking === '经常有' ? ['经常有', withUnit(j.smokingYears, '年'), j.smokingAmount ? '每日' + j.smokingAmount : ''].filter(has).join('，') : j.smoking],

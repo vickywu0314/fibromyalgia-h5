@@ -98,7 +98,7 @@ if (isBaseline) {
 // ---------- 证候判断 ----------
 {
   const s = section('证候判断'), z = c.zhpd || {};
-  if (!rows(s, [['主证', z.mainSyndrome], ['兼证', z.secondarySyndromes || z.secondarySyndrome]])) empty(s);
+  if (!rows(s, [['主证', z.mainSyndrome], ['是否有兼证', z.hasSecondary], ['兼证', z.secondarySyndrome || z.secondarySyndromes]])) empty(s);
 }
 
 // ---------- 辅助检查 ----------

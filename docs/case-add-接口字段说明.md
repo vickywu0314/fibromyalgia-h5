@@ -64,7 +64,9 @@
 ### zhpd 证候判断
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| `secondarySyndromes` | string[] | 兼证多选，且不能与主证相同。`secondarySyndrome` 仍保留，是用「、」拼接的字符串；`hasSecondary` 由前端自动计算 |
+| `hasSecondary` | string | 是否有兼证：`是` / `否`，按产品原型由用户选择（原来由前端自动计算） |
+| `secondarySyndrome` | string | 兼证，**单选**（按产品原型，原来是多选），不能与主证相同；`hasSecondary` 为「否」时为空串 |
+| `secondarySyndromes` | string[] | 保留兼容，现在最多 1 项，与 `secondarySyndrome` 一致 |
 
 ### fzjc 辅助检查
 | 字段 | 类型 | 说明 |

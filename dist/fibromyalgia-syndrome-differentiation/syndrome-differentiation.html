@@ -16,8 +16,7 @@
   </section>
 
   <form id="syndromeForm">
-    <h1>证候判断</h1>
-
+    <!-- 按产品原型：主证（单选）→ 是否有兼证（是/否）→ 选「是」时选兼证（单选，不能与主证相同） -->
     <fieldset class="question">
       <legend>主证</legend>
       <div class="options">
@@ -29,12 +28,16 @@
     </fieldset>
 
     <fieldset class="question">
-      <legend>兼证<span class="hint">（可多选，不能与主证相同）</span></legend>
-      <div id="secondaryOptions" class="options">
-        <label><input type="checkbox" name="secondarySyndrome" value="肝郁气滞证">肝郁气滞证</label>
-        <label><input type="checkbox" name="secondarySyndrome" value="寒湿痹阻证">寒湿痹阻证</label>
-        <label><input type="checkbox" name="secondarySyndrome" value="痰热扰心证">痰热扰心证</label>
-        <label><input type="checkbox" name="secondarySyndrome" value="肝肾不足证">肝肾不足证</label>
+      <legend>是否有兼证</legend>
+      <div class="options">
+        <label><input type="radio" name="hasSecondary" value="是">是</label>
+        <label><input type="radio" name="hasSecondary" value="否">否</label>
+      </div>
+      <div id="secondaryOptions" class="options sub-options" hidden>
+        <label><input type="radio" name="secondarySyndrome" value="肝郁气滞证">肝郁气滞证</label>
+        <label><input type="radio" name="secondarySyndrome" value="寒湿痹阻证">寒湿痹阻证</label>
+        <label><input type="radio" name="secondarySyndrome" value="痰热扰心证">痰热扰心证</label>
+        <label><input type="radio" name="secondarySyndrome" value="肝肾不足证">肝肾不足证</label>
       </div>
     </fieldset>
 

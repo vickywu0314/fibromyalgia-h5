@@ -5,7 +5,7 @@
 (function (global) {
   var PATH = 'jbxx.treatmentHistory';
   var KINDS = {
-    'xiyao': { key: 'xiyao', has: 'hasXiyao', label: '西药', list: 'xiyao.html' },
+    'xiyao': { key: 'xiyao', has: 'hasXiyao', label: '口服西药', list: 'xiyao.html' },
     'zhongyao-tangji': { key: 'zhongyaoTangji', has: 'hasZhongyaoTangji', label: '中药汤剂', list: 'zhongyao-tangji.html' },
     'fei-yaowu-liaofa': { key: 'feiYaowuLiaofa', has: 'hasFeiYaowuLiaofa', label: '非药物疗法', list: 'fei-yaowu-liaofa.html' },
     'zhongchengyao': { key: 'zhongchengyao', has: 'hasZhongchengyao', label: '中成药', list: 'zhongchengyao.html' }

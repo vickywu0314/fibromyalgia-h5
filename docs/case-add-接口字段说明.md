@@ -42,7 +42,7 @@
 | `diseaseHistory[]` | object[] | 每条 `{category, categoryLabel, name}`。新版 PDF 只有疾病名称（选「其他」时 `name` 为填写的疾病名称），没有病程、诊断时间。`category` 取值：`fengshi`（风湿性疾病）及其他系统疾病 `huxi / xiaohua / xunhuan / neifenmi / shen / guke / shengzhi / xinli / tengtong` |
 | `concomitantMedication[]` | object[] | 每条只有 `{name}`（药物名称），与新版 PDF 一致 |
 | `treatmentHistory.hasXiyao / hasZhongyaoTangji / hasFeiYaowuLiaofa / hasZhongchengyao` | string | 各类治疗史的「无/有」 |
-| `treatmentHistory.xiyao[]` | object[] | `{name, medication, frequency, dose, unit, startDate, ongoing, endDate, reason}`。频次：日1次/日2次/日3次/晚1次；用量 `dose`：`"1"`~`"8"`，`unit` 固定「片/粒」；`ongoing` 为「否」时才有 `endDate`、`reason`（停用原因） |
+| `treatmentHistory.xiyao[]` | object[] | 口服西药（原「西药」）：`{category, name, medication, frequency, dose, unit, startDate, ongoing, endDate, reason}`。与本次治疗方案西药相同：`category` 为药物分类（改善纤维肌痛综合征病情药物 / 改善焦虑、抑郁药物 / 助眠药 / 非甾体抗炎类药物 / 肌松药 / 其他），药品、剂量（mg，氟哌噻吨美利曲片为片）、频次按目录选择；非甾体抗炎类药物只有药名，`dose / unit / frequency` 为空串；「其他」时 `name` 为手填药品名称、`dose` 为手填用量、`unit` 为 mg。`medication` 同 `name`。旧记录（无 `category`，用量单位为片/粒）原样保留 |
 | `treatmentHistory.zhongchengyao[]` | object[] | `{name, frequency, dose, unit, startDate, endDate}`。频次：日1次/日2次/日3次；用量 `dose`：`"1"`~`"5"`，`unit` 固定「片/粒」；`startDate / endDate` 为 PDF 的「开始时间 / 结束时间」，没有是否沿用至今、停用原因 |
 | `treatmentHistory.feiYaowuLiaofa[]` | object[] | `{name, duration, durationUnit, frequency, startDate, ongoing, endDate, reason}`。`duration` 为单次时长 `"5"`~`"60"`（步长 5），`durationUnit` 固定「分钟」；频次 14 档（日1次…每月3次）；选「其他」时 `name` 为填写的名称（具体治疗） |
 
@@ -139,7 +139,7 @@
 | `jbxx.bodyComposition.bmi, waist, hip, ratio1, ratio2` | 人体成分页面只填身高、体重、体脂百分比、体脂肪、骨骼肌量、骨骼肌指数（SMI）、腰臀比和上传检验 |
 | `jbxx.diseaseHistory[].years / months / diagnosisDate` | 新版 PDF 既往疾病史只有疾病名称，不再有病程、诊断时间 |
 | `jbxx.concomitantMedication[].dose / unit / frequency / startDate / ongoing / endDate / reason` | 新版 PDF 合并药物只有药物名称 |
-| `treatmentHistory.xiyao[].spec / route`、`zhongchengyao[].ongoing / reason` | 新版 PDF 西药没有规格、给药方式（用量统一按 片/粒）；中成药只有开始时间、结束时间 |
+| `treatmentHistory.xiyao[].spec / route`、`zhongchengyao[].ongoing / reason` | 新版 PDF 西药没有规格、给药方式；中成药只有开始时间、结束时间 |
 | `bsbq.menstrualItems` | 月经情况改为分期（`menstrualStage`）+ 育龄期子问题，不再提交 |
 | `fzjc.glucose_value, glucose_status` | 新版 PDF 生化没有血糖 |
 | `fzjc.stool_status` | 新版 PDF 便常规各项分别有「未查」，不再有整组状态 |

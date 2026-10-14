@@ -99,7 +99,7 @@
 ### bqpg 病情评估（每个量表都有 `finish / score / result / answers`）
 | 量表 | 额外字段 | score / result 规则 |
 |---|---|---|
-| vas | — | score：VAS 0~10，**0.5 一档**（如 `"7.5"`）；result：0 无痛、0.5~3 轻度、3.5~6.5 中度、7~9.5 重度、10 剧痛 |
+| vas | — | score：VAS 0~10，**0.1 一档**（如 `"7.3"`）；result：0 无痛、0.1~3 轻度、3.1~6.9 中度、7~9.9 重度、10 剧痛。`answers.pain1`~`pain4`（疼痛评估 1~4 题）同样 0~10、0.1 一档 |
 | fiqr | `functionScore, impactScore, symptomScore, severity` | 各条目 0~10，**0.1 一档**（answers 里如 `"6.5"`）；总分 0~100，各分项和总分保留 1 位小数；result 为空，`severity` 为轻/中/重度 |
 | pcs | `rumination, magnification, helplessness` | 0~52；≥30 为「是」 |
 | mfi20 | `generalFatigue, physicalFatigue, reducedActivity, reducedMotivation, mentalFatigue` | 20~100；result 为空 |

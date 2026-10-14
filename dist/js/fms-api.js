@@ -10,7 +10,7 @@
     sessionStorage.setItem(KEY, id);
     // 换了医生：清掉上一位医生未提交的病例草稿（草稿存在 localStorage），避免数据串到别人名下
     var prev = localStorage.getItem(LAST);
-    if (prev && prev !== id) ['fms_case_draft', 'fms_case_unsynced'].forEach(function (k) { localStorage.removeItem(k); });
+    if (prev && prev !== id) ['fms_case_draft', 'fms_case_unsynced', 'fms_case_token'].forEach(function (k) { localStorage.removeItem(k); });
     localStorage.setItem(LAST, id);
   } catch (e) {}
 })();

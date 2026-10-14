@@ -59,6 +59,25 @@
   }
   function isSynced(part) { return unsynced().indexOf(part) === -1; }
 
+  // 病例标识：每次新建患者 / 新增随访 / 打开已有记录 / 清空时换一个新值。
+  // 浏览器（尤其手机侧滑返回）会从页面缓存（bfcache）恢复旧页面，页面上显示的还是之前那条记录的作答；
+  // 若期间已切换到另一条记录，恢复时重新加载页面，避免把上一条记录的内容保存进当前记录。
+  var TOKEN_KEY = 'fms_case_token';
+  function caseToken() { try { return localStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; } }
+  function newCaseToken() { try { localStorage.setItem(TOKEN_KEY, Date.now().toString(36) + Math.random().toString(36).slice(2, 8)); } catch (e) {} }
+  var pageToken = caseToken();
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted && caseToken() !== pageToken) location.reload();
+  });
+  // 关闭浏览器的「返回时恢复表单填写内容」：返回到某页时，浏览器会把上次离开时表单里的选项盖回去，
+  // 而那可能是另一条记录的作答（如先看随诊、再切到基线后返回）。各页面都按病例草稿自行回显，不需要浏览器恢复。
+  function noFormRestore() {
+    document.querySelectorAll('form').forEach(function (f) { f.setAttribute('autocomplete', 'off'); });
+    document.querySelectorAll('input:not([type=hidden]), select, textarea').forEach(function (el) { if (!el.hasAttribute('autocomplete')) el.setAttribute('autocomplete', 'off'); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', noFormRestore); else noFormRestore();
+  window.addEventListener('pagehide', noFormRestore);
+
   // 打开已有记录（BASE_KEY='view'）仍记录下来供患者资料页显示标题；
   // 按需求模块页不再有只读「查看模式」：进入即可编辑，已有内容回填，isViewMode() 恒为 false
   var MODE_KEY = 'fms_case_mode';      // 'view' | 'edit'
@@ -282,6 +301,7 @@
     if (!gender && /^\d{17}[\dXx]$/.test(c.jbxx.idCard)) gender = Number(c.jbxx.idCard.charAt(16)) % 2 ? '男' : '女';
     if (gender) c.jbxx.gender = gender;
     write(c);
+    newCaseToken();
     return c;
   }
 
@@ -297,6 +317,7 @@
     c.jbxx.name = info.name || '';
     c.jbxx.idCard = info.idCard || '';
     write(c);
+    newCaseToken();
     return c;
   }
 
@@ -326,11 +347,12 @@
     if (!c.jbxx.idCard && info.idCard) c.jbxx.idCard = info.idCard;
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
     write(c);
+    newCaseToken();
     ss(BASE_KEY, 'view'); setMode('view');
     return c;
   }
 
-  function clear() { try { localStorage.removeItem(KEY); localStorage.removeItem(UNSYNCED_KEY); } catch (e) {} setMode(null); ss(BASE_KEY, null); }
+  function clear() { try { localStorage.removeItem(KEY); localStorage.removeItem(UNSYNCED_KEY); } catch (e) {} newCaseToken(); setMode(null); ss(BASE_KEY, null); }
 
   // 表单工具：FormData → 对象（同名多值为数组；有 data-array 的复选框始终为数组）
   function formData(form) {

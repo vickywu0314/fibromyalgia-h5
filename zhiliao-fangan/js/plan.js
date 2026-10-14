@@ -156,7 +156,7 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
       const ul = el('ul', '', 'records');
       recs.forEach(([v, i]) => { const a = el('a'); a.href = `add-xiyao.html?edit=${i}`; const t = el('span'); t.append(el('strong', titleOf(kind, v)), el('small', describe(kind, v))); a.append(t, el('span', '›', 'arrow')); const li = el('li'); li.append(a); ul.append(li) });
       sec.append(ul);
-    } else sec.append(el('p', '暂无记录', 'empty'));
+    } else sec.append(el('p', '暂无数据', 'empty'));
     const add = el('a', '添加药品', 'secondary add-link'); add.href = `add-xiyao.html?category=${encodeURIComponent(cat)}`;
     sec.append(add); holder.append(sec);
   });
@@ -239,7 +239,7 @@ if (page.dataset.page === 'summary') {
     const items = none ? [] : z[ck.key];
     const meta = (ck.adjKey && z[ck.adjKey]) || {};
     if (none) section.append(el('p', '无', 'summary-empty'));
-    else if (!items.length) section.append(el('p', '暂无记录', 'summary-empty'));
+    else if (!items.length) section.append(el('p', '暂无数据', 'summary-empty'));
     if (k === 'xiyao') {
       const cm = z.xiyaoCategoryAdjust || {};
       XI_CATS.forEach(cat => {

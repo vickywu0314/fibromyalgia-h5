@@ -59,7 +59,7 @@
 - `coatShape` 现在存的是「苔质」（厚、薄、润、滑、燥、腐、腻、剥、无）。
 - 病史病情页按产品原型只保留：全身症状、二便、舌象、月经情况。月经情况为「分期 + 育龄期子问题」，原来的 `menstrualItems`（9 项多选）不再提交。全身症状的证型（肝郁气滞等）和月经的经期/经色/经量/痛经前面的勾选框只是分组开关，不单独提交。
 - 「周身疼痛发病时间、是否确诊、确诊时间、确诊医疗机构级别」存在 `jbxx.painOnsetDate / diagnosed / diagnosisDate / hospitalLevel`。按产品原型只在基本信息页（饮酒史后面）填写，病史病情页已去掉，随访记录里不再填写。`diagnosed` 不是「是」时，`diagnosisDate / hospitalLevel` 为空串。
-- 人体成分分析（`jbxx.bodyComposition`，选填）：新增提交 `height`（身高 cm，最多 3 位整数）、`weight`（体重 Kg，最多 3 位整数 1 位小数）；`bodyFatPercentage / bodyFatMass / skeletalMuscleMass / skeletalMuscleIndex` 为最多 2 位整数 1 位小数（如 `"23.5"`）；`waistHipRatio` 为 `"0.xy"`（页面两个 0-9 下拉）。去脂体重 `leanBodyMass`、内脏脂肪等级 `visceralFatLevel` 页面已删除，旧数据原样保留提交。
+- 人体成分分析（`jbxx.bodyComposition`，选填）：新增提交 `height`（身高 cm，最多 3 位整数）、`weight`（体重 Kg，最多 3 位整数 1 位小数）；`bodyFatPercentage / bodyFatMass / skeletalMuscleMass / skeletalMuscleIndex` 为最多 2 位整数 1 位小数（如 `"23.5"`）；`waistHipRatio` 为 `"0.xy"`（页面「0.」后两个空直接输入）。去脂体重 `leanBodyMass`、内脏脂肪等级 `visceralFatLevel` 页面已删除，旧数据原样保留提交。
 - `jbxx.nation`：**新增**，民族。页面单选「汉族 / 其他」，选汉族时为 `"汉族"`，选其他时为填写的民族名（如 `"回族"`），未选为空串。**需后端在结构体中增加该字段。**
 - `jbxx.phone`：手机号，基本信息页填写（身份证号下面），选填，填了须为 11 位大陆手机号。
 

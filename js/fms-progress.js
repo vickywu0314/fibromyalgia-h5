@@ -37,7 +37,8 @@
       if (!name || (el.disabled && !viewing) || optional.indexOf(name) !== -1) return;
       var type = (el.type || '').toLowerCase();
       if (['hidden', 'file', 'button', 'submit', 'reset'].indexOf(type) !== -1) return;
-      if (el.hasAttribute('data-optional') || (el.readOnly && !viewing)) return;
+      // 日期框被统一日期选择器设为 readonly（data-fms-date），仍算作需作答的题目
+      if (el.hasAttribute('data-optional') || (el.readOnly && !viewing && !el.dataset.fmsDate)) return;
       if (!visible(el)) return;
       (groups[name] = groups[name] || []).push(el);
     });

@@ -420,7 +420,16 @@
     bar.appendChild(back); bar.appendChild(title);
     document.body.insertBefore(bar, document.body.firstChild);
   }
-  function onReady() { mountTopBar(); renderOverall(); }
+  // 统一日期选择器（底部拉起的年/月/日滚轮），与本文件同目录的 fms-datepicker.js
+  var SELF_SRC = document.currentScript && document.currentScript.src;
+  function loadDatePicker() {
+    if (window.FmsDatePicker || document.getElementById('fmsDatePickerJs') || !SELF_SRC) return;
+    var sc = document.createElement('script');
+    sc.id = 'fmsDatePickerJs';
+    sc.src = SELF_SRC.replace(/fms-case\.js(\?.*)?$/, 'fms-datepicker.js');
+    document.head.appendChild(sc);
+  }
+  function onReady() { mountTopBar(); renderOverall(); loadDatePicker(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady);
   else onReady();
   window.addEventListener('pageshow', function (e) { if (e.persisted) renderOverall(); });

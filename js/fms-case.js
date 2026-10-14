@@ -360,6 +360,19 @@
   }
 
 
+  // 下拉框统一箭头：去掉浏览器自带箭头（各浏览器位置不一、常贴着右边框），换成 12px 的 ⌄ 箭头，
+  // 距右边框 14px，文字右侧留出箭头空间。用 !important 是因为各页样式用 background 简写会覆盖背景图。
+  (function selectArrowStyle() {
+    if (document.getElementById('fmsSelectArrow')) return;
+    var svg = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\")";
+    var st = document.createElement('style');
+    st.id = 'fmsSelectArrow';
+    st.textContent = 'select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;' +
+      'background-image:' + svg + '!important;background-repeat:no-repeat!important;background-position:right 14px center!important;background-size:12px 8px!important;padding-right:36px!important}' +
+      'select:not([multiple]):not([size])::-ms-expand{display:none}';
+    (document.head || document.documentElement).appendChild(st);
+  })();
+
   // 模块页顶部返回栏：‹ + 页面标题，返回「上一级」页面（按页面层级，不用浏览器历史——
   // 保存并返回会新增历史记录，用 history.back() 会退回到刚保存的表单）。
   var NON_MODULE = /(patient-(list|add|detail)|follow-up-list|case-view|research-platform|index)\.html$|\/$/;

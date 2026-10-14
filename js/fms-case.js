@@ -473,7 +473,9 @@
     return null; // 患者列表：浏览器返回
   }
   var BAR_CSS = 'position:sticky;top:0;z-index:9998;display:flex;align-items:center;height:44px;margin:0 0 8px;background:#fff;border-bottom:1px solid #eceef1;box-sizing:border-box;padding-top:env(safe-area-inset-top)';
-  var ARROW_CSS = 'display:flex;align-items:center;justify-content:center;width:36px;height:40px;font-size:30px;line-height:1;color:#222;text-decoration:none;background:none;border:0;padding:0;cursor:pointer';
+  // 返回箭头用 SVG 绘制（文字「‹」在不同字体下偏低、与「返回目录」对不齐）
+  var ARROW_CSS = 'display:flex;align-items:center;justify-content:center;width:32px;height:40px;color:#222;text-decoration:none;background:none;border:0;padding:0;cursor:pointer';
+  var ARROW_SVG = '<svg width="11" height="19" viewBox="0 0 11 19" aria-hidden="true" style="display:block"><path d="M9.5 1.5 2 9.5l7.5 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   function mountTopBar() {
     if (document.getElementById('fmsTopBar')) return;
     var parts = pageKey().split('/'), file = parts[parts.length - 1], dirName = parts.length > 1 ? parts[0] : '';
@@ -485,14 +487,14 @@
     bar.id = 'fmsTopBar';
     bar.style.cssText = BAR_CSS + ';padding-left:' + (isModule ? 112 : 44) + 'px;padding-right:' + (isModule ? 112 : 44) + 'px';
     var left = document.createElement('div');
-    left.style.cssText = 'position:absolute;left:4px;top:50%;transform:translateY(-50%);display:flex;align-items:center';
+    left.style.cssText = 'position:absolute;left:6px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:0';
     var back;
     if (isModule) {
       // 二级页面：「‹」返回上一级；右侧「返回目录」回到患者资料（模块目录）
       back = document.createElement('a'); back.href = parentUrl();
       var dir = document.createElement('a');
       dir.href = DETAIL; dir.textContent = '返回目录';
-      dir.style.cssText = 'font-size:15px;color:#168bdd;text-decoration:none;white-space:nowrap;padding:8px 4px 8px 0';
+      dir.style.cssText = 'display:flex;align-items:center;height:40px;font-size:16px;line-height:1;color:#168bdd;text-decoration:none;white-space:nowrap;padding:0 4px 0 0';
       left.appendChild(back); left.appendChild(dir);
     } else {
       var to = rootBack(file);
@@ -504,7 +506,7 @@
       left.appendChild(back);
     }
     back.setAttribute('aria-label', isModule ? '返回上一级' : '返回上一页');
-    back.textContent = '‹';
+    back.innerHTML = ARROW_SVG;
     back.style.cssText = ARROW_CSS;
     var title = document.createElement('div');
     title.textContent = document.title;

@@ -76,7 +76,7 @@ if (isBaseline) {
   n += records(s, '本病治疗史 · 中药汤剂', th.zhongyaoTangji, r => [r.name, has(r.startDate) ? r.startDate + ' 开始' : '', stopText(r)].filter(has).join('，'));
   n += records(s, '本病治疗史 · 非药物疗法', th.feiYaowuLiaofa, r => [r.name, withUnit(r.duration, '分钟/次'), r.frequency, has(r.startDate) ? r.startDate + ' 开始' : '', stopText(r)].filter(has).join('，'));
   n += records(s, '本病治疗史 · 中成药', th.zhongchengyao, drugLine);
-  n += records(s, '既往疾病史', j.diseaseHistory, r => [r.categoryLabel, r.name, withUnit(r.months, '个月'), has(r.diagnosisDate) ? '诊断 ' + r.diagnosisDate : ''].filter(has).join('，'));
+  n += records(s, '既往疾病史', j.diseaseHistory, r => [r.categoryLabel, r.name, withUnit(r.years, '年'), has(r.diagnosisDate) ? '诊断 ' + r.diagnosisDate : ''].filter(has).join('，'));
   n += records(s, '合并药物', j.concomitantMedication, drugLine);
   if (!n) empty(s);
 }

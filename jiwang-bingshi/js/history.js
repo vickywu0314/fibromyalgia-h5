@@ -13,7 +13,7 @@
  if(view==='list'){
   var list=document.getElementById('records');
   renderList=function(){list.innerHTML='';document.getElementById('empty').hidden=records.length>0;
-  records.forEach(function(record,index){var li=document.createElement('li'),link=document.createElement('a'),text=document.createElement('span'),name=document.createElement('strong'),info=document.createElement('small'),arrow=document.createElement('em');link.href=(CATEGORIES.indexOf(record.category)>=0?record.category+'.html?edit='+index:'choose.html');name.textContent=record.categoryLabel||record.name;info.textContent=record.name||'';arrow.textContent='›';arrow.setAttribute('aria-hidden','true');text.append(name,info);link.append(text,arrow);li.appendChild(link);list.appendChild(li);});};
+  records.forEach(function(record,index){var li=document.createElement('li'),link=document.createElement('a'),text=document.createElement('span'),name=document.createElement('strong'),info=document.createElement('small'),arrow=document.createElement('em');link.href=(CATEGORIES.indexOf(record.category)>=0?record.category+'.html?edit='+index:'choose.html');name.textContent=record.categoryLabel||record.name;info.textContent=[record.name||'',record.years!==''&&record.years!=null?'病程 '+record.years+' 年':''].filter(Boolean).join(' · ');arrow.textContent='›';arrow.setAttribute('aria-hidden','true');text.append(name,info);link.append(text,arrow);li.appendChild(link);list.appendChild(li);});};
   renderList();
   document.getElementById('back').addEventListener('click',function(){
    FmsCase.save('jbxx',{diseaseHistory:records,diseaseHistoryFinish:true},{merge:true,back:BACK,button:this});
@@ -22,7 +22,7 @@
  }
  if(view==='choose')return;
  var form=document.getElementById('historyForm'),category=page.dataset.category,chosen=form.elements.disease,hasChoices=!!chosen,other=document.getElementById('otherWrap'),otherInput=form.elements.otherName,error=document.getElementById('error'),submitBtn=form.querySelector('button[type="submit"]'),params=new URLSearchParams(location.search),edit=params.has('edit')?Number(params.get('edit')):-1,editing=Number.isInteger(edit)&&edit>=0&&edit<records.length&&records[edit].category===category;
- if(editing){var saved=records[edit];if(hasChoices){var radio=[].slice.call(form.querySelectorAll('input[name="disease"]')).find(function(input){return input.value===saved.name&&input.value!=='其他';});chosen.value=radio?saved.name:'其他';otherInput.value=radio?'':saved.name;}else otherInput.value=saved.name||'';}
+ if(editing){var saved=records[edit];if(hasChoices){var radio=[].slice.call(form.querySelectorAll('input[name="disease"]')).find(function(input){return input.value===saved.name&&input.value!=='其他';});chosen.value=radio?saved.name:'其他';otherInput.value=radio?'':saved.name;}else otherInput.value=saved.name||'';if(form.elements.years)form.elements.years.value=saved.years!=null?saved.years:'';}
  // “其他”选中时才显示“疾病名称”；未选中时隐藏、禁用并清空。顶层“其他”类别没有单选项，名称始终显示。
  function refresh(){if(!hasChoices)return;var show=chosen.value==='其他';other.hidden=!show;otherInput.disabled=!show;if(!show)otherInput.value='';}
  form.addEventListener('change',refresh);refresh();
@@ -32,7 +32,11 @@
   del.addEventListener('click',function(){if(!del.dataset.done){if(!confirm('确定删除这条合并疾病记录吗？'))return;records.splice(edit,1);del.dataset.done='1';submitBtn.disabled=true;}FmsCase.save('jbxx.diseaseHistory',records,{back:'index.html',button:del});});}
  form.addEventListener('submit',function(event){event.preventDefault();error.textContent='';var useOther=!hasChoices||chosen.value==='其他',name=useOther?otherInput.value.trim():chosen.value;
   if(!name){error.textContent=hasChoices&&!chosen.value?'请选择疾病':'请输入疾病名称';return;}
-  var record={category:category,categoryLabel:document.title,name:name};if(editing)records[edit]=record;else{records.push(record);edit=records.length-1;editing=true;} // 提交失败重试时不重复新增
+  // 所有合并疾病都需填写病程（年），整数 0~120
+  var yearsEl=form.elements.years,years=yearsEl?String(yearsEl.value).trim():'';
+  if(yearsEl&&(years===''||!/^\d{1,3}$/.test(years)||Number(years)>120)){error.textContent='请填写该病病程（年），0~120 的整数';yearsEl.focus();return;}
+  var record={category:category,categoryLabel:document.title,name:name};
+  if(yearsEl)record.years=Number(years);if(editing)records[edit]=record;else{records.push(record);edit=records.length-1;editing=true;} // 提交失败重试时不重复新增
   FmsCase.save('jbxx.diseaseHistory',records,{back:'index.html',button:submitBtn});
  });
 })();

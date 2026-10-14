@@ -39,7 +39,7 @@
 | `tipi.extraversion / agreeableness / conscientiousness / emotionalStability / openness` | string | TIPI 五个维度分，范围 1~7 |
 | `fs.score / fs.result / fs.finish` | | FS = WPI + SSS；`result` 按 2016 标准判定，WPI≥7 且 SSS≥5，或 WPI 4~6 且 SSS≥9 时为「是」 |
 | `fs.wpi.answers / fs.sss.answers` | object | 原始作答 |
-| `diseaseHistory[]` | object[] | 每条 `{category, categoryLabel, name}`。新版 PDF 只有疾病名称（选「其他」时 `name` 为填写的疾病名称），没有病程、诊断时间。`category` 取值：`fengshi`（风湿性疾病）及其他系统疾病 `huxi / xiaohua / xunhuan / neifenmi / shen / guke / shengzhi / xinli / tengtong` |
+| `diseaseHistory[]` | object[] | 既往疾病史（原合并疾病），每条 `{category, categoryLabel, name, years}`。`years` 为该病病程（年，0~120 整数，**必填，新增提交**）；选「其他」时 `name` 为填写的疾病名称。风湿性疾病选项：类风湿性关节炎、干燥综合征、强直性脊柱炎、系统性红斑狼疮、痛风、骨关节炎、其他 |
 | `concomitantMedication[]` | object[] | 每条只有 `{name}`（药物名称），与新版 PDF 一致 |
 | `treatmentHistory.hasXiyao / hasZhongyaoTangji / hasFeiYaowuLiaofa / hasZhongchengyao` | string | 各类治疗史的「无/有」 |
 | `treatmentHistory.xiyao[]` | object[] | 口服西药（原「西药」）：`{category, name, medication, frequency, dose, unit, startDate, ongoing, endDate, reason}`。与本次治疗方案西药相同：`category` 为药物分类（改善纤维肌痛综合征病情药物 / 改善焦虑、抑郁药物 / 助眠药 / 非甾体抗炎类药物 / 肌松药 / 其他），药品、剂量（mg，氟哌噻吨美利曲片为片）、频次按目录选择；非甾体抗炎类药物只有药名，`dose / unit / frequency` 为空串；「其他」时 `name` 为手填药品名称、`dose` 为手填用量、`unit` 为 mg。`medication` 同 `name`。旧记录（无 `category`，用量单位为片/粒）原样保留 |
@@ -139,7 +139,7 @@
 |---|---|
 | `jbxx.work.answers.q5Score / q6Score`、`jbxx.work.presenteeism / workImpairment / activityImpairment` | WPAI 第5、6题按 PDF 改为两个选项，没有 0~10 分值，无法计算这三项 |
 | `jbxx.bodyComposition.bmi, waist, hip, ratio1, ratio2` | 人体成分页面只填身高、体重、体脂百分比、体脂肪、骨骼肌量、骨骼肌指数（SMI）、腰臀比和上传检验 |
-| `jbxx.diseaseHistory[].years / months / diagnosisDate` | 新版 PDF 既往疾病史只有疾病名称，不再有病程、诊断时间 |
+| `jbxx.diseaseHistory[].months / diagnosisDate` | 既往疾病史只填疾病名称和病程（年），不再有月数、诊断时间 |
 | `jbxx.concomitantMedication[].dose / unit / frequency / startDate / ongoing / endDate / reason` | 新版 PDF 合并药物只有药物名称 |
 | `treatmentHistory.xiyao[].spec / route`、`zhongchengyao[].ongoing / reason` | 新版 PDF 西药没有规格、给药方式；中成药只有开始时间、结束时间 |
 | `bsbq.menstrualItems` | 月经情况改为分期（`menstrualStage`）+ 育龄期子问题，不再提交 |

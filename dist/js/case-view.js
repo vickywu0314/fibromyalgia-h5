@@ -59,11 +59,8 @@ if (isBaseline) {
     ['电子签字', j.signature ? '已签字' : '']
   ]);
   const fs = j.fs || {}, w = j.work || {}, b = j.bodyComposition || {}, t = j.tipi || {};
-  sub(s, '评估与病史');
+  sub(s, '一般情况与病史');
   n += rows(s, [
-    ['CSI-9', scoreText(j.csi)],
-    ['压痛点 TPC', scoreText(j.tpc)],
-    ['FS', fs.finish ? scoreText(fs) + '（WPI ' + (fs.wpi?.score ?? '') + '，SSS ' + (fs.sss?.score ?? '') + '）' : [fs.wpi?.finish ? 'WPI ' + fs.wpi.score : '', fs.sss?.finish ? 'SSS ' + fs.sss.score : ''].filter(has).join('，')],
     ['间接成本评估', w.finish ? ['缺勤率 ' + withUnit(w.absenteeism, '%'), '第5题 ' + ((w.answers || {}).q5 || ''), '第6题 ' + ((w.answers || {}).q6 || '')].filter(x => !/ $/.test(x)).join('，') || '已完成' : ''],
     ['TIPI-C', t.finish ? ['外向性 ' + (t.extraversion ?? ''), '宜人性 ' + (t.agreeableness ?? ''), '尽责性 ' + (t.conscientiousness ?? ''), '情绪稳定性 ' + (t.emotionalStability ?? ''), '开放性 ' + (t.openness ?? '')].join('，') : ''],
     ['SFFQ', j.sffq?.finish ? '已完成' : '']
@@ -128,12 +125,18 @@ if (isBaseline) {
 {
   const s = section('病情评估'), p = c.bqpg || {};
   const names = { vas: '疼痛评估 VAS', fiqr: '整体病情评估 FIQR', pcs: '疼痛灾难化 PCS', mfi20: '疲劳评估 MFI-20', psqi: '睡眠评估 PSQI', had: '焦虑抑郁 HAD', sf12: '生活质量 SF-12', painDetect: '神经病理性疼痛 painDETECT', cfq: '认知评估 CFQ' };
-  const n = rows(s, FmsCase.BQPG_SCALES.map(k => {
+  // CSI / TPC / FS 入口在病情评估（数据在 jbxx 下），排在 9 个量表之前
+  const fs = j.fs || {};
+  const n = rows(s, [
+    ['CSI-9', scoreText(j.csi)],
+    ['压痛点 TPC', scoreText(j.tpc)],
+    ['FS', fs.finish ? scoreText(fs) + '（WPI ' + (fs.wpi?.score ?? '') + '，SSS ' + (fs.sss?.score ?? '') + '）' : [fs.wpi?.finish ? 'WPI ' + fs.wpi.score : '', fs.sss?.finish ? 'SSS ' + fs.sss.score : ''].filter(has).join('，')],
+  ].concat(FmsCase.BQPG_SCALES.map(k => {
     const v = p[k];
     let text = scoreText(v) || (v && v.answered > 0 ? '已填 ' + v.answered + '/' + v.total + '（未完成）' : '');
     if (k === 'had' && v && v.finish) text += '（焦虑 ' + (v.anxietyScore ?? '') + '，抑郁 ' + (v.depressionScore ?? '') + '）';
     return [names[k], text];
-  }));
+  })));
   if (!n) empty(s);
 }
 

@@ -66,21 +66,21 @@ modules.forEach(m => {
   if (saved && !finished) badge(state, '待提交', '已保存，有改动尚未提交，点击完成录入时会自动提交', 'sync');
   else if (!saved && startedPart(part)) badge(state, '填写中', '已填写部分内容，尚未保存');
 });
-// 病情评估：9 个量表边填边暂存在草稿里；未全部完成（或有未提交改动）时显示已完成量表数 x/9
+// 病情评估：CSI / TPC / FS（数据在 jbxx 下）+ 9 个量表，共 12 项；未全部完成（或有未提交改动）时显示已完成数 x/12
 {
   const m = modules.find(x => x.dataset.part === 'bqpg');
   const p = draft.bqpg || {};
-  const scales = FmsCase.BQPG_SCALES;
-  const doneN = scales.filter(k => p[k] && p[k].finish).length;
-  const started = scales.some(k => p[k] && (p[k].finish || Number(p[k].answered) > 0));
+  const scales = FmsCase.bqpgItems(draft);
+  const doneN = scales.filter(it => it.data && it.data.finish).length;
+  const started = scales.some(it => it.data && (it.data.finish || Number(it.data.answered) > 0 || (it.part === 'jbxx' && FmsCase.hasData(it.data))));
   const state = m && m.querySelector('.state');
   if (state && started && !state.classList.contains('done') && !(p.finish && !FmsCase.isSynced('bqpg'))) {
     state.textContent = doneN + '/' + scales.length;
     state.classList.add('partial');
-    state.title = doneN === scales.length ? '9 个量表已填完，有改动尚未提交' : '已完成 ' + doneN + ' 个量表，共 ' + scales.length + ' 个';
+    state.title = doneN === scales.length ? scales.length + ' 项已填完，有改动尚未提交' : '已完成 ' + doneN + ' 项，共 ' + scales.length + ' 项';
     state.style.cssText = 'width:auto;min-width:28px;padding:0 4px;font-size:11px;background:#fff4e5;color:#b26a00;font-weight:600';
     const desc = m.querySelector('.mdesc');
-    if (desc) desc.textContent = '已完成 ' + doneN + '/' + scales.length + ' 个量表';
+    if (desc) desc.textContent = '已完成 ' + doneN + '/' + scales.length + ' 项';
   }
 }
 // 从模块页返回时若命中浏览器页面缓存（bfcache），重新加载以刷新各模块完成状态

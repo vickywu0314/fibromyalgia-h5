@@ -43,7 +43,7 @@
 | `concomitantMedication[]` | object[] | 每条只有 `{name}`（药物名称），与新版 PDF 一致 |
 | `treatmentHistory.hasXiyao / hasZhongyaoTangji / hasFeiYaowuLiaofa / hasZhongchengyao` | string | 各类治疗史的「无/有」 |
 | `treatmentHistory.xiyao[]` | object[] | 口服西药（原「西药」）：`{category, name, medication, frequency, dose, unit, startDate, ongoing, endDate, reason}`。与本次治疗方案西药相同：`category` 为药物分类（改善纤维肌痛综合征病情药物 / 改善焦虑、抑郁药物 / 助眠药 / 非甾体抗炎类药物 / 肌松药 / 其他），药品、剂量（mg，氟哌噻吨美利曲片为片）、频次按目录选择；非甾体抗炎类药物只有药名，`dose / unit / frequency` 为空串；「其他」时 `name` 为手填药品名称、`dose` 为手填用量、`unit` 为 mg。`medication` 同 `name`。旧记录（无 `category`，用量单位为片/粒）原样保留 |
-| `treatmentHistory.zhongchengyao[]` | object[] | `{name, frequency, dose, unit, startDate, endDate}`。频次：日1次/日2次/日3次；用量 `dose`：`"1"`~`"5"`，`unit` 固定「片/粒」；`startDate / endDate` 为 PDF 的「开始时间 / 结束时间」，没有是否沿用至今、停用原因 |
+| `treatmentHistory.zhongchengyao[]` | object[] | 口服中成药（原「中成药」）：`{name, frequency, dose, unit, startDate, endDate}`。频次：日1次/日2次/日3次；用量 `dose`：`"1"`~`"5"`，`unit` 固定「片/粒」；`startDate / endDate` 为 PDF 的「开始时间 / 结束时间」，没有是否沿用至今、停用原因。`name` 可从药品库（RA 中成药 15 种）中选择，也可手动输入库外的中成药名称 |
 | `treatmentHistory.feiYaowuLiaofa[]` | object[] | `{name, duration, durationUnit, frequency, startDate, ongoing, endDate, reason}`。`duration` 为单次时长 `"5"`~`"60"`（步长 5），`durationUnit` 固定「分钟」；频次 14 档（日1次…每月3次）；选「其他」时 `name` 为填写的名称（具体治疗） |
 
 ### bsbq 病史病情

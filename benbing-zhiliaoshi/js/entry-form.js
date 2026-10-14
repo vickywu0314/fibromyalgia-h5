@@ -4,7 +4,7 @@
               「其他」手填药品名称 + 用量(mg) + 频次；非甾体抗炎药只选药品；开始日期；是否沿用至今：是 / 否 → [结束日期, 停用原因]
      中药汤剂：开始日期；是否沿用至今：是 / 否 → [结束日期, 停用原因]
      非药物疗法：名称（其他→名称/具体治疗）→ 单次时长(分钟)、频次；开始日期；是否沿用至今 → [结束日期, 停用原因]
-     中成药：药品 → 频次、用量(片/粒)、开始时间、结束时间（无“是否沿用至今/停用原因”）
+     口服中成药：药品（可从药品库搜索选择，也可手动输入名称）→ 频次(日1/2/3次)、用量(1~5 片/粒)、开始时间、结束时间（无“是否沿用至今/停用原因”）
    数据写入病例草稿 jbxx.treatmentHistory.<类别数组>，“无/有”写 has<类别>（见 store.js）。
    记录字段：name, dose, unit(固定“片/粒”), frequency, startDate, ongoing, endDate, reason, duration(非药物单次时长), durationUnit；
    西药同时写 medication（=name，对应结构体 medication）。
@@ -93,6 +93,10 @@
   function findItem(name) {
     if (!list) return null;
     for (var i = 0; i < list.length; i++) if (list[i].name === name) return list[i];
+    // 口服中成药可手动输入药库以外的名称：用量、频次与药库相同
+    if (kind === 'zhongchengyao' && name && String(name).trim()) {
+      return { name: String(name).trim(), doses: list[0].doses, unit: list[0].unit, freqs: list[0].freqs };
+    }
     return null;
   }
 
@@ -103,8 +107,10 @@
 
   /* 选中某个药品后，按字典生成该药品的 频次 / 用量 选项（PDF 各药品相同） */
   function buildDrug(item) {
-    if (builtFor === item.name) return;
-    builtFor = item.name;
+    // 中成药所有药品选项相同，只生成一次（避免输入名称时清掉已选的频次 / 用量）
+    var key = kind === 'zhongchengyao' ? 'zcy' : item.name;
+    if (builtFor === key) return;
+    builtFor = key;
     setOptions(els.frequency, item.freqs, '请选择频次');
     setOptions(els.dose, item.doses, '请选择用量');
     text('doseUnit', item.unit);
@@ -117,7 +123,7 @@
     } else if (list) {
       var item = findItem(els[nameField].value);
       if (item) buildDrug(item);
-      else builtFor = null;
+      else if (kind !== 'zhongchengyao') builtFor = null;
       toggle(itemDetail, !!item);
     } else if (kind === 'fei-yaowu-liaofa') {
       toggle(itemDetail, !!els.name.value);
@@ -128,7 +134,39 @@
 
 
   /* 初始化静态选项 */
-  if (list) setOptions(els[nameField], list.map(function (x) { return x.name; }), '请选择中成药');
+  if (list && els[nameField].tagName === 'SELECT') setOptions(els[nameField], list.map(function (x) { return x.name; }), '请选择中成药');
+  // 口服中成药：输入时在下方列出药品库中匹配的药品，可点选；不在列表中的直接保留输入的名称
+  var suggest = document.getElementById('zcyList');
+  if (suggest && list) {
+    var input = els[nameField];
+    var renderSuggest = function () {
+      var q = input.value.trim();
+      var hits = list.map(function (x) { return x.name; }).filter(function (n) { return !q || n.indexOf(q) !== -1; });
+      suggest.innerHTML = '';
+      hits.forEach(function (n) {
+        var li = document.createElement('li');
+        li.setAttribute('role', 'option');
+        li.dataset.value = n;
+        if (q) { var i = n.indexOf(q); li.innerHTML = ''; li.append(n.slice(0, i)); var m = document.createElement('mark'); m.textContent = q; li.append(m, n.slice(i + q.length)); }
+        else li.textContent = n;
+        if (n === q) li.className = 'on';
+        suggest.appendChild(li);
+      });
+      suggest.hidden = !hits.length || document.activeElement !== input;
+    };
+    input.addEventListener('focus', renderSuggest);
+    input.addEventListener('input', function () { renderSuggest(); refresh(); });
+    suggest.addEventListener('pointerdown', function (e) { e.preventDefault(); }); // 点选时不让输入框先失焦
+    suggest.addEventListener('click', function (e) {
+      var li = e.target.closest('li');
+      if (!li) return;
+      input.value = li.dataset.value;
+      suggest.hidden = true;
+      input.blur();
+      refresh();
+    });
+    input.addEventListener('blur', function () { setTimeout(function () { suggest.hidden = true; input.value = input.value.trim(); refresh(); }, 120); });
+  }
   if (xy) setOptions(els.category, Object.keys(WC), '请选择药物分类');
   if (kind === 'fei-yaowu-liaofa') {
     setOptions(els.name, D.FEI_YAOWU.names, '请选择非药物名称');
@@ -240,8 +278,8 @@
     } else if (kind === 'zhongyao-tangji') {
       data.name = edit >= 0 && items[edit].name ? items[edit].name : '汤剂' + (items.length + 1);
     } else {
-      var nm = els[nameField].value;
-      if (!nm) { message.textContent = kind === 'fei-yaowu-liaofa' ? '请选择非药物名称' : '请选择药品'; return; }
+      var nm = String(els[nameField].value || '').trim();
+      if (!nm) { message.textContent = kind === 'fei-yaowu-liaofa' ? '请选择非药物名称' : kind === 'zhongchengyao' ? '请选择或输入中成药名称' : '请选择药品'; return; }
       if (kind === 'fei-yaowu-liaofa') {
         if (nm === '其他') {
           nm = els.customName.value.trim();

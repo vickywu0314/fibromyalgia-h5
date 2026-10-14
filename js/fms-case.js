@@ -54,11 +54,12 @@
   }
   function isSynced(part) { return unsynced().indexOf(part) === -1; }
 
-  // 查看 / 编辑模式：从随访列表打开已有记录时为「查看」，模块页只读；点「编辑」后只放开当前模块
+  // 打开已有记录（BASE_KEY='view'）仍记录下来供患者资料页显示标题；
+  // 按需求模块页不再有只读「查看模式」：进入即可编辑，已有内容回填，isViewMode() 恒为 false
   var MODE_KEY = 'fms_case_mode';      // 'view' | 'edit'
   var BASE_KEY = 'fms_case_base';      // 'view'：本次是查看已有记录
   function ss(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); if (v === null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch (e) {} return null; }
-  function isViewMode() { return ss(MODE_KEY) === 'view'; }
+  function isViewMode() { return false; }
   function isViewingRecord() { return ss(BASE_KEY) === 'view'; }
   function setMode(m) { ss(MODE_KEY, m || null); }
 
@@ -339,46 +340,68 @@
   }
 
 
-  // 模块页在查看模式下只读：锁定输入、隐藏保存/添加/删除，底部给「返回」「编辑」
-  var NON_MODULE = /(patient-(list|add|detail)|follow-up-list|case-view|research-platform)\.html$/;
-  // 页面内容区宽度（扣除左右内边距），手机上即屏宽减边距
-  function contentWidth() {
-    var m = document.querySelector('main .page, main.page, .page, main') || document.body;
-    var cs = getComputedStyle(m);
-    var w = m.getBoundingClientRect().width - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
-    return Math.max(200, Math.min(w || window.innerWidth, window.innerWidth - 32));
+  // 模块页顶部返回栏：‹ + 页面标题，返回「上一级」页面（按页面层级，不用浏览器历史——
+  // 保存并返回会新增历史记录，用 history.back() 会退回到刚保存的表单）。
+  var NON_MODULE = /(patient-(list|add|detail)|follow-up-list|case-view|research-platform|index)\.html$|\/$/;
+  var DETAIL = '../patient-detail.html', BASIC = '../fibromyalgia-basic-info/basic-info.html';
+  var PARENT = {
+    'fibromyalgia-basic-info/basic-info.html': DETAIL,
+    'fibromyalgia-basic-info/csi.html': 'basic-info.html', 'fibromyalgia-basic-info/tpc.html': 'basic-info.html',
+    'fibromyalgia-basic-info/fs.html': 'basic-info.html', 'fibromyalgia-basic-info/work.html': 'basic-info.html',
+    'fibromyalgia-basic-info/body-composition.html': 'basic-info.html', 'fibromyalgia-basic-info/tipi.html': 'basic-info.html',
+    'fibromyalgia-basic-info/sffq.html': 'basic-info.html',
+    'fibromyalgia-basic-info/wpi.html': 'fs.html', 'fibromyalgia-basic-info/sss.html': 'fs.html',
+    'benbing-zhiliaoshi/benbing-zhiliaoshi.html': BASIC,
+    'benbing-zhiliaoshi/xiyao.html': 'benbing-zhiliaoshi.html', 'benbing-zhiliaoshi/zhongchengyao.html': 'benbing-zhiliaoshi.html',
+    'benbing-zhiliaoshi/zhongyao-tangji.html': 'benbing-zhiliaoshi.html', 'benbing-zhiliaoshi/fei-yaowu-liaofa.html': 'benbing-zhiliaoshi.html',
+    'benbing-zhiliaoshi/kaiyao-huizong.html': 'benbing-zhiliaoshi.html',
+    'benbing-zhiliaoshi/add-xiyao.html': 'xiyao.html', 'benbing-zhiliaoshi/add-zhongchengyao.html': 'zhongchengyao.html',
+    'benbing-zhiliaoshi/add-zhongyao-tangji.html': 'zhongyao-tangji.html', 'benbing-zhiliaoshi/add-fei-yaowu-liaofa.html': 'fei-yaowu-liaofa.html',
+    'jiwang-bingshi/index.html': BASIC, 'jiwang-bingshi/choose.html': 'index.html',
+    'hebing-yaowu/index.html': BASIC, 'hebing-yaowu/add.html': 'index.html',
+    'fibromyalgia-condition-history/condition-history.html': DETAIL,
+    'fibromyalgia-syndrome-differentiation/syndrome-differentiation.html': DETAIL,
+    'fibromyalgia-auxiliary-exam/auxiliary-exam.html': DETAIL,
+    'fibromyalgia-adverse-reaction/adverse-reaction.html': DETAIL,
+    'bingqing-pinggu/index.html': DETAIL,
+    'zhiliao-fangan/index.html': DETAIL,
+    'zhiliao-fangan/xiyao.html': 'index.html', 'zhiliao-fangan/zhongchengyao.html': 'index.html',
+    'zhiliao-fangan/fei-yaowu.html': 'index.html', 'zhiliao-fangan/zhongyao-yinpian.html': 'index.html',
+    'zhiliao-fangan/huizong.html': 'index.html',
+    'zhiliao-fangan/add-xiyao.html': 'xiyao.html', 'zhiliao-fangan/add-zhongchengyao.html': 'zhongchengyao.html',
+    'zhiliao-fangan/add-fei-yaowu.html': 'fei-yaowu.html', 'zhiliao-fangan/add-zhongyao-yinpian.html': 'zhongyao-yinpian.html'
+  };
+  // 目录下其余页面：病情评估各量表 → 病情评估首页；既往疾病各类别 → 选择疾病类别
+  var DIR_DEFAULT = { 'bingqing-pinggu': 'index.html', 'jiwang-bingshi': 'choose.html' };
+  function pageKey() {
+    var parts = decodeURIComponent(location.pathname).split('/').filter(Boolean);
+    return parts.slice(-2).join('/');
   }
-  function applyReadonly() {
-    if (!isViewMode() || NON_MODULE.test(location.pathname) || document.getElementById('fmsViewBar')) return;
-    var root = document.querySelector('main') || document.body;
-    root.querySelectorAll('input, select, textarea').forEach(function (el) { el.disabled = true; });
-    root.querySelectorAll('button, a, label.upload-box, .photo-field label').forEach(function (el) {
-      var t = (el.textContent || '').replace(/\s+/g, '');
-      if (el.type === 'submit' || /^(保存|添加|删除|提交|拍照|从相册|上传)/.test(t) || /保存/.test(t) || el.classList.contains('visit-del')) el.style.display = 'none';
-    });
+  function parentUrl() {
+    var key = pageKey();
+    if (PARENT[key]) return PARENT[key];
+    var dir = key.split('/')[0];
+    return DIR_DEFAULT[dir] || DETAIL;
+  }
+  function mountTopBar() {
+    var key = pageKey();
+    if (document.getElementById('fmsTopBar') || !/\//.test(key)) return; // 根目录页（列表、患者资料等）不加
+    if (NON_MODULE.test(location.pathname) && !PARENT[key]) return;
     var bar = document.createElement('div');
-    bar.id = 'fmsViewBar';
-    bar.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9998;box-sizing:border-box;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -1px 0 #eceef1';
-    var back = document.createElement('button');
-    back.type = 'button'; back.textContent = '返回';
-    back.style.cssText = 'flex:1;min-width:0;box-sizing:border-box;width:auto;margin:0;min-height:44px;border:1px solid #d4d7dc;border-radius:6px;background:#fff;color:#333;font-size:15px';
-    back.onclick = function () { if (history.length > 1) history.back(); else location.href = '/patient-detail.html'; };
-    var edit = document.createElement('button');
-    edit.type = 'button'; edit.textContent = '编辑';
-    edit.style.cssText = 'flex:2;min-width:0;box-sizing:border-box;width:auto;margin:0;min-height:44px;border:0;border-radius:6px;background:#168bdd;color:#fff;font-size:15px';
-    edit.onclick = function () { setMode('edit'); location.reload(); };
-    // 按钮放在与页面内容同宽的容器里，宽屏下不会拉满整屏
-    var inner = document.createElement('div');
-    inner.style.cssText = 'display:flex;gap:10px;width:100%;max-width:' + contentWidth() + 'px;margin:0 auto;box-sizing:border-box';
-    inner.appendChild(back); inner.appendChild(edit);
-    bar.appendChild(inner);
-    document.body.appendChild(bar);
-    window.addEventListener('resize', function () { inner.style.maxWidth = contentWidth() + 'px'; });
-    document.body.style.paddingBottom = '72px';
+    bar.id = 'fmsTopBar';
+    bar.style.cssText = 'position:sticky;top:0;z-index:9998;display:flex;align-items:center;height:44px;padding:0 44px;margin:0 0 8px;background:#fff;border-bottom:1px solid #eceef1;box-sizing:border-box;padding-top:env(safe-area-inset-top)';
+    var back = document.createElement('a');
+    back.href = parentUrl(); back.setAttribute('aria-label', '返回上一级');
+    back.textContent = '‹';
+    back.style.cssText = 'position:absolute;left:4px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;width:40px;height:40px;font-size:30px;line-height:1;color:#222;text-decoration:none';
+    var title = document.createElement('div');
+    title.textContent = document.title;
+    title.style.cssText = 'flex:1;min-width:0;text-align:center;font-size:17px;font-weight:500;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
+    bar.appendChild(back); bar.appendChild(title);
+    document.body.insertBefore(bar, document.body.firstChild);
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(applyReadonly, 0); });
-  else setTimeout(applyReadonly, 0);
-  window.addEventListener('pageshow', function (e) { if (e.persisted && isViewMode()) setTimeout(applyReadonly, 0); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountTopBar);
+  else mountTopBar();
 
   window.FmsCase = {
     KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,

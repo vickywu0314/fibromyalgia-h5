@@ -75,6 +75,7 @@
 ### fzjc 辅助检查
 | 字段 | 类型 | 说明 |
 |---|---|---|
+| `cbc_plt_value / cbc_plt_status` | string | **新增**：血常规「血小板」（×10^9/L），与白细胞、红细胞、血红蛋白相同：`_value` 为数值，`_status` 为 已查/未查（血常规整组「未查」时为未查、值为空） |
 | `stool_appearance` | string | 便外观性，单选：黏液便、脓血便、黑便、鲜红血便、陶土样便、正常、未查 |
 | `stool_wbc_status / stool_rbc_status` | string | 便常规白细胞、红细胞：正常 / 数值 / 未查 |
 | `stool_wbc_value / stool_rbc_value` | string | 选「数值」时填写（/ul），否则为空 |

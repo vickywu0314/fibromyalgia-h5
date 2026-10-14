@@ -5,7 +5,7 @@
   // 血常规、尿常规：整组「未查」开关（写 <key>_status = 未查/已查）
   const NOT_DONE=["cbc_notDone","urine_notDone"];
   const VALUE_FIELDS=[
-    ["cbc_wbc","cbc_notDone"],["cbc_rbc","cbc_notDone"],["cbc_hgb","cbc_notDone"],
+    ["cbc_wbc","cbc_notDone"],["cbc_rbc","cbc_notDone"],["cbc_hgb","cbc_notDone"],["cbc_plt","cbc_notDone"],
     ["urine_wbc","urine_notDone"],["urine_rbc","urine_notDone"],["urine_protein","urine_notDone"],["urine_occult","urine_notDone"]
   ];
   // 生化肝肾功能：<key>_status 为 未查/正常/异常，异常时填 <key>_value

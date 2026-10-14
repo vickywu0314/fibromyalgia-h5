@@ -108,7 +108,7 @@ if (isBaseline) {
   const lipid = (label, key, unit) => [label, f[key + '_status'] === '未查' ? '未查' : withUnit(f[key], ' ' + unit)];
   let n = 0;
   const groups = [
-    ['血常规', [lab('白细胞', 'cbc_wbc', '×10^9/L'), lab('红细胞', 'cbc_rbc', '×10^12/L'), lab('血红蛋白', 'cbc_hgb', 'g/L')]],
+    ['血常规', [lab('白细胞', 'cbc_wbc', '×10^9/L'), lab('红细胞', 'cbc_rbc', '×10^12/L'), lab('血红蛋白', 'cbc_hgb', 'g/L'), lab('血小板', 'cbc_plt', '×10^9/L')]],
     ['尿常规', [lab('白细胞', 'urine_wbc', 'leu/uL'), lab('红细胞', 'urine_rbc', '/uL'), lab('尿蛋白', 'urine_protein', 'g/L'), lab('尿潜血', 'urine_occult', 'ery/uL')]],
     ['便常规+便潜血', [['便外观性', f.stool_appearance], stoolCell('白细胞', 'stool_wbc'), stoolCell('红细胞', 'stool_rbc'), ['便潜血', f.stool_occult]]],
     ['生化', [bio('ALT', 'alt', 'U/L'), bio('AST', 'ast', 'U/L'), bio('BUN', 'bun', 'mmol/L'), bio('Cr', 'cr', 'umol/L')]],

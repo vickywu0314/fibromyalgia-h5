@@ -42,7 +42,7 @@
   document.getElementById("backBtn").addEventListener("click", function(){
     const fs = FmsCase.get("jbxx.fs") || {};
     FmsCase.save("jbxx.fs", summary(fs.wpi, fs.sss), {
-      merge:true, button:this, back:"../bingqing-pinggu/index.html"
+      merge:true, button:this, back:"basic-info.html"
     });
   });
 })();

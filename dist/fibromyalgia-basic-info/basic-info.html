@@ -189,12 +189,23 @@
             <h2 id="submoduleTitle">一般情况与病史</h2>
             <p>请逐项完善患者相关信息</p>
           </div>
-          <div class="submodule-count">已完成 <strong id="submoduleCount">0/4</strong></div>
+          <div class="submodule-count">已完成 <strong id="submoduleCount">0/8</strong></div>
         </div>
 
-        <!-- CSI、TPC、FS 入口已移到病情评估；间接成本评估（工作生产力及活动受损问卷）按需求暂时去掉入口，页面与代码保留（work.html） -->
         <h3 class="submodule-group">一般情况</h3>
         <div class="submodule-list">
+          <button type="button" class="submodule-row menu-row" data-page="csi" data-key="csi">
+            <span class="submodule-copy"><strong>中枢敏化程度：中枢敏化指数（CSI-9）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="tpc" data-key="tpc">
+            <span class="submodule-copy"><strong>压痛点（TPC）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="fs" data-key="fs">
+            <span class="submodule-copy"><strong>纤维肌痛症状量表（FS）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
+          <button type="button" class="submodule-row menu-row" data-page="work" data-key="work">
+            <span class="submodule-copy"><strong>间接成本评估：工作生产力及活动受损问卷</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          </button>
           <button type="button" class="submodule-row menu-row" data-page="body" data-key="bodyComposition" data-optional="1">
             <span class="submodule-copy"><strong>人体成分分析<em class="optional-tag">选填</em></strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>

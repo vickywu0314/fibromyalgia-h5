@@ -46,6 +46,6 @@
       score: scoreInput.value,
       result: over18Input.value,
       answers: answers()
-    }, {back: "../bingqing-pinggu/index.html", button: form.querySelector('button[type="submit"]')});
+    }, {back: "basic-info.html", button: form.querySelector('button[type="submit"]')});
   });
 })();

@@ -49,6 +49,6 @@
       score: String(score),
       result: score >= 11 ? "是" : "否",
       answers
-    }, { back: "../bingqing-pinggu/index.html", button: document.getElementById("saveBtn") });
+    }, { back: "basic-info.html", button: document.getElementById("saveBtn") });
   });
 })();

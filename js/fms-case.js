@@ -7,18 +7,8 @@
   var API = '/api/fms/patient/case/add';
   var PARTS = ['jbxx', 'bsbq', 'zhpd', 'fzjc', 'bqpg', 'zlfa', 'blsj'];
   var PART_NAMES = { jbxx: '基本信息', bsbq: '病史病情', zhpd: '证候判断', fzjc: '辅助检查', bqpg: '病情评估', zlfa: '本次治疗方案', blsj: '不良反应' };
-  // 病情评估 9 个量表（数据在 bqpg 下）
+  // 病情评估 9 个量表，全部完成时 bqpg.finish = true
   var BQPG_SCALES = ['vas', 'fiqr', 'pcs', 'mfi20', 'psqi', 'had', 'sf12', 'painDetect', 'cfq'];
-  // 按需求放到病情评估前 3 位的问卷：入口在病情评估，数据仍存在 jbxx 下（jbxx.csi / tpc / fs，后端结构不变）
-  var BQPG_JBXX = ['csi', 'tpc', 'fs'];
-  // 病情评估全部 12 项：前 3 项 + 9 个量表；全部完成时 bqpg.finish = true
-  function bqpgItems(c) {
-    c = c || load();
-    var j = c.jbxx || {}, b = c.bqpg || {};
-    return BQPG_JBXX.map(function (k) { return { key: k, part: 'jbxx', data: j[k] }; })
-      .concat(BQPG_SCALES.map(function (k) { return { key: k, part: 'bqpg', data: b[k] }; }));
-  }
-  function bqpgDone(c) { return bqpgItems(c).every(function (it) { return !!(it.data && it.data.finish); }); }
 
   function today() {
     var d = new Date();
@@ -135,13 +125,8 @@
     } else {
       obj[last] = value;
     }
-    // 病情评估完成状态：9 个量表 + jbxx 下的 CSI / TPC / FS。保存 CSI 等（jbxx）导致它变化时，
-    // 病情评估也标记为待提交，随本次保存一并提交（save 会补交其他有改动的模块）
-    if (keys[0] === 'bqpg' || keys[0] === 'jbxx') {
-      if (!c.bqpg || typeof c.bqpg !== 'object') c.bqpg = { finish: false };
-      var before = !!c.bqpg.finish;
-      c.bqpg.finish = bqpgDone(c);
-      if (keys[0] === 'jbxx' && before !== c.bqpg.finish && hasData(c.bqpg)) markUnsynced('bqpg', true);
+    if (keys[0] === 'bqpg') {
+      c.bqpg.finish = BQPG_SCALES.every(function (s) { return c.bqpg[s] && c.bqpg[s].finish; });
     }
     if (keys[0] === 'jbxx' && keys.length === 1 && c.jbxx.visitDate) c.visitDate = c.jbxx.visitDate;
     write(c);
@@ -394,8 +379,8 @@
   var DETAIL = '../patient-detail.html', BASIC = '../fibromyalgia-basic-info/basic-info.html';
   var PARENT = {
     'fibromyalgia-basic-info/basic-info.html': DETAIL,
-    'fibromyalgia-basic-info/csi.html': '../bingqing-pinggu/index.html', 'fibromyalgia-basic-info/tpc.html': '../bingqing-pinggu/index.html',
-    'fibromyalgia-basic-info/fs.html': '../bingqing-pinggu/index.html', 'fibromyalgia-basic-info/work.html': 'basic-info.html',
+    'fibromyalgia-basic-info/csi.html': 'basic-info.html', 'fibromyalgia-basic-info/tpc.html': 'basic-info.html',
+    'fibromyalgia-basic-info/fs.html': 'basic-info.html', 'fibromyalgia-basic-info/work.html': 'basic-info.html',
     'fibromyalgia-basic-info/body-composition.html': 'basic-info.html', 'fibromyalgia-basic-info/tipi.html': 'basic-info.html',
     'fibromyalgia-basic-info/sffq.html': 'basic-info.html',
     'fibromyalgia-basic-info/wpi.html': 'fs.html', 'fibromyalgia-basic-info/sss.html': 'fs.html',
@@ -463,7 +448,7 @@
   window.addEventListener('pageshow', function (e) { if (e.persisted) renderOverall(); });
 
   window.FmsCase = {
-    KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES, BQPG_JBXX: BQPG_JBXX, bqpgItems: bqpgItems,
+    KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,
     load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
     startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios,

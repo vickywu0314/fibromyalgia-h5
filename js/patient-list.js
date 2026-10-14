@@ -11,8 +11,8 @@ function showState(message) {
   empty.textContent = message;
   empty.style.display = 'block';
 }
-// 新增时间：后端字段名不固定，按常见写法依次取；兼容时间戳（秒/毫秒）和 "yyyy-MM-dd HH:mm:ss"
-const DATE_KEYS = ['lastRecordTime', 'lastAddTime', 'lastFollowTime', 'lastVisitDate', 'lastVisitTime', 'visitDate',
+// 上次随访日期：列表接口返回 lastFollowUpDate；其他写法作兼容，按顺序取；兼容时间戳（秒/毫秒）和 "yyyy-MM-dd HH:mm:ss"
+const DATE_KEYS = ['lastFollowUpDate', 'lastFollowupDate', 'lastRecordTime', 'lastAddTime', 'lastFollowTime', 'lastVisitDate', 'lastVisitTime', 'visitDate',
   'updateTime', 'updatedAt', 'update_time', 'gmtModified', 'createTime', 'createdAt', 'create_time', 'gmtCreate', 'addTime', 'inputTime'];
 function formatDate(v) {
   if (v == null || v === '') return '';
@@ -26,6 +26,10 @@ function formatDate(v) {
 function recordDate(patient) {
   for (const k of DATE_KEYS) { const d = formatDate(patient[k]); if (d) return d; }
   return '';
+}
+function halfYearAgo() {
+  const d = new Date(); d.setMonth(d.getMonth() - 6);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
 let loggedKeys = false;
 async function loadPatients() {
@@ -48,13 +52,15 @@ async function loadPatients() {
     for (const patient of rows) {
       const button = document.createElement('button');
       button.className = 'card patient-row';
-      button.innerHTML = '<div class="rowtop"><div class="name"></div><div class="chev">›</div></div><div class="meta"><span></span><span></span></div>';
+      button.innerHTML = '<div class="rowtop"><div class="name"></div><span class="due" hidden>近期需随访</span><div class="chev">›</div></div><div class="meta"><span></span><span></span></div>';
       const name = patient.name || patient.patientName || '未命名患者';
       button.querySelector('.name').textContent = name;
       const date = recordDate(patient);
-      button.querySelector('.meta span').textContent = date ? '上次新增记录时间：' + date : '暂无新增记录时间';
-      const count = patient.recordCount ?? patient.followCount ?? patient.followUpCount ?? patient.count;
-      button.querySelector('.meta span:last-child').textContent = count == null ? '' : `已添加${count}条`;
+      button.querySelector('.meta span').textContent = date ? '上次随访日期：' + date : '暂无随访记录';
+      const count = patient.followUpCount ?? patient.recordCount ?? patient.followCount ?? patient.count;
+      button.querySelector('.meta span:last-child').textContent = count == null ? '' : `已随访${count}次`;
+      // 近半年内未随访（上次随访日期早于 6 个月前）时提示「近期需随访」
+      button.querySelector('.due').hidden = !(date && date < halfYearAgo());
       // 随访记录挂在患者下：带上患者 id、姓名、身份证号
       const pid = patient.patientId ?? patient.id ?? '';
       const cardNo = patient.cardno || patient.cardNo || patient.idCard || '';

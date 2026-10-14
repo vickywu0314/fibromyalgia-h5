@@ -1,8 +1,8 @@
 (function(){
   const U = window.FormUtils;
   const f = document.querySelector("#form"), file = document.querySelector("#file"), box = document.querySelector("#preview"), img = document.querySelector("#previewImg");
-  // 页面填写的指标（腰臀比由两个 0-9 下拉拼成 0.xy，单独处理）
-  const FIELDS = ["height", "weight", "bodyFatPercentage", "bodyFatMass", "skeletalMuscleMass", "skeletalMuscleIndex"];
+  // 页面填写的指标（腰臀比为「0.」+ 两位小数的下划线空格）
+  const FIELDS = ["height", "weight", "bodyFatPercentage", "bodyFatMass", "skeletalMuscleMass", "skeletalMuscleIndex", "waistHipRatio"];
   // 已去掉的指标（去脂体重、内脏脂肪等级）：页面不再填写，草稿 / 旧数据里已有的值原样保留
   const REMOVED = ["leanBodyMass", "visceralFatLevel"];
 
@@ -11,7 +11,7 @@
   const blankSets = [];
   f.querySelectorAll(".blanks[data-for]").forEach(box => {
     const hidden = f.elements[box.dataset.for];
-    const iN = Number(hidden.dataset.int) || 2, dN = Number(hidden.dataset.dec) || 0;
+    const iN = hidden.dataset.int === undefined ? 2 : Number(hidden.dataset.int), dN = Number(hidden.dataset.dec) || 0;
     const mk = (cls, max) => {
       const el = document.createElement("input");
       el.type = "text"; el.inputMode = dN ? "decimal" : "numeric"; el.maxLength = max; el.className = cls; el.autocomplete = "off";
@@ -28,7 +28,8 @@
     }
     const ints = [], decs = [];
     for (let k = 0; k < iN; k++) ints.push(box.appendChild(mk("blank", 8)));
-    const dot = document.createElement("i"); dot.className = "blank-dot"; dot.textContent = "."; box.appendChild(dot);
+    // 没有整数位（腰臀比）时固定显示「0.」
+    const dot = document.createElement("i"); dot.className = "blank-dot"; dot.textContent = iN ? "." : "0."; box.appendChild(dot);
     for (let k = 0; k < dN; k++) decs.push(box.appendChild(mk("blank", 8)));
     const slots = ints.concat(decs);
     const compose = () => {
@@ -74,16 +75,6 @@
   });
   function renderBlanks(){ blankSets.forEach(b => b.render(b.hidden.value)); }
 
-  // 腰臀比：0.xy ↔ 两个下拉
-  function waistHipRatio(){
-    const a = f.elements.whr1.value, b = f.elements.whr2.value;
-    return a === "" && b === "" ? "" : "0." + (a || "0") + (b || "0");
-  }
-  function fillRatio(v){
-    const m = /^0?\.(\d)(\d)?/.exec(String(v || ""));
-    f.elements.whr1.value = m ? m[1] : "";
-    f.elements.whr2.value = m ? (m[2] || "0") : "";
-  }
   let imageData = "";
   function showImage(src){
     imageData = src || "";
@@ -110,7 +101,6 @@
   document.querySelector("#remove").onclick = () => { file.value = ""; showImage(""); store(); };
 
   U.bind({form: f, path: "jbxx.bodyComposition", update: data => {
-    fillRatio(data.waistHipRatio);
     renderBlanks();
     // 只回显已上传的 URL（旧草稿里的 base64 不再提交）；数组为空时用 imageUrl
     const imgs = (Array.isArray(data.reportImages) ? data.reportImages : []).filter(x => x && !/^data:/.test(x));
@@ -121,7 +111,6 @@
   function draft(){
     const d = U.serialize(f), value = {}, old = FmsCase.get("jbxx.bodyComposition") || {};
     FIELDS.forEach(k => { value[k] = d[k] != null ? String(d[k]).trim() : ""; });
-    value.waistHipRatio = waistHipRatio();
     REMOVED.forEach(k => { if (old[k] != null) value[k] = old[k]; });
     value.reportImages = imageData ? [imageData] : [];
     value.imageUrl = imageData;

@@ -2,3 +2,8 @@
 
 /* 标题「不良反应」：与本次治疗方案页标题一致（进度区下方间距 24px，18px / 600） */
 .question.has-event{padding-top:0}.question.has-event>legend{font-size:18px;font-weight:600;line-height:1.55;padding-bottom:10px}
+
+/* 上次随访的不良反应 */
+.last-visit{margin:0 0 12px;padding:10px 12px;border-radius:6px;background:#f2f7fc;color:#168bdd;font-size:13px;line-height:1.7}
+.last-visit p{margin:0}
+.last-visit[hidden]{display:none}

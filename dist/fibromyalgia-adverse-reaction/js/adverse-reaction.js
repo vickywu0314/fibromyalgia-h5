@@ -88,4 +88,37 @@
   sync();
   window.fillForm(FmsCase.get("blsj"));
   progress.refresh();
+
+  // 上次随访的不良反应：取同一患者在当前记录之前的最近一条记录，若其中有不良反应，显示「上次随访时间」与症状（「、」分隔）；
+  // 没有上一条记录或上次无不良反应时不显示。列表：/api/fms/patient/followup/list；详情：/api/fms/patient/case/detail（parts=blsj）
+  (async function showLastVisit(){
+    try{
+      const c=FmsCase.load(), pid=c.patientId, did=FmsApi.getDoctorId();
+      if(pid==null||pid===""||!did) return;
+      const pick=(o,ks)=>{for(const k of ks)if(o&&o[k]!=null&&o[k]!=="")return o[k];return ""};
+      const list=await FmsApi.get("/api/fms/patient/followup/list",{pageNo:1,pageSize:100,patientId:pid,doctorId:did,researchType:12});
+      const d=list&&list.data, rows=[d,d&&d.list,d&&d.records,d&&d.rows].find(Array.isArray)||[];
+      const curId=c.id!=null?String(c.id):"", curDate=String(c.visitDate||"").slice(0,10);
+      const idNum=r=>Number(pick(r,["caseId","id","followupId"]))||0, dateOf=r=>String(pick(r,["visitDate","followupDate","followUpDate","createTime"])).slice(0,10);
+      // 当前记录之前的记录：排除自己；日期更早，或同一天但编号更小（新建未保存的随访没有编号，取全部已有记录）
+      const prev=rows.filter(r=>{
+        const id=String(pick(r,["caseId","id","followupId"]));
+        if(!id||id===curId) return false;
+        if(!curId) return true;
+        const dt=dateOf(r);
+        return dt<curDate||(dt===curDate&&idNum(r)<Number(curId));
+      }).sort((a,b)=>dateOf(b).localeCompare(dateOf(a))||idNum(b)-idNum(a))[0];
+      if(!prev) return;
+      const det=await FmsApi.get("/api/fms/patient/case/detail",{patientId:pid,doctorId:did,caseId:pick(prev,["caseId","id","followupId"]),parts:"blsj"});
+      let b=det&&det.data&&det.data.blsj;
+      if(typeof b==="string"){try{b=JSON.parse(b)}catch(e){b=null}}
+      if(!b||b.hasAdverseEvent!=="有") return;
+      const ev=(Array.isArray(b.adverseEvents)?b.adverseEvents:String(b.adverseEvents||"").split(/[、,，]/)).filter(Boolean)
+        .map(x=>x==="其他"&&b.adverseEventOther?b.adverseEventOther:x);
+      if(!ev.length) return;
+      document.getElementById("lastVisitDate").textContent=dateOf(prev)||String(pick(det.data,["visitDate"])).slice(0,10);
+      document.getElementById("lastVisitEvents").textContent=ev.join("、");
+      document.getElementById("lastVisit").hidden=false;
+    }catch(e){/* 查询失败时不显示，不影响填写 */}
+  })();
 })();

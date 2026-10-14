@@ -17,6 +17,8 @@
   <form id="adverseForm">
     <fieldset class="question has-event">
       <legend>不良反应</legend>
+      <!-- 上次随访的不良反应：有上一条记录且其中有不良反应时显示，否则不显示 -->
+      <div class="last-visit" id="lastVisit" hidden><p>上次随访时间：<span id="lastVisitDate"></span></p><p>不良反应：<span id="lastVisitEvents"></span></p></div>
       <div class="inline-options">
         <label><input type="radio" name="hasAdverseEvent" value="无">无</label>
         <label><input type="radio" name="hasAdverseEvent" value="有">有</label>

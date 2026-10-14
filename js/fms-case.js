@@ -63,6 +63,26 @@
   function isViewingRecord() { return ss(BASE_KEY) === 'view'; }
   function setMode(m) { ss(MODE_KEY, m || null); }
 
+  // 本病例整体进度（与患者资料页「资料完成度」一致）：模块已保存（finish）且已提交才算完成；
+  // 随诊病例没有基本信息模块，按 6 个模块算。
+  function overall() {
+    var c = load();
+    var parts = c.visitType === '随诊' ? PARTS.filter(function (p) { return p !== 'jbxx'; }) : PARTS;
+    var done = parts.filter(function (p) { return c[p] && c[p].finish && isSynced(p); }).length;
+    return { done: done, total: parts.length, pct: parts.length ? Math.round(done / parts.length * 100) : 0 };
+  }
+  // 各模块页顶部进度条统一显示整体进度（不再是当前页的填写进度）
+  function renderOverall() {
+    var o = overall();
+    document.querySelectorAll('.progress-block').forEach(function (block) {
+      var bar = block.querySelector('.progress'), fill = bar && bar.querySelector('span'), text = block.querySelector('p');
+      if (fill) fill.style.width = o.pct + '%';
+      if (bar) { bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', '100'); bar.setAttribute('aria-valuenow', String(o.pct)); bar.setAttribute('aria-label', '资料整体完成度'); }
+      if (text) text.textContent = '资料整体完成度 ' + o.pct + '%（' + o.done + '/' + o.total + '）';
+    });
+    return o;
+  }
+
   // 模块里除 finish 外是否有任何已填内容（后端不接受空模块）
   function hasData(v) {
     if (v == null || v === '') return false;
@@ -400,14 +420,17 @@
     bar.appendChild(back); bar.appendChild(title);
     document.body.insertBefore(bar, document.body.firstChild);
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountTopBar);
-  else mountTopBar();
+  function onReady() { mountTopBar(); renderOverall(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady);
+  else onReady();
+  window.addEventListener('pageshow', function (e) { if (e.persisted) renderOverall(); });
 
   window.FmsCase = {
     KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,
     load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
     startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios,
-    isViewMode: isViewMode, isViewingRecord: isViewingRecord, setMode: setMode
+    isViewMode: isViewMode, isViewingRecord: isViewingRecord, setMode: setMode,
+    overall: overall, renderOverall: renderOverall
   };
 })();

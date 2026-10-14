@@ -168,8 +168,9 @@
   }
   function viewMode() { return !!(window.FmsCase && FmsCase.isViewMode && FmsCase.isViewMode()); }
 
-  // 进度条：bar 宽度 pct%，文字 text
+  // 进度条：按需求统一显示本病例整体进度（与患者资料页一致），不再显示本量表/本页进度
   function setProgress(pct, text) {
+    if (window.FmsCase && FmsCase.renderOverall) { FmsCase.renderOverall(); return; }
     document.querySelectorAll('.progress-block').forEach(function (b) {
       var bar = b.querySelector('.progress'), span = bar && bar.querySelector('span'), p = b.querySelector('p');
       if (bar) bar.setAttribute('aria-valuenow', pct);

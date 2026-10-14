@@ -5,7 +5,10 @@
 //           在表单 input/change 以及条件区域显隐变化时自动刷新；回显数据后可调用返回的 refresh()。
 //   汇总/列表页：FmsProgress.set(answered, total)
 (function () {
+  // 按需求：顶部进度条统一显示本病例整体进度（FmsCase.renderOverall，与患者资料页一致）；
+  // 本页的已填/应填仍由 count()/track() 计算，供页面其他逻辑使用，但不再画到进度条上。
   function render(answered, total) {
+    if (window.FmsCase && FmsCase.renderOverall) return FmsCase.renderOverall().pct;
     var pct = total > 0 ? Math.round(Math.min(answered, total) / total * 100) : 0;
     document.querySelectorAll('.progress-block').forEach(function (block) {
       var bar = block.querySelector('.progress');

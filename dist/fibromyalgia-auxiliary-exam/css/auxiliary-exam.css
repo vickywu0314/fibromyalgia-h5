@@ -2,3 +2,6 @@
 .upload-tip{margin:0 0 12px;color:#7a818b;font-size:13px}.upload-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}.upload-grid .upload{margin:0}.upload-grid h3{margin:0 0 8px}
 .upload-grid .upload{padding:0}.upload-grid .upload-box{width:100%;height:110px;border-radius:8px}.upload-grid .preview img{max-width:100%}
 .upload-title{font-size:15px;font-weight:500;margin:6px 0 6px}.uploads .upload{padding:6px 0 8px}#ecgUploadBody{margin-top:14px}.lipid{padding:12px 12px}.lipid .section-title{gap:16px}.lipid .section-title h3{margin:0}.lipid .value{margin-top:10px}.sub-value{margin:0 0 6px 28px}.value input:disabled{background:#f3f4f6}
+
+/* 各检查之间：分隔线上下留出统一间距 */
+.exam-section{padding:22px 0 20px}

@@ -18,7 +18,7 @@
     .actions { margin-top: auto; padding-top: 30px; display: grid; gap: 12px; }
     .action { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 46px; border-radius: 4px; text-align: center; text-decoration: none; font-size: 16px; }
     .action-primary { border: 1px solid #168bdd; background: #168bdd; color: #fff; }
-    .action-secondary { border: 1px solid #b8c6d1; background: #fff; color: #376b8c; }
+    .action-secondary { border: 1px solid #168bdd; background: #fff; color: #168bdd; }
     .treatment-list a:focus-visible, .action:focus-visible { outline: 2px solid #168bdd; outline-offset: 2px; }
     @media (max-width: 360px) { .page { padding-left: 12px; padding-right: 12px; } }
     .kind-side { display: flex; align-items: center; gap: 8px; }

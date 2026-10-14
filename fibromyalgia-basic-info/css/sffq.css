@@ -25,3 +25,13 @@
 .brand-options label.brand-other{justify-content:center;min-height:60px}
 .sub-block .extra{margin-left:0}
 .sub-block .dose-heading{margin-top:22px}
+
+/* 分页：第 1 页到「水产品」，第 2 页从「蛋类」开始 */
+.page-off{display:none!important}
+.pager{display:flex;gap:12px}
+.bottom .pager button{flex:1;width:auto}
+.bottom .pager button.ghost{background:#fff;color:#168bdd;border:1px solid #168bdd}
+.pager [hidden]{display:none!important}
+/* 输入框统一主题蓝 */
+.extra input,.text-line input,.other-food-row input{border-color:#168bdd}
+.extra input:focus,.text-line input:focus,.other-food-row input:focus{outline:none;border-color:#168bdd;box-shadow:0 0 0 2px rgba(22,139,221,.18)}

@@ -70,21 +70,42 @@
   const setFormData = window.setFormData;
   window.setFormData = function(data){ setFormData(data); tracker.refresh(); };
 
+  // 分页：第 1 页到「水产品」（section7），第 2 页从「蛋类」开始
+  const SPLIT = 7;
+  const sections = [...f.querySelectorAll(".section")];
+  const prevBtn = document.querySelector("#prevPage"), nextBtn = document.querySelector("#nextPage"), saveBtn = document.querySelector("#saveBtn");
+  const head = [f.querySelector("h1"), f.querySelector(".intro")];
+  let page = 1;
+  function showPage(n, scroll){
+    page = n;
+    sections.forEach((s, i) => s.classList.toggle("page-off", (i < SPLIT) !== (n === 1)));
+    head.forEach(el => el && el.classList.toggle("page-off", n !== 1));
+    nextBtn.hidden = n !== 1;
+    saveBtn.hidden = n === 1;
+    status.textContent = "";
+    if (scroll) window.scrollTo(0, 0);
+  }
+  const pageOf = el => sections.indexOf(el.closest(".section")) < SPLIT ? 1 : 2;
+  prevBtn.onclick = () => { if (page === 2) showPage(1, true); else history.length > 1 ? history.back() : (location.href = "basic-info.html"); };
+  nextBtn.onclick = () => showPage(2, true);
+  showPage(1);
+  window.sffqFocus = el => { if (pageOf(el) !== page) showPage(pageOf(el)); el.focus(); el.scrollIntoView({block: "center"}); };
+
   f.addEventListener("change", () => { update(); store(); });
   f.addEventListener("input", store);
   f.addEventListener("submit", e => {
     e.preventDefault();
     for (const label of f.querySelectorAll(".extra.visible")) {
       const input = label.querySelector("input");
-      if (!input.value || !input.checkValidity()) { input.focus(); status.textContent = "请填写所选项的具体数量/名称"; return; }
+      if (!input.value || !input.checkValidity()) { window.sffqFocus(input); status.textContent = "请填写所选项的具体数量/名称"; return; }
     }
     if (value("other_food_used") === "有") {
       const rows = [...f.querySelectorAll(".other-food-row")];
       const filled = rows.filter(r => [...r.querySelectorAll("input")].some(x => x.value.trim()));
       const bad = filled.find(r => [...r.querySelectorAll("input")].some(x => !x.value.trim()));
       if (!filled.length || bad) {
+        window.sffqFocus((bad || rows[0]).querySelector("input:placeholder-shown") || rows[0].querySelector("input"));
         status.textContent = "请填写食物名称与重量";
-        ((bad || rows[0]).querySelector("input:placeholder-shown") || rows[0].querySelector("input")).focus();
         return;
       }
     }

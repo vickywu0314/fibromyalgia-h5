@@ -23,6 +23,8 @@
 
   function visible(el) {
     if (el.closest('[hidden]')) return false;
+    // 分页问卷：不在当前页的题目仍计入进度
+    if (el.closest('.page-off')) return true;
     var box = el.closest('label') || el.parentElement || el;
     return box.getClientRects().length > 0;
   }

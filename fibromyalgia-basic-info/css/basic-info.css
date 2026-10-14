@@ -126,3 +126,8 @@
 .signature-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#9aa0a8;font-size:14px;pointer-events:none}
 .signature-actions{display:flex;justify-content:flex-end;padding-top:8px}
 .link-btn{border:0;background:none;color:#168bdd;font-size:14px;padding:4px 0}
+
+/* 一般情况与病史：分两组 */
+.submodule-group{margin:4px 2px 8px;font-size:14px;font-weight:600;color:#555}
+.submodule-list+.submodule-group{margin-top:16px}
+.optional-tag{margin-left:6px;padding:1px 6px;border-radius:9px;background:#eef1f4;color:#858b94;font-size:11px;font-style:normal;font-weight:400;vertical-align:1px}

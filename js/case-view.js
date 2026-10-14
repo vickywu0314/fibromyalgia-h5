@@ -48,7 +48,7 @@ const j = c.jbxx || {};
 if (isBaseline) {
   const s = section('基本信息');
   let n = rows(s, [
-    ['就诊时间', j.visitDate], ['姓名', j.name], ['身份证号', j.idCard], ['手机号', j.phone], ['性别', j.gender],
+    ['就诊时间', j.visitDate], ['姓名', j.name], ['身份证号', j.idCard], ['手机号', j.phone], ['性别', j.gender], ['民族', j.nation],
     ['常住地', [j.province, j.city && j.city !== j.province ? j.city : ''].filter(has).join(' ')],
     ['婚姻', j.marriage], ['教育程度', j.education], ['工作情况', j.workStatus],
     ['吸烟史', j.smoking === '经常有' ? ['经常有', withUnit(j.smokingYears, '年'), j.smokingAmount ? '每日' + j.smokingAmount : ''].filter(has).join('，') : j.smoking],
@@ -79,7 +79,7 @@ if (isBaseline) {
   n += records(s, '本病治疗史 · 中药汤剂', th.zhongyaoTangji, r => [r.name, has(r.startDate) ? r.startDate + ' 开始' : '', stopText(r)].filter(has).join('，'));
   n += records(s, '本病治疗史 · 非药物疗法', th.feiYaowuLiaofa, r => [r.name, withUnit(r.duration, '分钟/次'), r.frequency, has(r.startDate) ? r.startDate + ' 开始' : '', stopText(r)].filter(has).join('，'));
   n += records(s, '本病治疗史 · 中成药', th.zhongchengyao, drugLine);
-  n += records(s, '合并疾病', j.diseaseHistory, r => [r.categoryLabel, r.name, withUnit(r.months, '个月'), has(r.diagnosisDate) ? '诊断 ' + r.diagnosisDate : ''].filter(has).join('，'));
+  n += records(s, '既往疾病史', j.diseaseHistory, r => [r.categoryLabel, r.name, withUnit(r.months, '个月'), has(r.diagnosisDate) ? '诊断 ' + r.diagnosisDate : ''].filter(has).join('，'));
   n += records(s, '合并药物', j.concomitantMedication, drugLine);
   if (!n) empty(s);
 }

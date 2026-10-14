@@ -50,6 +50,18 @@
           </div>
         </fieldset>
 
+        <!-- 民族：汉族 / 其他（填写具体民族）。提交为 jbxx.nation：选汉族为「汉族」，选其他为填写的民族名 -->
+        <fieldset class="field">
+          <legend>民族</legend>
+          <div class="choices inline">
+            <label><input type="radio" name="nationType" value="汉族"> 汉族</label>
+            <label><input type="radio" name="nationType" value="其他"> 其他</label>
+          </div>
+          <div id="nationOtherWrap" class="conditional" hidden>
+            <input id="nationOther" name="nationOther" type="text" maxlength="20" placeholder="请填写民族，如：回族" aria-label="其他民族">
+          </div>
+        </fieldset>
+
         <div class="field">
           <label for="province">常住地</label>
           <div class="inline-fields">
@@ -174,12 +186,13 @@
       <section class="submodule-section" aria-labelledby="submoduleTitle">
         <div class="submodule-heading">
           <div>
-            <h2 id="submoduleTitle">评估与病史</h2>
+            <h2 id="submoduleTitle">一般情况与病史</h2>
             <p>请逐项完善患者相关信息</p>
           </div>
-          <div class="submodule-count">已完成 <strong id="submoduleCount">0/10</strong></div>
+          <div class="submodule-count">已完成 <strong id="submoduleCount">0/8</strong></div>
         </div>
 
+        <h3 class="submodule-group">一般情况</h3>
         <div class="submodule-list">
           <button type="button" class="submodule-row menu-row" data-page="csi" data-key="csi">
             <span class="submodule-copy"><strong>中枢敏化程度：中枢敏化指数（CSI-9）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
@@ -193,20 +206,24 @@
           <button type="button" class="submodule-row menu-row" data-page="work" data-key="work">
             <span class="submodule-copy"><strong>间接成本评估：工作生产力及活动受损问卷</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
-          <button type="button" class="submodule-row menu-row" data-page="body" data-key="bodyComposition">
-            <span class="submodule-copy"><strong>人体成分分析</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          <button type="button" class="submodule-row menu-row" data-page="body" data-key="bodyComposition" data-optional="1">
+            <span class="submodule-copy"><strong>人体成分分析<em class="optional-tag">选填</em></strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
           <button type="button" class="submodule-row menu-row" data-page="tipi" data-key="tipi">
             <span class="submodule-copy"><strong>人格评估：中国版10项目大五人格量表（TIPI-C）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
-          <button type="button" class="submodule-row menu-row" data-page="sffq" data-key="sffq">
-            <span class="submodule-copy"><strong>膳食摄入评估：半定量膳食频率问卷（SFFQ）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+          <button type="button" class="submodule-row menu-row" data-page="sffq" data-key="sffq" data-optional="1">
+            <span class="submodule-copy"><strong>膳食摄入评估：半定量膳食频率问卷（SFFQ）<em class="optional-tag">选填</em></strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
+        </div>
+
+        <h3 class="submodule-group">病史</h3>
+        <div class="submodule-list">
           <button type="button" class="submodule-row menu-row" data-page="treatmentHistory" data-key="treatmentHistory">
             <span class="submodule-copy"><strong>本病治疗史</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
           <button type="button" class="submodule-row menu-row" data-page="diseaseHistory" data-key="diseaseHistory">
-            <span class="submodule-copy"><strong>合并疾病（既往疾病史）</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
+            <span class="submodule-copy"><strong>既往疾病史</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>
           </button>
           <button type="button" class="submodule-row menu-row" data-page="concomitantMedication" data-key="concomitantMedication">
             <span class="submodule-copy"><strong>合并药物</strong><small class="status pending">未填写</small></span><span class="chevron">›</span>

@@ -37,6 +37,8 @@
     U.toggle(document.getElementById("drinkingDetail"), checked("drinking") === "经常有");
     // 是否曾确诊：选「是」才出现确诊时间、确诊医疗机构级别
     U.toggle(document.getElementById("diagnosedDetail"), checked("diagnosed") === "是");
+    // 民族：选「其他」才出现填写框
+    U.toggle(document.getElementById("nationOtherWrap"), checked("nationType") === "其他");
     // 饮酒史：每种酒勾选后才出现「每天用量」，取消勾选时清空
     form.querySelectorAll('input[name="drinkType"]').forEach(cb => {
       const amount = document.getElementById(cb.dataset.amount);
@@ -44,7 +46,7 @@
     });
   }
   form.addEventListener("change", e => {
-    if (["smoking", "drinking", "drinkType", "diagnosed"].indexOf(e.target.name) !== -1) update();
+    if (["smoking", "drinking", "drinkType", "diagnosed", "nationType"].indexOf(e.target.name) !== -1) update();
   });
 
   function validId(value){
@@ -84,16 +86,18 @@
     const v = j[key];
     return U.entryState(v, !!(v && typeof v === "object" && v.finish));
   }
+  // 已完成数：只统计必填子模块；人体成分分析、SFFQ 为选填（data-optional），不计入
+  const requiredRows = Array.prototype.filter.call(rows, btn => !btn.dataset.optional);
   let entriesDone = 0;
   function renderEntries(){
     entriesDone = 0;
     rows.forEach(btn => {
       const state = entryState(btn.dataset.key);
-      if (state === "done") entriesDone++;
+      if (state === "done" && !btn.dataset.optional) entriesDone++;
       U.renderStatus(btn.querySelector(".status"), state);
     });
     const count = document.getElementById("submoduleCount");
-    if (count) count.textContent = entriesDone + "/" + rows.length;
+    if (count) count.textContent = entriesDone + "/" + requiredRows.length;
   }
   rows.forEach(btn => {
     // 进入子模块前把本页已填内容暂存到草稿（不提交、不改完成状态），返回时能回显
@@ -111,6 +115,10 @@
     let types = Array.isArray(j.drinkTypes) ? j.drinkTypes : (typeof j.drinkType === "string" && j.drinkType ? j.drinkType.split(/[、,，]/) : []);
     j.drinkType = types;
     delete j.drinkTypes;
+    // 民族：jbxx.nation 为「汉族」或具体民族名 → 拆成单选 + 其他填写框
+    const nation = typeof j.nation === "string" ? j.nation.trim() : "";
+    j.nationType = !nation ? "" : nation === "汉族" ? "汉族" : "其他";
+    j.nationOther = nation && nation !== "汉族" ? nation : "";
     return j;
   }
   const jbxx = FmsCase.get("jbxx") || {};
@@ -210,7 +218,7 @@
   // 进度：本页直填字段（可见、可用的题目，含电子签名）+ 已完成的子模块入口
   //   分子 = 已填直填字段 + 已完成入口数；分母 = 当前应填直填字段 + 入口总数
   const tracker = FmsProgress.track(form, {
-    extra: () => ({answered: entriesDone + (signature || drawn ? 1 : 0), total: rows.length + 1})
+    extra: () => ({answered: entriesDone + (signature || drawn ? 1 : 0), total: requiredRows.length + 1})
   });
   sigCanvas.addEventListener("pointerup", () => tracker.refresh());
   sigClear.addEventListener("click", () => tracker.refresh());
@@ -228,6 +236,8 @@
       idCard: idCard.value.trim().toUpperCase(),
       phone: phone.value.trim(),
       gender: d.gender || "",
+      // 民族：选汉族为「汉族」，选其他为填写的民族名
+      nation: d.nationType === "汉族" ? "汉族" : d.nationType === "其他" ? String(d.nationOther || "").trim() : "",
       province: d.province || "",
       city: d.city || "",
       marriage: d.marriage || "",
@@ -265,6 +275,7 @@
     if (!name) { nameError.hidden = false; nameInput.focus(); FmsCase.toast("请输入姓名"); return; }
     if (!validId(id)) { idCardError.hidden = false; idCard.focus(); FmsCase.toast("请输入正确的身份证号"); return; }
     if (phone.value.trim() && !validPhone(phone.value.trim())) { phoneError.hidden = false; phone.focus(); FmsCase.toast("请输入正确的手机号"); return; }
+    if (checked("nationType") === "其他" && !document.getElementById("nationOther").value.trim()) { document.getElementById("nationOther").focus(); FmsCase.toast("请填写民族"); return; }
     const btn = form.querySelector('button[type="submit"]');
     if (drawn && !signature) {
       btn.disabled = true;

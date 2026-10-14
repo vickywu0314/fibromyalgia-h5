@@ -1,3 +1,16 @@
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#222}body{margin:0}.page{max-width:720px;margin:auto;padding:16px 16px calc(28px + env(safe-area-inset-bottom))}.progress-block{margin-bottom:24px}.progress{height:24px;background:#d8d8d8}.progress span{display:block;width:0;height:100%;background:#168bdd}.progress-block p{margin:6px 0 0;font-size:14px}h1{margin:0 0 12px;font-size:18px}.form-list{border-top:1px solid #e7e9ec}.field{min-height:64px;border-bottom:1px solid #e7e9ec;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px}.unit{display:flex;align-items:center;gap:8px}.unit input{width:110px}.unit b{width:28px;font-weight:400;font-size:14px}input,select{min-height:40px;border:1px solid #d5d9de;border-radius:5px;padding:8px 10px;font:inherit;background:#fff}.unit input{text-align:right}select{width:145px}.ratio{display:flex;align-items:center;gap:5px}.ratio b{font-weight:400}.ratio input{width:38px;text-align:center}.upload{padding:22px 0;border-bottom:1px solid #e7e9ec}.upload h2{font-size:15px;font-weight:500;margin:0 0 14px}.upload-box{width:104px;height:104px;border:1px dashed #c9ced5;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#777f89;font-size:13px}.upload-box strong{font-size:28px;font-weight:300}.upload p{font-size:12px;color:#8a9098}.upload #preview{display:flex;gap:12px;align-items:flex-start;margin-top:12px}.upload #preview[hidden]{display:none}.upload img{width:104px;height:104px;object-fit:cover;border:1px solid #ddd;border-radius:6px}.upload #remove{border:0;background:none;color:#168bdd}.bottom{padding-top:20px}.bottom button{width:100%;min-height:46px;border:0;border-radius:4px;background:#168bdd;color:#fff;font:inherit}@media(max-width:380px){.page{padding-left:12px;padding-right:12px}.unit input{width:90px}select{width:120px}}
 /* 腰臀比 0.__ __：两个 0-9 下拉 */
 .ratio-digits{display:flex;align-items:center;gap:6px}.ratio-digits b{font-weight:400;font-size:16px}.ratio-digits select{width:64px;text-align:center}
+
+/* 数字「下划线空格」：无线框，每空一位数字 */
+.blanks{display:inline-flex;align-items:flex-end;gap:6px}
+.blanks .blank{width:26px;min-height:32px;padding:0 0 2px;border:0;border-bottom:1.5px solid #8a9098;border-radius:0;background:transparent;text-align:center;font-size:17px;line-height:1.4;color:#222;outline:none}
+.blanks .blank:focus{border-bottom-color:#168bdd;border-bottom-width:2px}
+.blanks .blank-wide{width:64px}
+.blank-dot{font-style:normal;font-size:18px;line-height:1;padding-bottom:4px;color:#222}
+.unit .blanks+input+b,.unit>b{width:auto;min-width:24px}
+/* 腰臀比两个 0-9 下拉也用下划线样式，与其他空格一致 */
+.ratio-digits{gap:6px;align-items:flex-end}
+.ratio-digits b{padding-bottom:4px;font-size:17px}
+.ratio-digits select{width:56px;min-height:32px;padding:0 20px 2px 10px!important;border:0;border-bottom:1.5px solid #8a9098;border-radius:0;background-color:transparent;background-position:right 2px center!important;background-size:10px 7px!important;font-size:17px;text-align:center}
+.ratio-digits select:focus{outline:none;border-bottom-color:#168bdd;border-bottom-width:2px}

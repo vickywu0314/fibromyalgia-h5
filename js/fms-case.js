@@ -413,7 +413,6 @@
 
   // 模块页顶部返回栏：‹ + 页面标题，返回「上一级」页面（按页面层级，不用浏览器历史——
   // 保存并返回会新增历史记录，用 history.back() 会退回到刚保存的表单）。
-  var NON_MODULE = /(patient-(list|add|detail)|follow-up-list|case-view|research-platform|index)\.html$|\/$/;
   var DETAIL = '../patient-detail.html', BASIC = '../fibromyalgia-basic-info/basic-info.html';
   var PARENT = {
     'fibromyalgia-basic-info/basic-info.html': DETAIL,
@@ -454,21 +453,63 @@
     var dir = key.split('/')[0];
     return DIR_DEFAULT[dir] || DETAIL;
   }
+  // 一级页面（患者列表、新增患者、患者资料、随访记录、病例查看）：只有「‹」，返回上一页。
+  // 「上一页」按业务关系确定（不用浏览器历史，避免保存后退回到刚保存的表单）；患者列表返回进入本系统前的页面。
+  var MODULE_DIRS = /^(fibromyalgia-[a-z-]+|benbing-zhiliaoshi|bingqing-pinggu|jiwang-bingshi|hebing-yaowu|zhiliao-fangan)$/;
+  var ROOT_PAGES = { 'patient-list.html': 1, 'patient-add.html': 1, 'patient-detail.html': 1, 'follow-up-list.html': 1, 'case-view.html': 1 };
+  function rootBack(file) {
+    var c = read() || {};
+    if (file === 'patient-add.html') return 'patient-list.html';
+    if (file === 'follow-up-list.html') return 'patient-list.html';
+    if (file === 'case-view.html') return 'patient-detail.html';
+    if (file === 'patient-detail.html') {
+      // 与患者资料页「完成录入」后的去向一致：随访 / 从随访记录进入的回随访记录，否则回患者列表
+      var fromFollowUp = ss('fms_case_from') === 'followup';
+      if ((c.visitType === '随诊' || fromFollowUp) && c.patientId != null) {
+        return 'follow-up-list.html?' + new URLSearchParams({ patientId: c.patientId, name: (c.jbxx && c.jbxx.name) || '', cardno: (c.jbxx && c.jbxx.idCard) || '' });
+      }
+      return 'patient-list.html';
+    }
+    return null; // 患者列表：浏览器返回
+  }
+  var BAR_CSS = 'position:sticky;top:0;z-index:9998;display:flex;align-items:center;height:44px;margin:0 0 8px;background:#fff;border-bottom:1px solid #eceef1;box-sizing:border-box;padding-top:env(safe-area-inset-top)';
+  var ARROW_CSS = 'display:flex;align-items:center;justify-content:center;width:36px;height:40px;font-size:30px;line-height:1;color:#222;text-decoration:none;background:none;border:0;padding:0;cursor:pointer';
   function mountTopBar() {
-    var key = pageKey();
-    if (document.getElementById('fmsTopBar') || !/\//.test(key)) return; // 根目录页（列表、患者资料等）不加
-    if (NON_MODULE.test(location.pathname) && !PARENT[key]) return;
+    if (document.getElementById('fmsTopBar')) return;
+    var parts = pageKey().split('/'), file = parts[parts.length - 1], dirName = parts.length > 1 ? parts[0] : '';
+    // 模块目录下的页面为二级页面；项目根目录（本地为站点根，服务器为 /fms/）下的列表、患者资料等为一级页面
+    var isModule = MODULE_DIRS.test(dirName);
+    var isRoot = !isModule && !!ROOT_PAGES[file];
+    if (!isRoot && !isModule) return;
     var bar = document.createElement('div');
     bar.id = 'fmsTopBar';
-    bar.style.cssText = 'position:sticky;top:0;z-index:9998;display:flex;align-items:center;height:44px;padding:0 44px;margin:0 0 8px;background:#fff;border-bottom:1px solid #eceef1;box-sizing:border-box;padding-top:env(safe-area-inset-top)';
-    var back = document.createElement('a');
-    back.href = parentUrl(); back.setAttribute('aria-label', '返回上一级');
+    bar.style.cssText = BAR_CSS + ';padding-left:' + (isModule ? 112 : 44) + 'px;padding-right:' + (isModule ? 112 : 44) + 'px';
+    var left = document.createElement('div');
+    left.style.cssText = 'position:absolute;left:4px;top:50%;transform:translateY(-50%);display:flex;align-items:center';
+    var back;
+    if (isModule) {
+      // 二级页面：「‹」返回上一级；右侧「返回目录」回到患者资料（模块目录）
+      back = document.createElement('a'); back.href = parentUrl();
+      var dir = document.createElement('a');
+      dir.href = DETAIL; dir.textContent = '返回目录';
+      dir.style.cssText = 'font-size:15px;color:#168bdd;text-decoration:none;white-space:nowrap;padding:8px 4px 8px 0';
+      left.appendChild(back); left.appendChild(dir);
+    } else {
+      var to = rootBack(file);
+      if (to) { back = document.createElement('a'); back.href = to; }
+      else {
+        back = document.createElement('button'); back.type = 'button';
+        back.addEventListener('click', function () { if (history.length > 1) history.back(); });
+      }
+      left.appendChild(back);
+    }
+    back.setAttribute('aria-label', isModule ? '返回上一级' : '返回上一页');
     back.textContent = '‹';
-    back.style.cssText = 'position:absolute;left:4px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;width:40px;height:40px;font-size:30px;line-height:1;color:#222;text-decoration:none';
+    back.style.cssText = ARROW_CSS;
     var title = document.createElement('div');
     title.textContent = document.title;
     title.style.cssText = 'flex:1;min-width:0;text-align:center;font-size:17px;font-weight:500;color:#222;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
-    bar.appendChild(back); bar.appendChild(title);
+    bar.appendChild(left); bar.appendChild(title);
     document.body.insertBefore(bar, document.body.firstChild);
   }
   // 统一日期选择器（底部拉起的年/月/日滚轮），与本文件同目录的 fms-datepicker.js

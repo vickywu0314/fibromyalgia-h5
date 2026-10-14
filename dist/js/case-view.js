@@ -145,7 +145,7 @@ if (isBaseline) {
   const s = section('本次治疗方案'), z = c.zlfa || {};
   const adj = a => a && a.adjust ? (a.adjust === '是' ? '是，' + [a.adjustment, a.reason].filter(has).join('，') : a.adjust) : '';
   let n = 0;
-  if (z.hasXiyao === '无') n += rows(s, [['西药', '无']]);
+  if (z.hasXiyao === '无') n += rows(s, [['口服西药', '无']]);
   // 西药按分类显示，每类附该类的「是否调整西药」；旧数据无分类时按原样显示
   const cats = [...new Set((z.xiyao || []).map(r => r.category || '其他'))];
   if (z.xiyaoCategoryAdjust && cats.length) {
@@ -154,13 +154,13 @@ if (isBaseline) {
       n += rows(s, [['是否调整西药', adj(z.xiyaoCategoryAdjust[cat])]]);
     });
   } else {
-    n += records(s, '西药', z.xiyao, r => [r.name, [r.dose, r.unit].filter(has).join(''), r.frequency, r.route].filter(has).join('，'));
+    n += records(s, '口服西药', z.xiyao, r => [r.name, [r.dose, r.unit].filter(has).join(''), r.frequency, r.route].filter(has).join('，'));
     n += rows(s, [['是否调整西药', adj(z.xiyaoAdjust)]]);
   }
   n += records(s, '中药汤剂', z.zhongyaoYinpian, r => [r.syndrome, r.recipe, join(r.composition), has(r.prescription) ? '补充：' + r.prescription : ''].filter(has).join('，'));
   images(s, '处方照片', (z.zhongyaoYinpian || []).map(r => r.image));
-  if (z.hasZhongchengyao === '无') n += rows(s, [['中成药', '无']]);
-  n += records(s, '中成药', z.zhongchengyao, r => [r.name, [r.dose, r.unit].filter(has).join(''), r.frequency].filter(has).join('，'));
+  if (z.hasZhongchengyao === '无') n += rows(s, [['口服中成药', '无']]);
+  n += records(s, '口服中成药', z.zhongchengyao, r => [r.name, [r.dose, r.unit].filter(has).join(''), r.frequency].filter(has).join('，'));
   n += rows(s, [['是否调整中成药', adj(z.zhongchengyaoAdjust)]]);
   if (z.hasFeiYaowu === '无') n += rows(s, [['非药物疗法', '无']]);
   n += records(s, '非药物疗法', z.feiYaowu, r => [r.name, withUnit(r.duration, '分钟/次'), r.frequency].filter(has).join('，'));

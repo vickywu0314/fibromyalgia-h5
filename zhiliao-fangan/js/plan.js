@@ -88,8 +88,8 @@ const toggle = (box, show) => {
   });
 };
 const META = {
-  xiyao: { title: '西药', adjustLegend: '是否调整西药', adjustType: 'drug', hasUse: true },
-  zhongchengyao: { title: '中成药', adjustLegend: '是否调整中成药', adjustType: 'drug', hasUse: true },
+  xiyao: { title: '口服西药', adjustLegend: '是否调整口服西药', adjustType: 'drug', hasUse: true },
+  zhongchengyao: { title: '口服中成药', adjustLegend: '是否调整口服中成药', adjustType: 'drug', hasUse: true },
   'fei-yaowu': { title: '非药物疗法', adjustLegend: '是否调整非药物疗法', adjustType: 'nonDrug', hasUse: true },
   'zhongyao-yinpian': { title: '中药汤剂' }
 };
@@ -146,7 +146,7 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
     const sec = el('section', '', 'xi-cat'); sec.append(el('h2', cat, 'block-title'));
     if (recs.length) {
       used.push([cat, ci]);
-      const g = el('fieldset', '', 'choice-group'); g.append(el('legend', '是否调整西药'));
+      const g = el('fieldset', '', 'choice-group'); g.append(el('legend', '是否调整口服西药'));
       const yn = el('div'); radios(yn, `是否调整${ci}`, ['是', '否']); g.append(yn);
       const adj = el('div', '', 'adjust-details'); adj.id = `adjustDetails${ci}`; adj.hidden = true;
       [['调整内容', window.ADJUST.drug, `调整内容${ci}`], ['调整原因', window.ADJUST.reasons, `调整原因${ci}`]].forEach(([lg, list, name]) => {
@@ -247,7 +247,7 @@ if (page.dataset.page === 'summary') {
         section.append(el('p', cat, 'summary-syndrome'));
         rs.forEach(v => { const article = el('article', '', 'summary-item'); article.append(el('h3', titleOf(k, v)), el('p', describe(k, v), 'summary-detail')); section.append(article) });
         const a = cm[cat] || {};
-        if (a.adjust) section.append(el('p', `是否调整西药：${a.adjust}` + (a.adjust === '是' ? `（调整内容：${a.adjustment || ''}；调整原因：${a.reason || ''}）` : ''), 'summary-detail'));
+        if (a.adjust) section.append(el('p', `是否调整口服西药：${a.adjust}` + (a.adjust === '是' ? `（调整内容：${a.adjustment || ''}；调整原因：${a.reason || ''}）` : ''), 'summary-detail'));
       });
       root.append(section); return;
     }

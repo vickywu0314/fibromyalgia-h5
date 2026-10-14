@@ -7,8 +7,13 @@
   var API = '/api/fms/patient/case/add';
   var PARTS = ['jbxx', 'bsbq', 'zhpd', 'fzjc', 'bqpg', 'zlfa', 'blsj'];
   var PART_NAMES = { jbxx: '基本信息', bsbq: '病史病情', zhpd: '证候判断', fzjc: '辅助检查', bqpg: '病情评估', zlfa: '本次治疗方案', blsj: '不良反应' };
-  // 病情评估 9 个量表，全部完成时 bqpg.finish = true
+  // 病情评估 9 个量表
   var BQPG_SCALES = ['vas', 'fiqr', 'pcs', 'mfi20', 'psqi', 'had', 'sf12', 'painDetect', 'cfq'];
+  // 按需求放在病情评估前 3 位的问卷：数据存 bqpg.csi / bqpg.tpc / bqpg.fs（病情评估的子项，后端确认）
+  var BQPG_EXTRA = ['csi', 'tpc', 'fs'];
+  // 病情评估全部 12 项（3 项 + 9 个量表）都完成时 bqpg.finish = true
+  var BQPG_ALL = BQPG_EXTRA.concat(BQPG_SCALES);
+  function bqpgDone(b) { return BQPG_ALL.every(function (k) { return !!(b && b[k] && b[k].finish); }); }
 
   function today() {
     var d = new Date();
@@ -91,9 +96,22 @@
     return v !== false;
   }
 
+  // 旧数据兼容：CSI / TPC / FS 以前存在 jbxx 下，读取时若 bqpg 下还没有，就把 jbxx 下的复制过来（jbxx 下的原样保留）
+  function migrateBqpgExtra(c) {
+    if (!c || !c.jbxx || typeof c.jbxx !== 'object') return false;
+    if (!c.bqpg || typeof c.bqpg !== 'object') c.bqpg = { finish: false };
+    var moved = false;
+    BQPG_EXTRA.forEach(function (k) {
+      if (!c.bqpg[k] && c.jbxx[k] && typeof c.jbxx[k] === 'object' && hasData(c.jbxx[k])) { c.bqpg[k] = JSON.parse(JSON.stringify(c.jbxx[k])); moved = true; }
+    });
+    if (moved) c.bqpg.finish = bqpgDone(c.bqpg);
+    return moved;
+  }
+
   function load() {
     var c = read();
     if (!c) { c = skeleton(); write(c); }
+    else if (migrateBqpgExtra(c)) write(c);
     return c;
   }
 
@@ -125,9 +143,7 @@
     } else {
       obj[last] = value;
     }
-    if (keys[0] === 'bqpg') {
-      c.bqpg.finish = BQPG_SCALES.every(function (s) { return c.bqpg[s] && c.bqpg[s].finish; });
-    }
+    if (keys[0] === 'bqpg') c.bqpg.finish = bqpgDone(c.bqpg);
     if (keys[0] === 'jbxx' && keys.length === 1 && c.jbxx.visitDate) c.visitDate = c.jbxx.visitDate;
     write(c);
     if (PARTS.indexOf(keys[0]) !== -1) markUnsynced(keys[0], true);
@@ -379,8 +395,8 @@
   var DETAIL = '../patient-detail.html', BASIC = '../fibromyalgia-basic-info/basic-info.html';
   var PARENT = {
     'fibromyalgia-basic-info/basic-info.html': DETAIL,
-    'fibromyalgia-basic-info/csi.html': 'basic-info.html', 'fibromyalgia-basic-info/tpc.html': 'basic-info.html',
-    'fibromyalgia-basic-info/fs.html': 'basic-info.html', 'fibromyalgia-basic-info/work.html': 'basic-info.html',
+    'fibromyalgia-basic-info/csi.html': '../bingqing-pinggu/index.html', 'fibromyalgia-basic-info/tpc.html': '../bingqing-pinggu/index.html',
+    'fibromyalgia-basic-info/fs.html': '../bingqing-pinggu/index.html', 'fibromyalgia-basic-info/work.html': 'basic-info.html',
     'fibromyalgia-basic-info/body-composition.html': 'basic-info.html', 'fibromyalgia-basic-info/tipi.html': 'basic-info.html',
     'fibromyalgia-basic-info/sffq.html': 'basic-info.html',
     'fibromyalgia-basic-info/wpi.html': 'fs.html', 'fibromyalgia-basic-info/sss.html': 'fs.html',
@@ -448,7 +464,7 @@
   window.addEventListener('pageshow', function (e) { if (e.persisted) renderOverall(); });
 
   window.FmsCase = {
-    KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES,
+    KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES, BQPG_EXTRA: BQPG_EXTRA, BQPG_ALL: BQPG_ALL,
     load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
     startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios,

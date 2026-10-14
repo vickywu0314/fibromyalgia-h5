@@ -1,6 +1,6 @@
 /* 压痛点（TPC）：9 对（左/右）共 18 个压痛点。
    score = 阳性压痛点个数（0~18）；result 按 1990 年 ACR 纤维肌痛分类标准：≥11 个压痛点阳性为“是”，否则“否”。
-   写入病例草稿 jbxx.tpc：{ finish, score, result, answers:{ q1:[...], ..., q9:[...] } } */
+   写入病例草稿 bqpg.tpc：{ finish, score, result, answers:{ q1:[...], ..., q9:[...] } } */
 (function(){
   const form = document.getElementById("tpcForm");
   const questions = [...form.querySelectorAll(".question")];
@@ -28,11 +28,11 @@
     });
   });
 
-  const saved = FmsCase.get("jbxx.tpc");
+  const saved = FmsCase.get("bqpg.tpc");
   if(saved && saved.answers) FmsCase.fillForm(form, saved.answers);
   // 进度：已作答的压痛点（每对左/右/无为一题）/ 9；作答中暂存草稿（入口显示「填写中」）
   FmsProgress.track(form);
-  FormUtils.autoStore(form, "jbxx.tpc", () => ({ score: "", result: "", answers: collect() }));
+  FormUtils.autoStore(form, "bqpg.tpc", () => ({ score: "", result: "", answers: collect() }));
 
   form.addEventListener("submit", e => {
     e.preventDefault();
@@ -44,11 +44,11 @@
       answers["q"+i] = vals;
       score += vals.filter(v => v === "左" || v === "右").length;
     }
-    FmsCase.save("jbxx.tpc", {
+    FmsCase.save("bqpg.tpc", {
       finish: true,
       score: String(score),
       result: score >= 11 ? "是" : "否",
       answers
-    }, { back: "basic-info.html", button: document.getElementById("saveBtn") });
+    }, { back: "../bingqing-pinggu/index.html", button: document.getElementById("saveBtn") });
   });
 })();

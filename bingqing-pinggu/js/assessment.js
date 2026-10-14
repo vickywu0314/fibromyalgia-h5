@@ -188,17 +188,21 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 首页：显示每个量表的状态（未填写 / 已填 x/N / ✓ 已完成）和整体进度（已完成量表数 / 9）。
+  // 首页：显示每项的状态（未填写 / 已填 x/N / 填写中 / ✓ 已完成）和已完成数 / 12。
+  // 前 3 项 CSI、TPC、FS（链接带 data-key，页面在基本信息目录下）数据也在 bqpg 下：bqpg.csi / tpc / fs。
   // 从量表页返回时（含浏览器页面缓存 bfcache 恢复）在 pageshow 里重新读取草稿刷新。
   // ---------------------------------------------------------------------------
   var menu = document.querySelector('.menu');
   if (menu) {
     var renderList = function () {
       var done = 0;
+      var total = 0;
       menu.querySelectorAll('a[href]').forEach(function (link) {
         var name = link.getAttribute('href').replace(/\.html.*$/, '');
-        var key = KEY_MAP[name];
+        var extra = link.dataset.key;
+        var key = extra || KEY_MAP[name];
         if (!key) return;
+        total++;
         var badge = link.querySelector('em.status');
         if (!badge) {
           badge = document.createElement('em');
@@ -209,7 +213,9 @@
           wrap.appendChild(badge);
           link.insertBefore(wrap, arrow);
         }
-        var d = draft(key), st = scaleState(d), text;
+        var d = draft(key), text;
+        // CSI / TPC / FS 没有 answered/total：按是否已保存、是否填了内容判断
+        var st = extra ? { state: d && d.finish ? 'done' : (FmsCase.hasData(d) ? 'partial' : 'empty') } : scaleState(d);
         if (st.state === 'done') {
           done++;
           text = '✓ 已完成';
@@ -217,13 +223,13 @@
           // PCS 的 result（是/否）按需求不在列表显示，仍随数据提交
           if (d.result && key !== 'pcs') text += ' · ' + d.result;
         } else if (st.state === 'partial') {
-          text = '已填 ' + st.answered + (st.total ? '/' + st.total : '');
+          text = extra ? '填写中' : '已填 ' + st.answered + (st.total ? '/' + st.total : '');
         } else text = '未填写';
         badge.className = 'status' + (st.state === 'empty' ? '' : ' ' + st.state);
         badge.textContent = text;
       });
-      var pct = Math.round(done / SCALES.length * 100);
-      setProgress(pct, '已完成' + pct + '%（' + done + '/' + SCALES.length + '）');
+      var pct = total ? Math.round(done / total * 100) : 0;
+      setProgress(pct, '已完成' + pct + '%（' + done + '/' + total + '）');
     };
     renderList();
     window.addEventListener('pageshow', renderList);

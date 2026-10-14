@@ -30,10 +30,10 @@
   }
 
   form.addEventListener("change", calculate);
-  U.bind({form: form, path: "jbxx.csi", update: calculate});
+  U.bind({form: form, path: "bqpg.csi", update: calculate});
   // 进度：已答题数 / 9；作答中暂存草稿（入口显示「填写中」）
   const tracker = FmsProgress.track(form);
-  U.autoStore(form, "jbxx.csi", () => ({score: "", result: "", answers: answers()}));
+  U.autoStore(form, "bqpg.csi", () => ({score: "", result: "", answers: answers()}));
   const setFormData = window.setFormData;
   window.setFormData = function(data){ setFormData(data); tracker.refresh(); };
   form.addEventListener("submit", function(e){
@@ -41,11 +41,11 @@
     calculate();
     if (!scoreInput.value) { FmsCase.toast("请完成全部 9 道题目"); return; }
     // 总分 0~36；判定阈值：≥18 分为“是”（存在中枢敏化），否则“否”；未答完则 score/result 为空
-    U.save("jbxx.csi", {
+    U.save("bqpg.csi", {
       finish: true,
       score: scoreInput.value,
       result: over18Input.value,
       answers: answers()
-    }, {back: "basic-info.html", button: form.querySelector('button[type="submit"]')});
+    }, {back: "../bingqing-pinggu/index.html", button: form.querySelector('button[type="submit"]')});
   });
 })();

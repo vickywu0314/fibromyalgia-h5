@@ -1,5 +1,5 @@
 /* 纤维肌痛症状量表（FS）= 普遍疼痛指数（WPI）+ 症状严重性量表（SSS）
-   数据写入病例草稿 jbxx.fs：{ finish, score, result, wpi:{...}, sss:{...} }
+   数据写入病例草稿 bqpg.fs：{ finish, score, result, wpi:{...}, sss:{...} }
    本文件也被 wpi.html / sss.html 引用以复用 FsScore.summary（汇总计算）。 */
 (function(){
   /**
@@ -21,7 +21,7 @@
   if(!document.getElementById("fsSummary")) return; // 以下仅 fs.html 页面
 
   function render(){
-    const fs = FmsCase.get("jbxx.fs") || {};
+    const fs = FmsCase.get("bqpg.fs") || {};
     // 进度：已完成（finish）的子量表数 / 2；状态：已保存 → 已完成（x分），有暂存作答 → 填写中，无数据 → 未填写
     let doneCount = 0;
     ["wpi","sss"].forEach(k=>{
@@ -38,11 +38,11 @@
   render();
   window.addEventListener("pageshow", render);
 
-  // 保存：合并写入 jbxx.fs（不覆盖 wpi/sss），回基本信息页
+  // 保存：合并写入 bqpg.fs（不覆盖 wpi/sss），回病情评估页
   document.getElementById("backBtn").addEventListener("click", function(){
-    const fs = FmsCase.get("jbxx.fs") || {};
-    FmsCase.save("jbxx.fs", summary(fs.wpi, fs.sss), {
-      merge:true, button:this, back:"basic-info.html"
+    const fs = FmsCase.get("bqpg.fs") || {};
+    FmsCase.save("bqpg.fs", summary(fs.wpi, fs.sss), {
+      merge:true, button:this, back:"../bingqing-pinggu/index.html"
     });
   });
 })();

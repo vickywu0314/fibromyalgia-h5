@@ -14,7 +14,7 @@
     const iN = Number(hidden.dataset.int) || 2, dN = Number(hidden.dataset.dec) || 0;
     const mk = (cls, max) => {
       const el = document.createElement("input");
-      el.type = "text"; el.inputMode = "numeric"; el.maxLength = max; el.className = cls; el.autocomplete = "off";
+      el.type = "text"; el.inputMode = dN ? "decimal" : "numeric"; el.maxLength = max; el.className = cls; el.autocomplete = "off";
       el.setAttribute("aria-label", box.closest(".field").querySelector("span").textContent);
       return el;
     };
@@ -37,6 +37,19 @@
     };
     slots.forEach((el, k) => {
       el.addEventListener("input", () => {
+        // 在整数位输入「.」：跳到小数位（如体重 60.5：输入 6、0、. 、5）
+        if (k < iN && el.value.indexOf(".") !== -1) {
+          const [pre, post] = el.value.split(".");
+          el.value = pre.replace(/\D/g, "").slice(-1);
+          // 整数位右对齐（如只填了 7、2：显示为 _ 7 2）
+          const ip = ints.map(x => x.value).join("").slice(-iN);
+          ints.forEach((x, n) => { x.value = ip.charAt(n - (iN - ip.length)) || ""; });
+          const dd = (post || "").replace(/\D/g, "");
+          decs.forEach((x, n) => { if (dd.charAt(n)) x.value = dd.charAt(n); });
+          compose();
+          decs[Math.min(dd.length, dN - 1)].focus();
+          return;
+        }
         // 一次输入 / 粘贴多位数字时，依次填到后面的空里
         const digits = el.value.replace(/\D/g, "");
         let at = k;

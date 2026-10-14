@@ -413,7 +413,10 @@ const drugOf = n => catalog?.find(d => d.name === n);
 const renderDrug = () => {
   const n = nameSel.value;
   if (isNonDrug) { toggle(customBox, n === '其他'); toggle(details, !!n); return }
-  const d = drugOf(n); toggle(details, !!d); if (!d) return;
+  const d = drugOf(n); toggle(details, !!d);
+  // 口服中成药选「其他」：手动填写药物名称
+  if (customBox) toggle(customBox, n === '其他');
+  if (!d) return;
   const spec = document.getElementById('specRow'); if (spec) { spec.hidden = !d.spec; document.getElementById('specValue').textContent = d.spec }
   opts(doseSel, d.doses, '请选择单次剂量'); opts(freqSel, d.freqs, '请选择频次'); unitEl.textContent = d.unit;
   if (d.doses.length === 1) doseSel.value = d.doses[0];
@@ -425,6 +428,7 @@ renderDrug();
 if (editItem) {
   const names = [...nameSel.options].map(o => o.value);
   if (isNonDrug && (editItem.customName || (editItem.name && !names.includes(editItem.name)))) { nameSel.value = '其他'; renderDrug(); custom.value = editItem.customName || editItem.name }
+  else if (!isNonDrug && editItem.name && !names.includes(editItem.name)) { nameSel.value = '其他'; renderDrug(); custom.value = editItem.customName || editItem.name }
   else { nameSel.value = editItem.name || ''; renderDrug() }
   doseSel.value = (isNonDrug ? editItem.duration : editItem.dose) || doseSel.value; freqSel.value = editItem.frequency || freqSel.value;
 }
@@ -443,9 +447,12 @@ form.addEventListener('submit', e => {
     return;
   }
   const d = drugOf(n);
+  const customName = n === '其他' ? custom.value.trim() : '';
+  if (n === '其他' && !customName) { error.textContent = '请填写药物名称'; return }
   if (!doseSel.value || !freqSel.value) { error.textContent = '请选择单次剂量和频次'; return }
+  /* name：选“其他”时取填写的名称，customName 同时保存该名称（非“其他”为空串） */
   save({
-    name: n, category: base.category || '', dose: doseSel.value, unit: d.unit, frequency: freqSel.value,
+    name: customName || n, customName, category: base.category || '', dose: doseSel.value, unit: d.unit, frequency: freqSel.value,
     spec: d.spec || '', route: d.route || '',
     instructions: base.instructions || '', adjust: '', adjustment: '', reason: ''
   });

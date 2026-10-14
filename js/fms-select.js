@@ -11,11 +11,15 @@
     '.fsel.open>select{border-color:#168bdd}' +
     '.fsel-panel{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:60;max-height:264px;overflow-y:auto;-webkit-overflow-scrolling:touch;margin:0;padding:4px 0;list-style:none;background:#fff;border:1px solid #d4d7dc;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12)}' +
     '.fsel-panel li{display:flex;align-items:center;gap:8px;min-height:44px;padding:10px 14px;font-size:15px;line-height:1.4;color:#222;cursor:pointer}' +
-    '.fsel-panel li+li{border-top:1px solid #f0f1f3}' +
     '.fsel-panel li:active{background:#f3f8fd}' +
+    // 每项右侧单选圈；选中项：圈与文字均为主题蓝 #168BDD
+    '.fsel-panel li.opt::after{content:"";flex:none;box-sizing:border-box;width:18px;height:18px;margin-left:auto;border:1.5px solid #c3c8ce;border-radius:50%}' +
     '.fsel-panel li.on{color:#168bdd}' +
-    '.fsel-panel li.on::after{content:"✓";margin-left:auto;font-size:15px}' +
-    '.fsel-panel li[aria-disabled=true]{color:#b9bec5;cursor:default}';
+    '.fsel-panel li.on::after{border-color:#168bdd;background:radial-gradient(circle,#168bdd 0 4.5px,transparent 5px)}' +
+    // 「请选择…」作为标题居中展示，不可选、无单选圈
+    '.fsel-panel li.fsel-title{justify-content:center;color:#858b94;font-size:14px;cursor:default}' +
+    '.fsel-panel li.fsel-title:active{background:none}' +
+    '.fsel-panel li:not(.fsel-title)[aria-disabled=true]{color:#b9bec5;cursor:default}';
   var style = document.createElement('style'); style.textContent = css; document.head.appendChild(style);
 
   var current = null; // { wrap, panel }
@@ -35,8 +39,12 @@
     panel.className = 'fsel-panel';
     panel.setAttribute('role', 'listbox');
     Array.prototype.forEach.call(select.options, function (o) {
-      if (o.value === '' ) return; // 「请选择…」占位项不列出
       var li = document.createElement('li');
+      if (o.value === '') { // 「请选择…」占位项作为标题
+        li.className = 'fsel-title'; li.textContent = o.textContent; li.setAttribute('aria-disabled', 'true');
+        panel.insertBefore(li, panel.firstChild); return;
+      }
+      li.className = 'opt';
       li.setAttribute('role', 'option');
       li.textContent = o.textContent;
       li.dataset.value = o.value;
@@ -44,7 +52,7 @@
       if (o.disabled) li.setAttribute('aria-disabled', 'true');
       panel.appendChild(li);
     });
-    if (!panel.children.length) { var empty = document.createElement('li'); empty.textContent = '暂无可选项'; empty.setAttribute('aria-disabled', 'true'); panel.appendChild(empty); }
+    if (!panel.querySelector('.opt')) { var empty = document.createElement('li'); empty.textContent = '暂无可选项'; empty.setAttribute('aria-disabled', 'true'); panel.appendChild(empty); }
     panel.addEventListener('click', function (e) {
       var li = e.target.closest('li');
       if (!li || li.getAttribute('aria-disabled') === 'true' || li.dataset.value == null) return;
@@ -94,14 +102,14 @@
   }
 
   function scan(root) {
-    (root.querySelectorAll ? root.querySelectorAll('main select.control') : []).forEach(enhance);
+    (root.querySelectorAll ? root.querySelectorAll('main select') : []).forEach(enhance);
   }
   document.addEventListener('pointerdown', function (e) { if (current && !current.wrap.contains(e.target)) close(); }, true);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   function start() {
     scan(document);
     if (window.MutationObserver) new MutationObserver(function (list) {
-      list.forEach(function (m) { m.addedNodes.forEach(function (n) { if (n.nodeType === 1) { if (n.matches && n.matches('main select.control')) enhance(n); else scan(n); } }); });
+      list.forEach(function (m) { m.addedNodes.forEach(function (n) { if (n.nodeType === 1) { if (n.matches && n.matches('main select')) enhance(n); else scan(n); } }); });
     }).observe(document.body, { childList: true, subtree: true });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();

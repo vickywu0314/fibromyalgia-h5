@@ -164,6 +164,15 @@
       } else hits = zcyNames.filter(function (n) { return !q || n.indexOf(q) !== -1; });
       hits = hits.slice(0, MAX_SHOW);
       suggest.innerHTML = '';
+      // 列表里没有完全一致的药名：第一行提供「手动输入」，点选即使用输入的名称
+      if (q && !/^[a-z]+$/i.test(q) && zcyNames.indexOf(q) === -1) {
+        var manual = document.createElement('li');
+        manual.className = 'manual';
+        manual.setAttribute('role', 'option');
+        manual.dataset.value = q;
+        manual.textContent = '手动输入：' + q;
+        suggest.appendChild(manual);
+      }
       hits.forEach(function (n) {
         var li = document.createElement('li');
         li.setAttribute('role', 'option');
@@ -174,7 +183,7 @@
         if (n === q) li.className = 'on';
         suggest.appendChild(li);
       });
-      suggest.hidden = !hits.length || document.activeElement !== input;
+      suggest.hidden = !suggest.children.length || document.activeElement !== input;
     };
     input.addEventListener('focus', renderSuggest);
     input.addEventListener('input', function () { renderSuggest(); refresh(); });

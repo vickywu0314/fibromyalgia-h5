@@ -14,6 +14,7 @@
   /* 中成药（按新版 PDF）：15 种药品共用 频次(日1/2/3次) + 用量(1~5 片/粒) + 开始时间 + 结束时间（PDF 只在“大活络丸”下展开） */
   var ZCY_NAMES = ['乌灵胶囊', '通络开痹片', '盘龙七片', '祖师麻片', '元胡止痛滴丸', '新癀片', '金匮肾气丸', '大活络丸',
     '风湿去痛胶囊', '舒眠胶囊', '疏肝解郁胶囊', '瘀血痹胶囊', '骨康胶囊', '痹祺胶囊', '逍遥丸'];
+  var ZCY_EXTRA = ['通络开痹片', '元胡止痛滴丸', '金匮肾气丸', '大活络丸', '舒眠胶囊'];
   var ZCY_FREQS = ['日1次', '日2次', '日3次'];
   var ZCY_DOSES = ['1', '2', '3', '4', '5'];
 
@@ -25,7 +26,7 @@
   var ZHONGCHENGYAO = mk(ZCY_NAMES, ZCY_DOSES, ZCY_FREQS);
 
   /* 中成药药品库：从后端字典接口取（RA 数据库中成药，约 2300 种，按拼音排序），
-     PPT 列出的 15 种中接口里没有的补在列表最后；接口失败时仍用上面 15 种。
+     读完接口后在列表最后追加 ZCY_EXTRA（PPT 指定，接口里已有的也挪到最后，不重复）；接口失败时仍用上面 15 种。
      接口：POST /api/fms/patient/xyzcy/dict?drugType=2&searchType=1，返回 {首字母: [药品名...]} */
   function cleanName(n) { return String(n || '').replace(/^[^\u4e00-\u9fff]+/, '').trim(); }
   function namesFromDict(data) {
@@ -46,8 +47,7 @@
     return loadZhongchengyao().then(function (names) {
       if (!names.length) throw new Error('empty');
       try { names.sort(new Intl.Collator('zh-Hans-CN').compare); } catch (e) {}
-      var has = {}; names.forEach(function (n) { has[n] = 1; });
-      return names.concat(ZCY_NAMES.filter(function (n) { return !has[n]; }));
+      return names.filter(function (n) { return ZCY_EXTRA.indexOf(n) === -1; }).concat(ZCY_EXTRA);
     });
   }
 

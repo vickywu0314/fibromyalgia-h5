@@ -13,3 +13,5 @@
 
 /* 无数据：居中展示 */
 .empty{text-align:center;padding:16px 0}
+
+.drug-suggest li.manual{color:#168bdd;font-weight:500}

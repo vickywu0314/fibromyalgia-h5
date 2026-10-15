@@ -10,9 +10,9 @@
   // 页面 data-assessment → 草稿 bqpg 下的 key
   var KEY_MAP = {
     vas: 'vas', fiqr: 'fiqr', pcs: 'pcs', mfi20: 'mfi20', psqi: 'psqi',
-    had: 'had', sf12: 'sf12', 'pain-detect': 'painDetect', cfq: 'cfq'
+    had: 'had', sf12: 'sf12', 'pain-detect': 'painDetect', cfq: 'cfq', promis29: 'promis29'
   };
-  var SCALES = ['vas', 'fiqr', 'pcs', 'mfi20', 'psqi', 'had', 'sf12', 'painDetect', 'cfq'];
+  var SCALES = ['vas', 'fiqr', 'pcs', 'mfi20', 'psqi', 'had', 'sf12', 'painDetect', 'cfq', 'promis29'];
 
   function num(v) { var n = Number(v); return v === '' || v == null || isNaN(n) ? null : n; }
   function sum(a, names) { return names.reduce(function (t, k) { return t + (num(a[k]) || 0); }, 0); }
@@ -154,7 +154,10 @@
     },
 
     // CFQ（Broadbent 1982）：25 题，每题 0–4（页面 value 即分值），总分 0–100。result 留空。
-    cfq: function (a) { return { score: String(sum(a, range('cfq', 1, 25))), result: '' }; }
+    cfq: function (a) { return { score: String(sum(a, range('cfq', 1, 25))), result: '' }; },
+    // PROMIS-29+2：各维度原始分（题目分值已按问卷正/反向写在选项上，直接相加）写进 answers（见 promisDims），
+    // 无总分及判定
+    promis29: function () { return { score: '', result: '' }; }
   };
 
   function minutes(t) {
@@ -285,6 +288,19 @@
     return { answered: answered, total: total, missing: missing };
   }
 
+  // PROMIS-29+2 维度原始分：该维度题目全部作答才计，否则为空串（字段名按后端样例）
+  var PROMIS_DIMS = {
+    physicalFunction: range('pf', 1, 4), anxiety: range('anx', 1, 4), depression: range('dep', 1, 4),
+    fatigue: range('fat', 1, 4), sleepDisturbance: range('sleep', 1, 4), socialRoles: range('soc', 1, 4),
+    painInterference: range('pain', 1, 4), cognitiveFunction: range('cog', 1, 2)
+  };
+  function promisDims(a) {
+    Object.keys(PROMIS_DIMS).forEach(function (d) {
+      var items = PROMIS_DIMS[d];
+      a[d] = items.every(function (k) { return num(a[k]) != null; }) ? String(sum(a, items)) : '';
+    });
+  }
+
   function pad(x) { return String(x).padStart(2, '0'); }
   function collect() {
     var a = {};
@@ -301,6 +317,7 @@
       var h = a[n + 'Hour'], m = a[n + 'Minute'];
       a[n] = h !== '' && m !== '' && h != null && m != null ? pad(h) + ':' + pad(m) : '';
     });
+    if (key === 'promis29') promisDims(a);
     return a;
   }
 

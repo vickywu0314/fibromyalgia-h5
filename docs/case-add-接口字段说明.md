@@ -60,7 +60,7 @@
 - 病史病情页按产品原型只保留：全身症状、二便、舌象、月经情况。月经情况为「分期 + 育龄期子问题」，原来的 `menstrualItems`（9 项多选）不再提交。全身症状的证型（肝郁气滞等）和月经的经期/经色/经量/痛经前面的勾选框只是分组开关，不单独提交。
 - 「周身疼痛发病时间、是否确诊、确诊时间、确诊医疗机构级别」存在 `jbxx.painOnsetDate / diagnosed / diagnosisDate / hospitalLevel`。按产品原型只在基本信息页（饮酒史后面）填写，病史病情页已去掉，随访记录里不再填写。`diagnosed` 不是「是」时，`diagnosisDate / hospitalLevel` 为空串。
 - 人体成分分析（`jbxx.bodyComposition`，选填）：新增提交 `height`（身高 cm，最多 3 位整数）、`weight`（体重 Kg，最多 3 位整数 1 位小数）；`bodyFatPercentage / bodyFatMass / skeletalMuscleMass / skeletalMuscleIndex` 为最多 2 位整数 1 位小数（如 `"23.5"`）；`waistHipRatio` 为 `"0.xy"`（页面「0.」后两个空直接输入）。去脂体重 `leanBodyMass`、内脏脂肪等级 `visceralFatLevel` 页面已删除，旧数据原样保留提交。
-- **CSI-9、压痛点 TPC、纤维肌痛症状量表 FS 移到病情评估前 3 位，数据改存 `bqpg.csi / bqpg.tpc / bqpg.fs`**（结构与原 `jbxx.csi / tpc / fs` 相同，FS 下仍含 `wpi / sss`），随病情评估以 `part: "bqpg"` 提交，随诊记录同样填写。`bqpg.finish` 改为这 3 项 + 9 个量表共 12 项都完成才为 `true`。旧数据：读取时若 `bqpg` 下没有而 `jbxx` 下有，前端自动复制到 `bqpg` 下，`jbxx` 下的原样保留。
+- **CSI-9、压痛点 TPC、纤维肌痛症状量表 FS 移到病情评估前 3 位，数据改存 `bqpg.csi / bqpg.tpc / bqpg.fs`**（结构与原 `jbxx.csi / tpc / fs` 相同，FS 下仍含 `wpi / sss`），随病情评估以 `part: "bqpg"` 提交，随诊记录同样填写。`bqpg.finish` 改为这 3 项 + 10 个量表（含 PROMIS-29+2）共 13 项都完成才为 `true`。旧数据：读取时若 `bqpg` 下没有而 `jbxx` 下有，前端自动复制到 `bqpg` 下，`jbxx` 下的原样保留。
 - 间接成本评估（工作生产力及活动受损问卷，`jbxx.work`）按需求去掉页面入口，代码保留。
 - `jbxx.ethnicity`：民族，`"汉族"` / `"其他"`，未选为空串。
 - `jbxx.ethnicityOther`：选「其他」时填写的民族名（如 `"回族"`），选汉族时为空串。（后端已按此字段名增加；旧版前端用过的 `jbxx.nation` 已不再提交，读取时仍兼容。）
@@ -190,3 +190,11 @@
 - 患者列表 → 点患者 → 随访记录列表 → 点某条记录：调 `case/detail` 取整份数据，进入该记录的模块页（基线访问 7 个模块，随诊 6 个），**默认查看**。
 - 点某个模块：模块页只读（输入锁定，隐藏保存/添加/删除），底部「返回」「编辑」。点「编辑」只放开当前模块（含其子页面），保存时调 `case/add`，带该记录的 `id`（= caseId），`part` 为该模块，即更新这一条记录；保存后回到模块列表，恢复只读。
 - 模块列表底部「查看随诊病历」（基线为「查看病历」）：进入 `case-view.html`，把本条记录各模块的数据汇总成只读病历页。
+
+### bqpg.promis29（PROMIS-29+2，新增，字段按后端样例）
+
+病情评估列表最后一项。结构与其他量表相同：`finish`、`answered`、`total`（31）、`answers`，另有空的 `score`、`result`（本量表无总分及判定）。
+
+`answers` 内：
+- 题目：`pf1–pf4`（生理功能）、`anx1–anx4`（焦虑）、`dep1–dep4`（沮丧）、`fat1–fat4`（疲劳）、`sleep1–sleep4`（睡眠困扰）、`soc1–soc4`（社会角色）、`pain1–pain4`（疼痛干扰）、`cog1–cog2`（认知功能）、`painIntensity`（疼痛强度 0–10）。值为问卷选项上的分值（已按正/反向计分写好）。
+- 维度原始分（该维度题目全部作答才有值，否则空串）：`physicalFunction`、`anxiety`、`depression`、`fatigue`、`sleepDisturbance`、`socialRoles`、`painInterference`、`cognitiveFunction`，为对应题目分值之和。

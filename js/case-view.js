@@ -124,7 +124,7 @@ if (isBaseline) {
 // ---------- 病情评估 ----------
 {
   const s = section('病情评估'), p = c.bqpg || {};
-  const names = { vas: '疼痛评估 VAS', fiqr: '整体病情评估 FIQR', pcs: '疼痛灾难化 PCS', mfi20: '疲劳评估 MFI-20', psqi: '睡眠评估 PSQI', had: '焦虑抑郁 HAD', sf12: '生活质量 SF-12', painDetect: '神经病理性疼痛 painDETECT', cfq: '认知评估：认知问卷' };
+  const names = { vas: '疼痛评估 VAS', fiqr: '整体病情评估 FIQR', pcs: '疼痛灾难化 PCS', mfi20: '疲劳评估 MFI-20', psqi: '睡眠评估 PSQI', had: '焦虑抑郁 HAD', sf12: '生活质量 SF-12', painDetect: '神经病理性疼痛 painDETECT', cfq: '认知评估：认知问卷', promis29: 'PROMIS-29+2' };
   // CSI / TPC / FS 排在 9 个量表之前（数据在 bqpg 下；旧记录在 jbxx 下）
   const q = { csi: p.csi || j.csi, tpc: p.tpc || j.tpc }, fs = p.fs || j.fs || {};
   const n = rows(s, [

@@ -8,7 +8,7 @@
   var PARTS = ['jbxx', 'bsbq', 'zhpd', 'fzjc', 'bqpg', 'zlfa', 'blsj'];
   var PART_NAMES = { jbxx: '基本信息', bsbq: '病史病情', zhpd: '证候判断', fzjc: '辅助检查', bqpg: '病情评估', zlfa: '本次治疗方案', blsj: '不良反应' };
   // 病情评估 9 个量表
-  var BQPG_SCALES = ['vas', 'fiqr', 'pcs', 'mfi20', 'psqi', 'had', 'sf12', 'painDetect', 'cfq'];
+  var BQPG_SCALES = ['vas', 'fiqr', 'pcs', 'mfi20', 'psqi', 'had', 'sf12', 'painDetect', 'cfq', 'promis29'];
   // 按需求放在病情评估前 3 位的问卷：数据存 bqpg.csi / bqpg.tpc / bqpg.fs（病情评估的子项，后端确认）
   var BQPG_EXTRA = ['csi', 'tpc', 'fs'];
   // 病情评估全部 12 项（3 项 + 9 个量表）都完成时 bqpg.finish = true

@@ -66,7 +66,7 @@ modules.forEach(m => {
   if (saved && !finished) badge(state, '待提交', '已保存，有改动尚未提交，点击完成录入时会自动提交', 'sync');
   else if (!saved && startedPart(part)) badge(state, '填写中', '已填写部分内容，尚未保存');
 });
-// 病情评估：CSI / TPC / FS + 9 个量表共 12 项（都在 bqpg 下），边填边暂存；未全部完成（或有未提交改动）时显示已完成数 x/12
+// 病情评估：CSI / TPC / FS + 10 个量表共 13 项（都在 bqpg 下），边填边暂存；未全部完成（或有未提交改动）时显示已完成数 x/13
 {
   const m = modules.find(x => x.dataset.part === 'bqpg');
   const p = draft.bqpg || {};

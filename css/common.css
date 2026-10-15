@@ -148,7 +148,7 @@ a.module:hover {
 .rowtop .due{flex:none;font-size:12px;color:#168bdd;white-space:nowrap}
 .rowtop .due[hidden]{display:none}
 /* 患者资料页：患者卡片贴近顶部栏；资料完成度只展示，不可点击 */
-.detail-main{padding-top:4px!important}
+.detail-main{padding-top:12px!important}
 .detail-main>.patient-card{margin-top:0}
 .progress-card{cursor:default;-webkit-tap-highlight-color:transparent}
 .progress-card:active{background:#fff;transform:none}

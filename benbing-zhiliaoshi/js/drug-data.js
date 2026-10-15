@@ -24,6 +24,33 @@
   var XIYAO = mk(XIYAO_NAMES, XIYAO_DOSES, XIYAO_FREQS);
   var ZHONGCHENGYAO = mk(ZCY_NAMES, ZCY_DOSES, ZCY_FREQS);
 
+  /* 中成药药品库：从后端字典接口取（RA 数据库中成药，约 2300 种，按拼音排序），
+     PPT 列出的 15 种中接口里没有的补在列表最后；接口失败时仍用上面 15 种。
+     接口：POST /api/fms/patient/xyzcy/dict?drugType=2&searchType=1，返回 {首字母: [药品名...]} */
+  function cleanName(n) { return String(n || '').replace(/^[^\u4e00-\u9fff]+/, '').trim(); }
+  function namesFromDict(data) {
+    var seen = {}, out = [];
+    Object.keys(data || {}).forEach(function (k) {
+      (data[k] || []).forEach(function (n) { n = cleanName(n); if (n && !seen[n]) { seen[n] = 1; out.push(n); } });
+    });
+    return out;
+  }
+  function loadZhongchengyao(params) {
+    return global.FmsApi.post('/api/fms/patient/xyzcy/dict', Object.assign({ drugType: 2, searchType: 1, researchType: 12, doctorId: global.FmsApi.getDoctorId() }, params || {}))
+      .then(function (res) {
+        if (!res || res.success === false) throw new Error((res && res.message) || '中成药字典加载失败');
+        return namesFromDict(res.data);
+      });
+  }
+  function zcyLibrary() {
+    return loadZhongchengyao().then(function (names) {
+      if (!names.length) throw new Error('empty');
+      try { names.sort(new Intl.Collator('zh-Hans-CN').compare); } catch (e) {}
+      var has = {}; names.forEach(function (n) { has[n] = 1; });
+      return names.concat(ZCY_NAMES.filter(function (n) { return !has[n]; }));
+    });
+  }
+
   /* 非药物疗法：每种疗法均为 单次时长(5~60) + 单位(分钟) + 频次(14 档)；“其他”另需填写名称 */
   var FEI_YAOWU = {
     names: ['太极拳', '八段锦', '针灸', '拔罐', '推拿', '耳针', '中药熏洗', '穴位贴敷', '耳电针', '针刀疗法', '穴位埋线', '刮痧', '揿针', '芳香疗法', '瑜伽', '冥想', '其他'],
@@ -34,5 +61,5 @@
 
   var STOP_REASONS = ['疗效不佳或无效', '症状缓解', '不良反应', '患者自行停用', '经济原因', '治疗方案调整', '疗程结束', '其他'];
 
-  global.BenbingData = { DOSE_UNIT: DOSE_UNIT, XIYAO: XIYAO, ZHONGCHENGYAO: ZHONGCHENGYAO, FEI_YAOWU: FEI_YAOWU, STOP_REASONS: STOP_REASONS };
+  global.BenbingData = { DOSE_UNIT: DOSE_UNIT, XIYAO: XIYAO, ZHONGCHENGYAO: ZHONGCHENGYAO, zcyLibrary: zcyLibrary, loadZhongchengyao: loadZhongchengyao, FEI_YAOWU: FEI_YAOWU, STOP_REASONS: STOP_REASONS };
 })(window);

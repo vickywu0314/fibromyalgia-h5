@@ -139,15 +139,37 @@
   var suggest = document.getElementById('zcyList');
   if (suggest && list) {
     var input = els[nameField];
+    // 药品库：先用内置 15 种，接口返回后换成完整药品库（约 2300 种 + 补充项）
+    var zcyNames = list.map(function (x) { return x.name; });
+    var pinyinHits = null, pinyinFor = '', pinyinTimer = null;
+    if (D.zcyLibrary) D.zcyLibrary().then(function (names) { zcyNames = names; if (document.activeElement === input) renderSuggest(); }).catch(function () {});
+    var MAX_SHOW = 100; // 列表一次最多显示 100 条，输入关键字缩小范围
     var renderSuggest = function () {
       var q = input.value.trim();
-      var hits = list.map(function (x) { return x.name; }).filter(function (n) { return !q || n.indexOf(q) !== -1; });
+      var hits;
+      if (/^[a-z]+$/i.test(q)) {
+        // 输入拼音首字母（如 wljn）：交给后端按拼音头检索
+        hits = pinyinFor === q.toLowerCase() && pinyinHits ? pinyinHits : [];
+        if (pinyinFor !== q.toLowerCase()) {
+          clearTimeout(pinyinTimer);
+          pinyinTimer = setTimeout(function () {
+            var kw = input.value.trim().toLowerCase();
+            if (!/^[a-z]+$/.test(kw) || !D.loadZhongchengyao) return;
+            D.loadZhongchengyao({ kw: kw }).then(function (names) {
+              if (input.value.trim().toLowerCase() !== kw) return;
+              pinyinFor = kw; pinyinHits = names; renderSuggest();
+            }).catch(function () {});
+          }, 250);
+        }
+      } else hits = zcyNames.filter(function (n) { return !q || n.indexOf(q) !== -1; });
+      hits = hits.slice(0, MAX_SHOW);
       suggest.innerHTML = '';
       hits.forEach(function (n) {
         var li = document.createElement('li');
         li.setAttribute('role', 'option');
         li.dataset.value = n;
-        if (q) { var i = n.indexOf(q); li.innerHTML = ''; li.append(n.slice(0, i)); var m = document.createElement('mark'); m.textContent = q; li.append(m, n.slice(i + q.length)); }
+        var i = q ? n.indexOf(q) : -1;
+        if (i !== -1) { li.append(n.slice(0, i)); var m = document.createElement('mark'); m.textContent = q; li.append(m, n.slice(i + q.length)); }
         else li.textContent = n;
         if (n === q) li.className = 'on';
         suggest.appendChild(li);

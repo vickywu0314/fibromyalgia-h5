@@ -43,5 +43,18 @@ window.FmsApi = {
       if (!response.ok) throw new Error('请求失败，请稍后重试');
       return await response.json();
     } finally { clearTimeout(timer); }
+  },
+  // POST，参数放在网址查询串上（后端以 @RequestParam 接收），无请求体
+  async post(path, params) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await fetch(path + '?' + new URLSearchParams(params), {
+        method: 'POST', credentials: 'include', signal: controller.signal,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      });
+      if (!response.ok) throw new Error('请求失败，请稍后重试');
+      return await response.json();
+    } finally { clearTimeout(timer); }
   }
 };

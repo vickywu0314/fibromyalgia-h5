@@ -127,10 +127,40 @@
     return moved;
   }
 
+  // 后端回传问卷时会把 answers 展开到同一层（如 bqpg.promis29.pf1，而不是 bqpg.promis29.answers.pf1），
+  // 各问卷页只从 answers 回显，展开后重新打开就显示为空。读取时把这些作答字段收回 answers（原字段保留）。
+  var ANSWER_META = { finish: 1, score: 1, result: 1, answered: 1, total: 1, answers: 1 };
+  function regroupAnswers(v) {
+    if (!v || typeof v !== 'object' || Array.isArray(v)) return false;
+    if (v.answers && typeof v.answers === 'object' && Object.keys(v.answers).length) return false;
+    var a = {}, n = 0;
+    Object.keys(v).forEach(function (k) {
+      var x = v[k];
+      if (ANSWER_META[k] || x == null) return;
+      if (typeof x !== 'object' || Array.isArray(x)) { a[k] = x; n++; } // 子对象（如 fs.wpi）不算作答字段
+    });
+    if (!n) return false;
+    v.answers = a;
+    return true;
+  }
+  function regroupCase(c) {
+    if (!c) return false;
+    var changed = false, b = c.bqpg, j = c.jbxx;
+    if (b && typeof b === 'object') {
+      BQPG_ALL.forEach(function (k) { if (k !== 'fs' && regroupAnswers(b[k])) changed = true; });
+      if (b.fs && typeof b.fs === 'object') ['wpi', 'sss'].forEach(function (k) { if (regroupAnswers(b.fs[k])) changed = true; });
+    }
+    if (j && typeof j === 'object') {
+      ['csi', 'tpc', 'tipi', 'sffq', 'work'].forEach(function (k) { if (regroupAnswers(j[k])) changed = true; });
+      if (j.fs && typeof j.fs === 'object') ['wpi', 'sss'].forEach(function (k) { if (regroupAnswers(j.fs[k])) changed = true; });
+    }
+    return changed;
+  }
+
   function load() {
     var c = read();
     if (!c) { c = skeleton(); write(c); }
-    else if (migrateBqpgExtra(c)) write(c);
+    else if (migrateBqpgExtra(c) | regroupCase(c)) write(c);
     return c;
   }
 

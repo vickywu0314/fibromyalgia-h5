@@ -210,6 +210,7 @@
       var id = d.id != null ? d.id : (d.caseId != null ? d.caseId : d.recordId);
       if (id != null) c.id = id;
       if (d.patientId != null) c.patientId = d.patientId;
+      if (d.researchNo) c.researchNo = d.researchNo;
     }
   }
 
@@ -325,6 +326,7 @@
     c.patientId = p.patientId != null ? p.patientId : (p.id != null ? p.id : null);
     c.jbxx.name = info.name || p.name || '';
     c.jbxx.idCard = info.idCard || p.cardno || p.cardNo || p.idCard || '';
+    c.researchNo = p.researchNo || ''; // 研究编号：后端生成（如 CS2026101301），新患者保存后由接口返回
     // 性别：优先用已有患者资料，统一成「男/女」；没有时按 18 位身份证第 17 位推出（奇男偶女）
     var g = String(p.gender != null ? p.gender : (p.sex != null ? p.sex : ''));
     var gender = { '男': '男', '女': '女', '1': '男', '2': '女', 'M': '男', 'F': '女', 'male': '男', 'female': '女' }[g] || '';
@@ -346,6 +348,7 @@
     c.patientId = info.patientId != null && info.patientId !== '' ? (/^\d+$/.test(String(info.patientId)) ? Number(info.patientId) : info.patientId) : null;
     c.jbxx.name = info.name || '';
     c.jbxx.idCard = info.idCard || '';
+    c.researchNo = info.researchNo || '';
     write(c);
     newCaseToken();
     return c;
@@ -373,6 +376,7 @@
     c.doctorId = did;
     c.visitType = d.visitType || info.visitType || c.visitType;
     c.visitDate = d.visitDate || (c.jbxx && c.jbxx.visitDate) || info.visitDate || c.visitDate;
+    c.researchNo = d.researchNo || info.researchNo || '';
     if (!c.jbxx.name && info.name) c.jbxx.name = info.name;
     if (!c.jbxx.idCard && info.idCard) c.jbxx.idCard = info.idCard;
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}

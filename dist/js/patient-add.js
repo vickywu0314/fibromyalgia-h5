@@ -16,7 +16,7 @@ function showExisting(p, enteredName, cardNo) {
   // 直接进入该患者的随访记录，在那里「新增随访记录」录入病情变化；查不到患者 id 时退回患者列表
   const pid = p.patientId ?? p.id ?? '';
   existNotice.querySelector('#goFollowUp').href = pid !== ''
-    ? './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name, cardno: p.cardno || p.cardNo || cardNo })
+    ? './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name, cardno: p.cardno || p.cardNo || cardNo, researchNo: p.researchNo || '' })
     : './patient-list.html?' + new URLSearchParams({ keyword: name });
   existNotice.hidden = false;
   existNotice.querySelector('#goFollowUp').focus();

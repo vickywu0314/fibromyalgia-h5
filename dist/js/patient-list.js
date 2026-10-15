@@ -65,7 +65,7 @@ async function loadPatients() {
       const pid = patient.patientId ?? patient.id ?? '';
       const cardNo = patient.cardno || patient.cardNo || patient.idCard || '';
       button.onclick = () => {
-        location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name, cardno: cardNo });
+        location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: pid, name, cardno: cardNo, researchNo: patient.researchNo || '' });
       };
       list.append(button);
     }

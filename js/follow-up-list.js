@@ -4,6 +4,7 @@ const params = new URLSearchParams(location.search);
 const name = params.get('name') || '患者';
 const patientId = params.get('patientId') || '';
 const cardno = params.get('cardno') || '';
+const researchNo = params.get('researchNo') || ''; // 研究编号（由患者列表带入）
 patientName.textContent = '当前患者：' + name;
 const listEl = document.getElementById('visits');
 const emptyEl = document.getElementById('empty');
@@ -106,7 +107,7 @@ async function openCase(caseId, visitType, visitDate) {
     FmsCase.toast('正在加载…');
     sessionStorage.removeItem('fms_patient_prefill');
     sessionStorage.setItem('fms_case_from', 'followup');
-    await FmsCase.loadCase({ caseId, patientId, visitType, visitDate, name, idCard: cardno });
+    await FmsCase.loadCase({ caseId, patientId, visitType, visitDate, name, idCard: cardno, researchNo });
     location.href = './patient-detail.html';
   } catch (error) {
     FmsCase.toast(error.name === 'AbortError' ? '加载超时，请稍后重试' : error.message);
@@ -129,7 +130,7 @@ addVisit.onclick = () => {
   if (!patientId) { FmsCase.toast('缺少患者 id，请从患者列表进入'); return; }
   sessionStorage.removeItem('fms_patient_prefill'); // 清掉上次新增患者的查重信息，避免显示别人的研究编号
   sessionStorage.setItem('fms_case_from', 'followup');
-  FmsCase.startFollowUp({ patientId, name, idCard: cardno });
+  FmsCase.startFollowUp({ patientId, name, idCard: cardno, researchNo });
   location.href = './patient-detail.html';
 };
 

@@ -6,7 +6,8 @@ try { prefill = JSON.parse(sessionStorage.getItem('fms_patient_prefill') || '{}'
 if ((prefill.entered?.cardNo || '') !== (draft.jbxx.idCard || '')) prefill = {};
 const q = new URLSearchParams(location.search);
 const n = draft.jbxx.name || prefill.patient?.name || prefill.entered?.name || q.get('name') || '待填写患者';
-const code = prefill.patient?.researchNo || prefill.patient?.patientNo || q.get('code') || '待分配';
+// 研究编号：后端字段 researchNo（病例详情 / 患者列表 / 查重结果返回），还没有时显示「待分配」
+const code = draft.researchNo || prefill.patient?.researchNo || prefill.patient?.patientNo || q.get('code') || '待分配';
 pname.textContent = n; pid.textContent = '研究编号 ' + code; avatar.textContent = n.slice(-1);
 
 // 随访：同一患者下的新病例，不含基本信息模块；显示可修改的随访日期
@@ -14,7 +15,7 @@ const isFollowUp = draft.visitType === '随诊';
 // 从随访记录进入（新增随诊或打开已有记录）的，完成后回随访记录；新增患者的回患者列表
 const fromFollowUp = sessionStorage.getItem('fms_case_from') === 'followup';
 const backUrl = (isFollowUp || fromFollowUp) && draft.patientId != null
-  ? './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId ?? '', name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '' })
+  ? './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId ?? '', name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '', researchNo: draft.researchNo || '' })
   : './patient-list.html';
 if (isFollowUp) {
   document.title = '新增随访记录';
@@ -25,7 +26,7 @@ if (isFollowUp) {
 }
 document.getElementById('history').onclick = () => {
   if (draft.patientId == null) { FmsCase.toast('保存基本信息后可查看随访记录'); return; }
-  location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId, name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '' });
+  location.href = './follow-up-list.html?' + new URLSearchParams({ patientId: draft.patientId, name: draft.jbxx.name || '', cardno: draft.jbxx.idCard || '', researchNo: draft.researchNo || '' });
 };
 
 // 查看已有记录：回到这一页即恢复只读；点模块进入只读页，在模块页点「编辑」只放开那一个模块

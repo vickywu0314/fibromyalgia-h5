@@ -62,7 +62,8 @@
 - 人体成分分析（`jbxx.bodyComposition`，选填）：新增提交 `height`（身高 cm，最多 3 位整数）、`weight`（体重 Kg，最多 3 位整数 1 位小数）；`bodyFatPercentage / bodyFatMass / skeletalMuscleMass / skeletalMuscleIndex` 为最多 2 位整数 1 位小数（如 `"23.5"`）；`waistHipRatio` 为 `"0.xy"`（页面「0.」后两个空直接输入）。去脂体重 `leanBodyMass`、内脏脂肪等级 `visceralFatLevel` 页面已删除，旧数据原样保留提交。
 - **CSI-9、压痛点 TPC、纤维肌痛症状量表 FS 移到病情评估前 3 位，数据改存 `bqpg.csi / bqpg.tpc / bqpg.fs`**（结构与原 `jbxx.csi / tpc / fs` 相同，FS 下仍含 `wpi / sss`），随病情评估以 `part: "bqpg"` 提交，随诊记录同样填写。`bqpg.finish` 改为这 3 项 + 9 个量表共 12 项都完成才为 `true`。旧数据：读取时若 `bqpg` 下没有而 `jbxx` 下有，前端自动复制到 `bqpg` 下，`jbxx` 下的原样保留。
 - 间接成本评估（工作生产力及活动受损问卷，`jbxx.work`）按需求去掉页面入口，代码保留。
-- `jbxx.nation`：**新增**，民族。页面单选「汉族 / 其他」，选汉族时为 `"汉族"`，选其他时为填写的民族名（如 `"回族"`），未选为空串。**需后端在结构体中增加该字段。**
+- `jbxx.ethnicity`：民族，`"汉族"` / `"其他"`，未选为空串。
+- `jbxx.ethnicityOther`：选「其他」时填写的民族名（如 `"回族"`），选汉族时为空串。（后端已按此字段名增加；旧版前端用过的 `jbxx.nation` 已不再提交，读取时仍兼容。）
 - `jbxx.phone`：手机号，基本信息页填写（身份证号下面），选填，填了须为 11 位大陆手机号。
 
 ### zhpd 证候判断

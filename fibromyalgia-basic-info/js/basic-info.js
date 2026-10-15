@@ -115,10 +115,12 @@
     let types = Array.isArray(j.drinkTypes) ? j.drinkTypes : (typeof j.drinkType === "string" && j.drinkType ? j.drinkType.split(/[、,，]/) : []);
     j.drinkType = types;
     delete j.drinkTypes;
-    // 民族：jbxx.nation 为「汉族」或具体民族名 → 拆成单选 + 其他填写框
+    // 民族：后端字段 jbxx.ethnicity（汉族 / 其他）+ jbxx.ethnicityOther（其他时的民族名）；
+    // 兼容旧草稿里的 jbxx.nation（「汉族」或具体民族名）
+    const eth = typeof j.ethnicity === "string" ? j.ethnicity.trim() : "";
     const nation = typeof j.nation === "string" ? j.nation.trim() : "";
-    j.nationType = !nation ? "" : nation === "汉族" ? "汉族" : "其他";
-    j.nationOther = nation && nation !== "汉族" ? nation : "";
+    if (eth) { j.nationType = eth; j.nationOther = eth === "其他" ? String(j.ethnicityOther || "").trim() : ""; }
+    else { j.nationType = !nation ? "" : nation === "汉族" ? "汉族" : "其他"; j.nationOther = nation && nation !== "汉族" ? nation : ""; }
     return j;
   }
   const jbxx = FmsCase.get("jbxx") || {};
@@ -236,8 +238,9 @@
       idCard: idCard.value.trim().toUpperCase(),
       phone: phone.value.trim(),
       gender: d.gender || "",
-      // 民族：选汉族为「汉族」，选其他为填写的民族名
-      nation: d.nationType === "汉族" ? "汉族" : d.nationType === "其他" ? String(d.nationOther || "").trim() : "",
+      // 民族：ethnicity 为「汉族」/「其他」；选其他时 ethnicityOther 为填写的民族名，选汉族时为空串
+      ethnicity: d.nationType === "汉族" || d.nationType === "其他" ? d.nationType : "",
+      ethnicityOther: d.nationType === "其他" ? String(d.nationOther || "").trim() : "",
       province: d.province || "",
       city: d.city || "",
       marriage: d.marriage || "",

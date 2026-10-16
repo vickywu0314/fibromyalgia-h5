@@ -32,6 +32,3 @@
 .bottom .pager button{flex:1;width:auto}
 .bottom .pager button.ghost{background:#fff;color:#168bdd;border:1px solid #168bdd}
 .pager [hidden]{display:none!important}
-/* 输入框统一主题蓝 */
-.extra input,.text-line input,.other-food-row input{border-color:#168bdd}
-.extra input:focus,.text-line input:focus,.other-food-row input:focus{outline:none;border-color:#168bdd;box-shadow:0 0 0 2px rgba(22,139,221,.18)}

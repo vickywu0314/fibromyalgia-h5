@@ -445,17 +445,16 @@
     (document.head || document.documentElement).appendChild(st);
   })();
 
-  // 输入框 / 下拉框 / 多行文本框：边框统一为主题蓝 #168BDD（与按钮描边一致）。
-  // 只改边框颜色，无边框的输入框（搜索框、下划线填空）不受影响；禁用状态保持灰色。
+  // 输入框 / 下拉框 / 多行文本框：默认沿用各页原来的灰色边框，获得焦点（正在输入）时边框变为主题蓝 #168BDD。
+  // 搜索框：外框在输入时变蓝，内部输入框不再出现手机默认的焦点框。
   (function inputBorderStyle() {
     if (document.getElementById('fmsInputBorder')) return;
-    var sel = ['input:not([type=radio]):not([type=checkbox]):not([type=range]):not([type=hidden]):not([type=file]):not(.blank):not(:disabled)',
-      'select:not(:disabled)', 'textarea:not(:disabled)'];
+    var sel = 'input:not([type=radio]):not([type=checkbox]):not([type=range]):not([type=hidden]):not([type=file]):not(.blank):focus,select:focus,textarea:focus';
     var st = document.createElement('style');
     st.id = 'fmsInputBorder';
-    st.textContent = sel.join(',') + '{border-color:#168bdd!important}' +
-      sel.map(function (x) { return x + ':focus'; }).join(',') + '{outline:none;box-shadow:0 0 0 2px rgba(22,139,221,.18)}' +
-      '.searchbox input:focus{box-shadow:none}.searchbox{border-color:#168bdd}';
+    st.textContent = sel + '{outline:none;border-color:#168bdd!important;box-shadow:none}' +
+      '.searchbox input,.searchbox input:focus{-webkit-appearance:none;appearance:none;border:0!important;outline:none;box-shadow:none}' +
+      '.searchbox:focus-within{border-color:#168bdd}';
     (document.head || document.documentElement).appendChild(st);
   })();
 

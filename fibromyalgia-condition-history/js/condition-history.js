@@ -39,13 +39,17 @@
 
  // 条件显示：父选项未选中时隐藏子区域，并禁用 + 清空其中的输入，避免脏数据提交。
  // 分组勾选框（全身症状的证型、月经的经期/经色等）：只是分组开关，不单独提交。
- // 勾了组内任一选项自动勾上；取消分组则清空组内选项；回显时按组内是否有选项决定勾选状态。
+ // 组内是多选（全身症状）：勾选标题 = 全选组内选项，取消 = 全部取消；组内全选时标题勾上，部分选中时标题显示「—」（半选）。
+ // 组内是单选（月经）：勾了组内选项自动勾上标题；取消标题则清空组内选项。回显时按组内选项决定标题状态。
  const groups=[...form.querySelectorAll('[data-group]')];
+ const kidsOf=g=>[...g.querySelectorAll('input:not([data-parent])')];
+ const isMulti=g=>kidsOf(g).every(el=>el.type==='checkbox');
  function syncParents(){
    groups.forEach(g=>{
      const parent=g.querySelector('[data-parent]');
-     const any=[...g.querySelectorAll('input:not([data-parent])')].some(el=>el.checked);
-     if(any)parent.checked=true;
+     const kids=kidsOf(g), n=kids.filter(el=>el.checked).length;
+     if(isMulti(g)){ parent.checked=n>0&&n===kids.length; parent.indeterminate=n>0&&n<kids.length; }
+     else if(n)parent.checked=true;
      parent.disabled=g.closest('[hidden]')!==null;
    });
  }
@@ -61,8 +65,10 @@
  // 互斥选项（如“无”）：选中它时取消同组其他项；选中其他项时取消它。
  form.addEventListener('change',e=>{
    const t=e.target;
-   if(t.dataset.parent!==undefined&&!t.checked){
-     t.closest('[data-group]').querySelectorAll('input:not([data-parent])').forEach(el=>{el.checked=false;});
+   if(t.dataset.parent!==undefined){
+     const g=t.closest('[data-group]');
+     if(!t.checked)kidsOf(g).forEach(el=>{el.checked=false;});
+     else if(isMulti(g))kidsOf(g).forEach(el=>{el.checked=true;}); // 多选组：勾选标题即全选
    }
    if(t.type==='checkbox'&&t.checked&&t.dataset.parent===undefined){
      const group=[...form.querySelectorAll('input[type="checkbox"]')].filter(x=>x.name===t.name&&x!==t);

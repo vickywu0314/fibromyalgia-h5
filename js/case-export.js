@@ -10,6 +10,7 @@
 //      base64 为 PDF 文件内容（不含 data: 前缀）。App 收到后保存文件并弹出系统分享面板。
 //   2. 系统分享（navigator.share 带文件，手机浏览器 / 部分 WebView 支持）：可存到「文件」或发给微信。
 //   3. 直接下载（电脑浏览器等）。
+// 之后立即打开全屏预览（与 PDF 相同的页面图片），预览里可再次「保存 / 分享」或关闭。
 (function () {
   var A4_W = 794, A4_H = 1123, PAD = 56; // A4 在 96dpi 下的像素尺寸、页边距
   var VENDOR = ['./js/vendor/html2canvas-1.4.1.min.js', './js/vendor/jspdf-2.5.1.umd.min.js'];
@@ -136,13 +137,16 @@
       var pages = paginate(host, header, collectSections(content));
       var pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4', compress: true });
       var pw = pdf.internal.pageSize.getWidth(), ph = pdf.internal.pageSize.getHeight();
+      var images = []; // 每页图片，同时用于生成后立即打开的预览
       for (var i = 0; i < pages.length; i++) {
         var canvas = await window.html2canvas(pages[i], { scale: 2, backgroundColor: '#ffffff', logging: false, useCORS: true });
+        var img = canvas.toDataURL('image/jpeg', 0.92);
+        images.push(img);
         if (i) pdf.addPage();
-        pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, pw, ph);
+        pdf.addImage(img, 'JPEG', 0, 0, pw, ph);
       }
       var fileName = [name, c.researchNo, isBaseline ? '基线访问' : '随诊', c.visitDate].filter(Boolean).join('_').replace(/[\\/:*?"<>|\s]+/g, '') + '.pdf';
-      return { blob: pdf.output('blob'), fileName: fileName };
+      return { blob: pdf.output('blob'), fileName: fileName, images: images };
     } finally {
       host.remove();
     }
@@ -186,8 +190,51 @@
     return '已生成 PDF：' + fileName;
   }
 
+  // 生成后立即打开：全屏预览 PDF 各页（App 的 WebView 多数不能直接显示 PDF 文件，这里用与 PDF 相同的页面图片显示）
+  var PREVIEW_CSS =
+    '#fmsPdfPreview{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;background:#525659}' +
+    '#fmsPdfPreview .pv-bar{flex:none;display:flex;align-items:center;gap:10px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));background:#2f3136;color:#fff}' +
+    '#fmsPdfPreview .pv-name{flex:1;min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '#fmsPdfPreview button{flex:none;height:32px;padding:0 14px;border-radius:6px;font-size:14px;border:1px solid #fff;background:transparent;color:#fff}' +
+    '#fmsPdfPreview button.pv-share{background:#168bdd;border-color:#168bdd}' +
+    '#fmsPdfPreview .pv-pages{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px 12px calc(16px + env(safe-area-inset-bottom))}' +
+    '#fmsPdfPreview .pv-pages img{display:block;width:100%;max-width:794px;margin:0 auto 12px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}' +
+    '#fmsPdfPreview.zoom .pv-pages img{width:200%;max-width:none}' +
+    '#fmsPdfPreview .pv-tip{text-align:center;color:#d0d3d8;font-size:12px;margin:0 0 12px}';
+  function openPreview(out) {
+    closePreview();
+    if (!document.getElementById('fmsPdfPreviewCss')) {
+      var st = document.createElement('style'); st.id = 'fmsPdfPreviewCss'; st.textContent = PREVIEW_CSS; document.head.appendChild(st);
+    }
+    var box = div(''); box.id = 'fmsPdfPreview';
+    box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'PDF 预览');
+    var bar = div('pv-bar');
+    var close = document.createElement('button'); close.type = 'button'; close.textContent = '关闭';
+    var share = document.createElement('button'); share.type = 'button'; share.className = 'pv-share'; share.textContent = '保存 / 分享';
+    bar.appendChild(close); bar.appendChild(div('pv-name', out.fileName)); bar.appendChild(share);
+    var list = div('pv-pages');
+    list.appendChild(div('pv-tip', '共 ' + out.images.length + ' 页 · 点击页面放大 / 缩小'));
+    // 点页面放大到 2 倍（可左右上下滑动查看），再点缩回
+    list.addEventListener('click', function (e) { if (e.target.tagName === 'IMG') box.classList.toggle('zoom'); });
+    out.images.forEach(function (src, i) { var im = document.createElement('img'); im.src = src; im.alt = '第 ' + (i + 1) + ' 页'; list.appendChild(im); });
+    box.appendChild(bar); box.appendChild(list);
+    document.body.appendChild(box);
+    document.documentElement.style.overflow = 'hidden';
+    close.onclick = closePreview;
+    share.onclick = async function () {
+      try { var msg = await deliver(out.blob, out.fileName); if (msg) FmsCase.toast(msg); }
+      catch (e) { FmsCase.toast((e && e.message) || '保存失败，请稍后重试'); }
+    };
+  }
+  function closePreview() {
+    var box = document.getElementById('fmsPdfPreview');
+    if (box) box.remove();
+    document.documentElement.style.overflow = '';
+  }
+
   var busy = false;
   window.FmsCaseExport = {
+    close: closePreview,
     build: buildPdf,
     run: async function (button) {
       if (busy) return;
@@ -196,7 +243,9 @@
       if (button) { button.disabled = true; button.textContent = '正在生成…'; }
       try {
         var out = await buildPdf();
-        var msg = await deliver(out.blob, out.fileName);
+        var msg = '';
+        try { msg = await deliver(out.blob, out.fileName); } catch (e) { msg = '保存失败，可在预览里点「保存 / 分享」重试'; }
+        openPreview(out); // 保存 / 下载后立即打开预览（保存失败也打开）
         if (msg) FmsCase.toast(msg);
       } catch (e) {
         FmsCase.toast((e && e.message) || '导出失败，请稍后重试');

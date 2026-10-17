@@ -356,7 +356,8 @@
 
   // 打开已有病例（随诊列表点某一条）：按 caseId 查详情，写入草稿，后续保存带同一个 id 即为更新
   var DETAIL_API = '/api/fms/patient/case/detail';
-  async function loadCase(info) {
+  // 按 caseId 从 case/detail 取一条病例并整理成草稿结构（不写本地草稿）；导出病历也用它取服务器上的最新数据
+  async function fetchCase(info) {
     info = info || {};
     var did = doctorId();
     if (!did) throw new Error('未取得医生身份，请在 App 内打开');
@@ -379,6 +380,11 @@
     c.researchNo = d.researchNo || info.researchNo || '';
     if (!c.jbxx.name && info.name) c.jbxx.name = info.name;
     if (!c.jbxx.idCard && info.idCard) c.jbxx.idCard = info.idCard;
+    migrateBqpgExtra(c); regroupCase(c);
+    return c;
+  }
+  async function loadCase(info) {
+    var c = await fetchCase(info);
     try { localStorage.removeItem(UNSYNCED_KEY); } catch (e) {}
     write(c);
     newCaseToken();
@@ -475,7 +481,7 @@
 
   window.FmsCase = {
     KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES, BQPG_EXTRA: BQPG_EXTRA, BQPG_ALL: BQPG_ALL,
-    load: load, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
+    load: load, fetchCase: fetchCase, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
     startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios,
     isViewMode: isViewMode, isViewingRecord: isViewingRecord, setMode: setMode,

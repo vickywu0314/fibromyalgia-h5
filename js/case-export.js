@@ -1,4 +1,5 @@
-// 导出病历 PDF：把查看病历页（case-view.js 渲染好的 #cvBody）按 A4 版式重新排版，逐页截图后合成 PDF。
+// 导出病历 PDF：按 caseId 从 case/detail 取服务器上已保存的病例（还没保存过的新病例用本地草稿），
+// 用查看页同一套渲染（FmsCaseView.render）生成各模块内容，再按 A4 版式重新排版，逐页截图后合成 PDF。
 // 版式参考 RA「随诊病历 / 查看随诊病例」：大标题 + 患者信息；各模块粗体标题，内容为「项目：值」；
 // 基本信息按序号两列排列。按整行分页，不会把一行字切成两半。
 //
@@ -38,9 +39,9 @@
     '.px-empty{font-size:14px;color:#888;line-height:1.75}' +
     '.px-foot{position:absolute;left:0;right:0;bottom:' + (PAD / 2) + 'px;text-align:center;font-size:12px;color:#999}';
 
-  // 从查看页已渲染的内容取出各模块：[{ title, items: [{type:'sub'|'row'|'empty', k, v}] }]
-  function collectSections() {
-    return Array.prototype.map.call(document.querySelectorAll('#cvBody > .cv-sec'), function (sec) {
+  // 从渲染好的内容取出各模块：[{ title, items: [{type:'sub'|'row'|'empty', k, v}] }]
+  function collectSections(root) {
+    return Array.prototype.map.call(root.querySelectorAll(':scope > .cv-sec'), function (sec) {
       var items = [];
       Array.prototype.forEach.call(sec.children, function (el) {
         if (el.classList.contains('cv-sub')) items.push({ type: 'sub', text: el.textContent });
@@ -105,9 +106,22 @@
     return pages;
   }
 
+  // 取病例：已保存过的（有 id）从 detail 接口取最新数据；否则用本地草稿
+  async function caseData() {
+    var draft = FmsCase.load();
+    if (draft.id == null || !FmsCase.fetchCase) return draft;
+    var c = await FmsCase.fetchCase({
+      caseId: draft.id, patientId: draft.patientId, visitType: draft.visitType, visitDate: draft.visitDate,
+      name: draft.jbxx && draft.jbxx.name, idCard: draft.jbxx && draft.jbxx.idCard, researchNo: draft.researchNo
+    });
+    return c;
+  }
+
   async function buildPdf() {
+    var c = await caseData();
     await loadVendors();
-    var c = FmsCase.load();
+    var content = document.createElement('div');
+    window.FmsCaseView.render(c, content);
     var isBaseline = c.visitType !== '随诊';
     var name = (c.jbxx && c.jbxx.name) || '患者';
     var host = div('px-host');
@@ -119,7 +133,7 @@
         div('px-title', '纤维肌痛' + (isBaseline ? '基线访问病历' : '随诊病历')),
         div('px-meta', [name, c.researchNo ? '研究编号 ' + c.researchNo : '', isBaseline ? '基线访问' : '随诊', c.visitDate].filter(Boolean).join('　'))
       ];
-      var pages = paginate(host, header, collectSections());
+      var pages = paginate(host, header, collectSections(content));
       var pdf = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4', compress: true });
       var pw = pdf.internal.pageSize.getWidth(), ph = pdf.internal.pageSize.getHeight();
       for (var i = 0; i < pages.length; i++) {

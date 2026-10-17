@@ -4,7 +4,8 @@ const isBaseline = c.visitType !== '随诊';
 document.title = isBaseline ? '基线访问病历' : '随诊病历';
 cvName.textContent = c.jbxx.name || '患者';
 cvMeta.textContent = [isBaseline ? '基线访问' : '随诊', c.visitDate].filter(Boolean).join(' · ');
-backBtn.onclick = () => { if (history.length > 1) history.back(); else location.href = './patient-detail.html'; };
+// 底部「导出病历」：生成 PDF，交给 App 保存 / 转发（见 case-export.js）；返回由 App 导航栏负责
+exportBtn.onclick = () => window.FmsCaseExport && FmsCaseExport.run(exportBtn);
 
 // ---------- 取值与格式 ----------
 const has = v => v != null && v !== '' && !(Array.isArray(v) && !v.length) && !(typeof v === 'object' && !Array.isArray(v) && !Object.keys(v).length);

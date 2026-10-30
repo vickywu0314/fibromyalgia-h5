@@ -75,14 +75,15 @@
         <label><input type="radio" name="stool" value="无力">无力</label>
         <label><input type="radio" name="stool" value="正常">正常</label>
       </div>
-      <h3>小便</h3>
+      <!-- 小便：多选；「正常」与其他选项互斥。提交仍为字符串 bsbq.urine，多项用「、」连接（如 "黄、夜尿频"） -->
+      <h3>小便（可多选）</h3>
       <div class="radios">
-        <label><input type="radio" name="urine" value="黄">黄</label>
-        <label><input type="radio" name="urine" value="热">热</label>
-        <label><input type="radio" name="urine" value="清长">清长</label>
-        <label><input type="radio" name="urine" value="夜尿频">夜尿频</label>
-        <label><input type="radio" name="urine" value="无力">无力</label>
-        <label><input type="radio" name="urine" value="正常">正常</label>
+        <label><input type="checkbox" name="urine" value="黄">黄</label>
+        <label><input type="checkbox" name="urine" value="热">热</label>
+        <label><input type="checkbox" name="urine" value="清长">清长</label>
+        <label><input type="checkbox" name="urine" value="夜尿频">夜尿频</label>
+        <label><input type="checkbox" name="urine" value="无力">无力</label>
+        <label><input type="checkbox" name="urine" value="正常" data-exclusive>正常</label>
       </div>
     </section>
 

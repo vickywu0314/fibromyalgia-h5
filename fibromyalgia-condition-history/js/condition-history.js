@@ -9,7 +9,9 @@
  // 月经情况：menstrualStage 单选（绝经期/围绝经期/育龄期）；经期/经色/经量/痛经 仅「育龄期」时填写，其他分期清空
  const MENSTRUAL_SUB=['periodTiming','periodColor','periodAmount','dysmenorrhea'];
  const MENSTRUAL_FIELDS=['menstrualStage'].concat(MENSTRUAL_SUB);
- const TEXT_FIELDS=['stool','urine','tongueColor','tongueShape','coatColor','coatShape'].concat(MENSTRUAL_FIELDS);
+ // 多选但后端字段为字符串：多项用「、」连接提交，回显时拆开
+const JOINED_FIELDS=['urine'];
+const TEXT_FIELDS=['stool','tongueColor','tongueShape','coatColor','coatShape'].concat(MENSTRUAL_FIELDS);
 
  // 性别：取病例草稿 jbxx.gender（男/女）；没有时按 18 位身份证第 17 位推出（奇男偶女）；都没有视为未知
  function patientGender(){
@@ -87,6 +89,7 @@
    const bsbq=Object.assign({},FmsCase.get('bsbq')||{});
    TEXT_FIELDS.forEach(k=>{bsbq[k]=d[k]||'';});
    ARRAY_FIELDS.forEach(k=>{bsbq[k]=Array.isArray(d[k])?d[k]:(d[k]?[d[k]]:[]);});
+   JOINED_FIELDS.forEach(k=>{bsbq[k]=(Array.isArray(d[k])?d[k]:(d[k]?[d[k]]:[])).join('、');});
    if(bsbq.menstrualStage!=='育龄期')MENSTRUAL_SUB.forEach(k=>{bsbq[k]='';});
    if(isMale)MENSTRUAL_FIELDS.forEach(k=>{bsbq[k]='';});
    return bsbq;
@@ -107,7 +110,7 @@
 
  function setValue(name,v){
    const els=[...form.elements].filter(el=>el.name===name);
-   const list=Array.isArray(v)?v.map(String):(v==null||v===''?[]:[String(v)]);
+   const list=Array.isArray(v)?v.map(String):(v==null||v===''?[]:JOINED_FIELDS.includes(name)?String(v).split(/[、,，]/).filter(Boolean):[String(v)]);
    els.forEach(el=>{
      if(el.type==='checkbox'||el.type==='radio')el.checked=list.includes(el.value);
      else el.value=list[0]||'';
@@ -119,7 +122,7 @@
    const bsbq=FmsCase.get('bsbq')||{};
    setValue('menstrualStage',bsbq.menstrualStage);
    refresh();
-   TEXT_FIELDS.concat(ARRAY_FIELDS).forEach(k=>setValue(k,bsbq[k]));
+   TEXT_FIELDS.concat(ARRAY_FIELDS,JOINED_FIELDS).forEach(k=>setValue(k,bsbq[k]));
    syncParents();
  }
 

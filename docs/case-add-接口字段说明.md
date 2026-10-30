@@ -198,3 +198,7 @@
 `answers` 内：
 - 题目：`pf1–pf4`（生理功能）、`anx1–anx4`（焦虑）、`dep1–dep4`（沮丧）、`fat1–fat4`（疲劳）、`sleep1–sleep4`（睡眠困扰）、`soc1–soc4`（社会角色）、`pain1–pain4`（疼痛干扰）、`cog1–cog2`（认知功能）、`painIntensity`（疼痛强度 0–10）。值为问卷选项上的分值（已按正/反向计分写好）。
 - 维度原始分（该维度题目全部作答才有值，否则空串）：`physicalFunction`、`anxiety`、`depression`、`fatigue`、`sleepDisturbance`、`socialRoles`、`painInterference`、`cognitiveFunction`，为对应题目分值之和。
+
+### bsbq.urine（小便，改为多选）
+
+页面改为多选，「正常」与其他选项互斥。字段类型不变，仍是字符串：多项用「、」连接，如 `"黄、夜尿频"`；只选一项时与原来相同（如 `"正常"`）。后端如需改为数组，再通知前端。

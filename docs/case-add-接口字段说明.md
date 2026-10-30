@@ -196,7 +196,8 @@
 病情评估列表最后一项。结构与其他量表相同：`finish`、`answered`、`total`（31）、`answers`，另有空的 `score`、`result`（本量表无总分及判定）。
 
 `answers` 内：
-- 题目：`pf1–pf4`（生理功能）、`anx1–anx4`（焦虑）、`dep1–dep4`（沮丧）、`fat1–fat4`（疲劳）、`sleep1–sleep4`（睡眠困扰）、`soc1–soc4`（社会角色）、`pain1–pain4`（疼痛干扰）、`cog1–cog2`（认知功能）、`painIntensity`（疼痛强度 0–10）。值为问卷选项上的分值（已按正/反向计分写好）。
+- 题目：`pf1–pf4`（身体功能）、`anx1–anx4`（焦虑）、`dep1–dep4`（沮丧）、`fat1–fat4`（疲劳）、`sleep1–sleep4`（睡眠困扰）、`soc1–soc4`（社会角色）、`pain1–pain4`（疼痛干扰）、`cog1–cog2`（认知功能）、`painIntensity`（疼痛强度 0–10，滑块，拖动过才算作答）。值为问卷选项上的分值（已按正/反向计分写好）。
+  - 2026-10-30 按新原型调整题目/选项文字；睡眠 `sleep3`、`sleep4` 改为「5 根本不 … 1 非常多」（与原来方向相反），`sleep1`、`sleep2` 不变。
 - 维度原始分（该维度题目全部作答才有值，否则空串）：`physicalFunction`、`anxiety`、`depression`、`fatigue`、`sleepDisturbance`、`socialRoles`、`painInterference`、`cognitiveFunction`，为对应题目分值之和。
 
 ### bsbq.urine（小便，改为多选）

@@ -3,14 +3,13 @@
 // 版式参考 RA「随诊病历 / 查看随诊病例」：大标题 + 患者信息；各模块粗体标题，内容为「项目：值」；
 // 基本信息按序号两列排列。按整行分页，不会把一行字切成两半。
 //
-// 生成后交给谁处理（依次尝试）：
-//   1. App 原生接口（保存到本地 / 转发微信等需 App 提供）：
-//      Android：WenwenClass.sharePdf(base64, fileName)
-//      iOS：window.webkit.messageHandlers.sharePdf.postMessage({ base64, fileName })
-//      base64 为 PDF 文件内容（不含 data: 前缀）。App 收到后保存文件并弹出系统分享面板。
-//   2. 系统分享（navigator.share 带文件，手机浏览器 / 部分 WebView 支持）：可存到「文件」或发给微信。
-//   3. 直接下载（电脑浏览器等）。
-// 之后立即打开全屏预览（与 PDF 相同的页面图片），预览里可再次「保存 / 分享」或关闭。
+// 生成后保存（只保存，不分享），依次尝试：
+//   1. App 原生接口（保存到手机需 App 提供）：
+//      Android：WenwenClass.savePdf(base64, fileName)
+//      iOS：window.webkit.messageHandlers.savePdf.postMessage({ base64, fileName })
+//      base64 为 PDF 文件内容（不含 data: 前缀）。App 收到后把文件保存到手机。
+//   2. 直接下载（浏览器）。
+// 之后立即打开全屏预览（与 PDF 相同的页面图片），预览里可再次「保存」或关闭。
 (function () {
   var A4_W = 794, A4_H = 1123, PAD = 56; // A4 在 96dpi 下的像素尺寸、页边距
   var VENDOR = ['./js/vendor/html2canvas-1.4.1.min.js', './js/vendor/jspdf-2.5.1.umd.min.js'];
@@ -131,7 +130,7 @@
     document.body.appendChild(host);
     try {
       var header = [
-        div('px-title', '纤维肌痛' + (isBaseline ? '基线访问病历' : '随诊病历')),
+        div('px-title', '中枢敏化疼痛系统患者病历'),
         div('px-meta', [name, c.researchNo ? '研究编号 ' + c.researchNo : '', isBaseline ? '基线访问' : '随诊', c.visitDate].filter(Boolean).join('　'))
       ];
       var pages = paginate(host, header, collectSections(content));
@@ -161,33 +160,24 @@
     });
   }
 
-  // 交给 App / 系统分享 / 下载；返回提示文字
+  // 保存 PDF：交给 App 保存到手机，没有 App 接口时直接下载；返回提示文字
   async function deliver(blob, fileName) {
     var native = window.WenwenClass;
-    if (native && typeof native.sharePdf === 'function') {
-      native.sharePdf(await toBase64(blob), fileName);
+    if (native && typeof native.savePdf === 'function') {
+      native.savePdf(await toBase64(blob), fileName);
       return '';
     }
-    var ios = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.sharePdf;
+    var ios = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.savePdf;
     if (ios) {
       ios.postMessage({ base64: await toBase64(blob), fileName: fileName });
       return '';
-    }
-    try {
-      var file = new File([blob], fileName, { type: 'application/pdf' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: fileName });
-        return '';
-      }
-    } catch (e) {
-      if (e && e.name === 'AbortError') return ''; // 用户取消分享
     }
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a');
     a.href = url; a.download = fileName;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-    return '已生成 PDF：' + fileName;
+    return '已保存 PDF：' + fileName;
   }
 
   // 生成后立即打开：全屏预览 PDF 各页（App 的 WebView 多数不能直接显示 PDF 文件，这里用与 PDF 相同的页面图片显示）
@@ -196,7 +186,7 @@
     '#fmsPdfPreview .pv-bar{flex:none;display:flex;align-items:center;gap:10px;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));background:#2f3136;color:#fff}' +
     '#fmsPdfPreview .pv-name{flex:1;min-width:0;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '#fmsPdfPreview button{flex:none;height:32px;padding:0 14px;border-radius:6px;font-size:14px;border:1px solid #fff;background:transparent;color:#fff}' +
-    '#fmsPdfPreview button.pv-share{background:#168bdd;border-color:#168bdd}' +
+    '#fmsPdfPreview button.pv-save{background:#168bdd;border-color:#168bdd}' +
     '#fmsPdfPreview .pv-pages{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;padding:12px 12px calc(16px + env(safe-area-inset-bottom))}' +
     '#fmsPdfPreview .pv-pages img{display:block;width:100%;max-width:794px;margin:0 auto 12px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}' +
     '#fmsPdfPreview.zoom .pv-pages img{width:200%;max-width:none}' +
@@ -210,8 +200,8 @@
     box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'PDF 预览');
     var bar = div('pv-bar');
     var close = document.createElement('button'); close.type = 'button'; close.textContent = '关闭';
-    var share = document.createElement('button'); share.type = 'button'; share.className = 'pv-share'; share.textContent = '保存 / 分享';
-    bar.appendChild(close); bar.appendChild(div('pv-name', out.fileName)); bar.appendChild(share);
+    var save = document.createElement('button'); save.type = 'button'; save.className = 'pv-save'; save.textContent = '保存';
+    bar.appendChild(close); bar.appendChild(div('pv-name', out.fileName)); bar.appendChild(save);
     var list = div('pv-pages');
     list.appendChild(div('pv-tip', '共 ' + out.images.length + ' 页 · 点击页面放大 / 缩小'));
     // 点页面放大到 2 倍（可左右上下滑动查看），再点缩回
@@ -221,7 +211,7 @@
     document.body.appendChild(box);
     document.documentElement.style.overflow = 'hidden';
     close.onclick = closePreview;
-    share.onclick = async function () {
+    save.onclick = async function () {
       try { var msg = await deliver(out.blob, out.fileName); if (msg) FmsCase.toast(msg); }
       catch (e) { FmsCase.toast((e && e.message) || '保存失败，请稍后重试'); }
     };
@@ -244,7 +234,7 @@
       try {
         var out = await buildPdf();
         var msg = '';
-        try { msg = await deliver(out.blob, out.fileName); } catch (e) { msg = '保存失败，可在预览里点「保存 / 分享」重试'; }
+        try { msg = await deliver(out.blob, out.fileName); } catch (e) { msg = '保存失败，可在预览里点「保存」重试'; }
         openPreview(out); // 保存 / 下载后立即打开预览（保存失败也打开）
         if (msg) FmsCase.toast(msg);
       } catch (e) {

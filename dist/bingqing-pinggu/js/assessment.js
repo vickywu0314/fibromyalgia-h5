@@ -236,6 +236,14 @@
     };
     renderList();
     window.addEventListener('pageshow', renderList);
+    // 「保存并返回」：提交病情评估（bqpg）当前数据后回到患者资料页；不要求全部填完，
+    // 13 项都完成时 bqpg.finish 由 FmsCase 自动置为 true
+    var saveAll = document.getElementById('saveAll');
+    if (saveAll) saveAll.addEventListener('click', function () {
+      if (viewMode()) { location.href = '../patient-detail.html'; return; }
+      var b = Object.assign({}, FmsCase.get('bqpg') || {});
+      FmsCase.save('bqpg', b, { back: '../patient-detail.html', button: saveAll });
+    });
     return;
   }
 

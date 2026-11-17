@@ -1,0 +1,19 @@
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#222;background:#fff}
+body{margin:0;background:#fff;font-size:16px}
+.page{width:100%;max-width:720px;margin:0 auto;padding:20px 16px calc(28px + env(safe-area-inset-bottom))}
+h1{margin:0;text-align:center;font-size:20px;font-weight:600}
+.version{margin:6px 0 18px;text-align:center;color:#7a818b;font-size:13px}
+.consent-body{font-size:15px;line-height:1.8;color:#222;word-break:break-word}
+.consent-body h2{margin:20px 0 6px;font-size:16px;font-weight:600}
+.consent-body h3{margin:14px 0 4px;font-size:15px;font-weight:600}
+.consent-body p{margin:0 0 10px;text-indent:2em}
+.consent-body p.no-indent,.consent-body li p{text-indent:0}
+.consent-body ul,.consent-body ol{margin:0 0 10px;padding-left:1.6em}
+.consent-body table{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:14px}
+.consent-body td,.consent-body th{border:1px solid #d4d7dc;padding:6px 8px;text-align:left;vertical-align:top}
+.consent-body .pending{text-indent:0;text-align:center;color:#9aa0a8;padding:40px 0}
+.bottom-action{position:sticky;bottom:0;padding:14px 0 calc(6px + env(safe-area-inset-bottom));background:linear-gradient(rgba(255,255,255,0),#fff 18px);display:grid;gap:6px}
+.primary{width:100%;min-height:46px;border:0;border-radius:4px;background:#168bdd;color:#fff;font:inherit}
+.back-link{display:block;text-align:center;padding:8px;color:#168bdd;font-size:14px;text-decoration:none}
+@media(max-width:360px){.page{padding-left:12px;padding-right:12px}}

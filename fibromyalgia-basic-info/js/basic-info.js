@@ -139,6 +139,7 @@
     renderCities(d.city || "");
     sizeCanvas();
     showSignature(typeof d.signature === "string" && !/^data:/.test(d.signature) ? d.signature : "");
+    syncConsent();
     tracker.refresh();
   };
 
@@ -174,8 +175,23 @@
   }
   function pos(e){ const r = sigCanvas.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; }
   function readonly(){ return !!(window.FmsCase && FmsCase.isViewMode && FmsCase.isViewMode()); }
+  // 知情同意：勾选「我已阅读并同意」后才能签字；已有签名视为已同意。
+  // 在阅读页点「我已阅读并同意」返回时（sessionStorage 标记）自动勾上。
+  const consentAgree = document.getElementById("consentAgree");
+  const CONSENT_READ = "fms_consent_read";
+  function syncConsent(){
+    try { if (sessionStorage.getItem(CONSENT_READ)) { consentAgree.checked = true; sessionStorage.removeItem(CONSENT_READ); } } catch (e) {}
+    if (signature) consentAgree.checked = true;
+    consentAgree.disabled = !!signature || readonly(); // 签名后要改同意状态，先「重新签字」
+    sigPad.classList.toggle("locked", !consentAgree.checked && !signature);
+    if (!signature && !drawn) sigHolder.textContent = consentAgree.checked ? "请在此处签字" : "请先勾选「我已阅读并同意」";
+  }
+  consentAgree.addEventListener("change", syncConsent);
+  // 去阅读页前先把本页已填内容写入草稿，返回时不丢
+  document.getElementById("consentDoc").addEventListener("click", () => { try { FmsCase.set("jbxx", collect(), true); } catch (e) {} });
   sigCanvas.addEventListener("pointerdown", e => {
     if (readonly() || signature) return;
+    if (!consentAgree.checked) { e.preventDefault(); FmsCase.toast("请先阅读知情同意书，并勾选「我已阅读并同意」"); return; }
     e.preventDefault();
     drawing = true; last = pos(e);
     try { sigCanvas.setPointerCapture(e.pointerId); } catch (err) {}
@@ -197,10 +213,13 @@
     if (readonly()) return;
     showSignature("");
     sizeCanvas();
+    syncConsent();
   });
   // 有已保存签名时显示图片（重新签字才清空）；查看模式不可签
   sizeCanvas();
   showSignature(signature);
+  syncConsent();
+  window.addEventListener("pageshow", syncConsent);
   if (readonly()) sigClear.hidden = true;
   // 提交和草稿里只放已上传的签名 URL
   function currentSignature(){ return signature; }

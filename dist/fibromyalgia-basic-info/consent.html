@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <title>知情同意书</title>
+  <link rel="stylesheet" href="css/consent.css">
+</head>
+<body>
+  <!-- 知情同意书阅读页：从基本信息「患者知情同意告知与签署」进入。
+       底部「我已阅读并同意」返回基本信息并自动勾选同意（sessionStorage: fms_consent_read）。
+       正文来自《03知情同意书（版本号：01 版本日期：2026.9.17）.docx》，更新版本时替换 #consentBody 内容和版本信息。 -->
+  <main class="page">
+    <h1>知情同意书</h1>
+    <p class="version">版本号：01　版本日期：2026.9.17</p>
+    <article class="consent-body" id="consentBody">
+      <p class="pending">（知情同意书正文待补充）</p>
+    </article>
+    <div class="bottom-action">
+      <button class="primary" id="agreeBtn" type="button">我已阅读并同意</button>
+      <a class="back-link" id="backLink" href="basic-info.html">返回</a>
+    </div>
+  </main>
+  <script src="../js/fms-api.js"></script>
+  <script src="../js/fms-case.js"></script>
+  <script>
+    (function () {
+      function back() { if (history.length > 1) history.back(); else location.href = 'basic-info.html'; }
+      document.getElementById('agreeBtn').addEventListener('click', function () {
+        try { sessionStorage.setItem('fms_consent_read', '1'); } catch (e) {}
+        back();
+      });
+      document.getElementById('backLink').addEventListener('click', function (e) { e.preventDefault(); back(); });
+    })();
+  </script>
+</body>
+</html>

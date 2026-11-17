@@ -1,8 +1,8 @@
 /* 合并疾病：记录存于病例草稿 jbxx.diseaseHistory（数组，每条 {category, categoryLabel, name}；按新版 PDF 只有疾病名称，无病程/诊断时间）；
-   类别：风湿性疾病 + 其他系统疾病（呼吸/消化/循环/内分泌和代谢/肾病/骨科/生殖/精神心理/慢性重叠疼痛），各类“其他”需填写疾病名称。
+   类别：风湿性疾病 + 其他系统疾病（呼吸/消化/循环/内分泌和代谢/肾病/骨科/生殖/精神心理/慢性重叠疼痛）+ 最后一项「其他」（qita，手动输入疾病名称），各类“其他”需填写疾病名称。
    列表页“保存并返回”写 jbxx.diseaseHistoryFinish = true（基本信息页入口据此显示完成状态）。 */
 (function(){
- var BACK='../fibromyalgia-basic-info/basic-info.html',CATEGORIES=['fengshi','huxi','xiaohua','xunhuan','neifenmi','shen','guke','shengzhi','xinli','tengtong'];
+ var BACK='../fibromyalgia-basic-info/basic-info.html',CATEGORIES=['fengshi','huxi','xiaohua','xunhuan','neifenmi','shen','guke','shengzhi','xinli','tengtong','qita'];
  var page=document.querySelector('[data-page]'),view=page.dataset.page;
  function read(){var v=FmsCase.get('jbxx.diseaseHistory');return Array.isArray(v)?v.filter(function(r){return r&&typeof r==='object';}):[];}
  var records=read(),renderList=function(){};

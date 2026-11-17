@@ -176,12 +176,16 @@
   function pos(e){ const r = sigCanvas.getBoundingClientRect(); return {x: e.clientX - r.left, y: e.clientY - r.top}; }
   function readonly(){ return !!(window.FmsCase && FmsCase.isViewMode && FmsCase.isViewMode()); }
   // 知情同意：勾选「我已阅读并同意」后才能签字；已有签名视为已同意。
-  // 在阅读页点「我已阅读并同意」返回时（sessionStorage 标记）自动勾上。
+  // 同意状态存 localStorage（fms_consent_agreed = 当前病例 token），与本病例绑定、换病例自动失效；
+  // 阅读页点「我已阅读并同意」写入同一个 key。手机 WebView 返回方式各异（bfcache 恢复 / 整页重载 /
+  // 阅读页开在另一个 WebView），所以在 加载、pageshow、重新可见、storage 事件 时都重新读取。
   const consentAgree = document.getElementById("consentAgree");
-  const CONSENT_READ = "fms_consent_read";
+  const CONSENT_KEY = "fms_consent_agreed";
+  const caseToken = () => { try { return localStorage.getItem("fms_case_token") || "-"; } catch (e) { return "-"; } };
+  const agreedStored = () => { try { return localStorage.getItem(CONSENT_KEY) === caseToken(); } catch (e) { return false; } };
+  const storeAgreed = on => { try { if (on) localStorage.setItem(CONSENT_KEY, caseToken()); else localStorage.removeItem(CONSENT_KEY); } catch (e) {} };
   function syncConsent(){
-    try { if (sessionStorage.getItem(CONSENT_READ)) { consentAgree.checked = true; sessionStorage.removeItem(CONSENT_READ); } } catch (e) {}
-    if (signature) consentAgree.checked = true;
+    consentAgree.checked = agreedStored() || !!signature;
     // 不禁用勾选框（禁用会显示成灰色，看起来像没勾）；已签名时取消勾选需确认并清除签名
     consentAgree.disabled = readonly();
     sigPad.classList.toggle("locked", !consentAgree.checked && !signature);
@@ -192,6 +196,7 @@
       if (!confirm("取消同意将清除已签的名字，确定取消吗？")) { consentAgree.checked = true; return; }
       showSignature(""); sizeCanvas(); tracker.refresh();
     }
+    storeAgreed(consentAgree.checked);
     syncConsent();
   });
   // 去阅读页前先把本页已填内容写入草稿，返回时不丢
@@ -227,6 +232,9 @@
   showSignature(signature);
   syncConsent();
   window.addEventListener("pageshow", syncConsent);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") syncConsent(); });
+  window.addEventListener("focus", syncConsent);
+  window.addEventListener("storage", e => { if (!e.key || e.key === CONSENT_KEY) syncConsent(); });
   if (readonly()) sigClear.hidden = true;
   // 提交和草稿里只放已上传的签名 URL
   function currentSignature(){ return signature; }

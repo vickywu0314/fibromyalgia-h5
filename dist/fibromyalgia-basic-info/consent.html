@@ -9,7 +9,7 @@
 </head>
 <body>
   <!-- 知情同意书阅读页：从基本信息「患者知情同意告知与签署」进入。
-       底部「我已阅读并同意」返回基本信息并自动勾选同意（sessionStorage: fms_consent_read）。
+       底部「我已阅读并同意」返回基本信息并自动勾选同意（localStorage: fms_consent_agreed = 当前病例 token）。
        正文来自《03知情同意书（版本号：01 版本日期：2026.9.17）.docx》，更新版本时替换 #consentBody 内容和版本信息。 -->
   <main class="page">
     <h1>知情同意书</h1>
@@ -111,8 +111,9 @@
   <script>
     (function () {
       function back() { if (history.length > 1) history.back(); else location.href = 'basic-info.html'; }
+      // 记为「已同意」：localStorage 与当前病例 token 绑定（基本信息页据此勾选），返回时不依赖页面缓存
       document.getElementById('agreeBtn').addEventListener('click', function () {
-        try { sessionStorage.setItem('fms_consent_read', '1'); } catch (e) {}
+        try { localStorage.setItem('fms_consent_agreed', localStorage.getItem('fms_case_token') || '-'); } catch (e) {}
         back();
       });
       document.getElementById('backLink').addEventListener('click', function (e) { e.preventDefault(); back(); });

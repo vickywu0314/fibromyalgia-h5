@@ -11,3 +11,11 @@
 .block-title{font-size:15px;font-weight:500;color:#555;margin:6px 0 8px}.meta-form{display:flex;flex-direction:column;flex:1}.add-link{margin:14px 0 24px}.details[hidden],.sub-block[hidden],.herb-box[hidden],#specRow[hidden]{display:none}.sub-block{padding-left:12px;border-left:3px solid #e3eef7;margin:-8px 0 18px}.readonly-value{display:block;min-height:44px;padding:11px 12px;border-radius:6px;background:#f5f6f7;font-size:15px}.herb-box{margin:0 0 18px}.herb-list{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}.herb-list li{padding:6px 10px;border-radius:14px;background:#eff7ff;color:#376b8c;font-size:14px}.form-actions{display:grid;gap:12px}.danger{min-height:44px;border:1px solid #e3b3b9;border-radius:4px;background:#fff;color:#ba3341;font-size:15px}.danger[hidden]{display:none}
 .menu .status{margin-left:auto;font-size:13px;color:#858b94;white-space:nowrap}.menu .status.done{color:#168bdd}.menu .status.doing{color:#b26a00}
 .xi-cat{padding-top:10px;border-top:1px solid #eceef1}.xi-cat .add-link{margin:10px 0 18px}.xi-cat .empty{margin:4px 0;padding:10px 0}
+
+/* 方剂组成：勾选框（默认全选，可取消） */
+.herb-list.herb-checks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 8px}
+.herb-list.herb-checks li{padding:0;background:none;border-radius:0}
+.herb-list.herb-checks label{display:flex;align-items:center;gap:8px;min-height:38px;font-size:15px;color:#222}
+.herb-list.herb-checks input{flex:none;width:18px;height:18px;margin:0;accent-color:#168bdd}
+.choice-group input.reason-other{display:block;width:100%;height:auto;min-height:44px;margin:8px 0 0;padding:9px 12px;font-size:15px}
+.choice-group input.reason-other[hidden]{display:none}

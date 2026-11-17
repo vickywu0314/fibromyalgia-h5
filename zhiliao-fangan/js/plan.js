@@ -2,7 +2,7 @@
 /* 本次治疗方案：西药 / 中药汤剂 / 中成药 / 非药物疗法（字段按规格 PDF）
  * 数据只存病例草稿 FmsCase 的 zlfa：
  * { finish, hasXiyao, xiyao[], xiyaoCategoryAdjust{药物分类:{adjust,adjustment,reason}}, xiyaoAdjust{...汇总},
- *   zhongyaoYinpian[]（中药汤剂，key 沿用）, hasZhongchengyao, zhongchengyao[], zhongchengyaoAdjust{...},
+ *   hasZhongyaoYinpian, zhongyaoYinpian[]（中药汤剂，key 沿用）, hasZhongchengyao, zhongchengyao[], zhongchengyaoAdjust{...},
  *   hasFeiYaowu, feiYaowu[], feiYaowuAdjust{...} }
  * 调整信息同时复制到每条记录的 adjust/adjustment/reason 上（结构体按记录读取）；
  * 西药按药物分类各答一次「是否调整西药」，xiyaoAdjust 为各分类的汇总（任一分类为“是”即“是”，内容/原因写成「分类：值」以；分隔）。 */
@@ -11,8 +11,14 @@ const KIND = {
   xiyao: { key: 'xiyao', adjKey: 'xiyaoAdjust', hasKey: 'hasXiyao', catAdjKey: 'xiyaoCategoryAdjust' },
   zhongchengyao: { key: 'zhongchengyao', adjKey: 'zhongchengyaoAdjust', hasKey: 'hasZhongchengyao' },
   'fei-yaowu': { key: 'feiYaowu', adjKey: 'feiYaowuAdjust', hasKey: 'hasFeiYaowu' },
-  'zhongyao-yinpian': { key: 'zhongyaoYinpian' }
+  'zhongyao-yinpian': { key: 'zhongyaoYinpian', hasKey: 'hasZhongyaoYinpian' }
 };
+/* 首次就诊（基线）不填「是否调整」：调整只在随诊里填写 */
+const isBaseline = () => (FmsCase.load() || {}).visitType !== '随诊';
+/* 调整原因选「其他」时手动填写，存为「其他：填写内容」 */
+const REASON_OTHER = '其他';
+const splitReason = v => { const m = /^其他[：:](.*)$/.exec(v || ''); return m ? [REASON_OTHER, m[1]] : [v || '', ''] };
+const joinReason = (r, text) => r === REASON_OTHER && text.trim() ? `${REASON_OTHER}：${text.trim()}` : r;
 /* 读草稿（深拷贝，保证各数组存在） */
 const loadZ = () => {
   let z = {};
@@ -53,17 +59,19 @@ const applyAdjust = z => {
 /* ---------- 各类别完成状态（入口页状态、进度共用） ----------
  * 西药 / 中成药 / 非药物疗法：选“无” → 已完成；选“有”且至少 1 条记录、是否调整已答（选“是”时调整内容/原因也已选） → 已完成；
  *   已选“有”但缺记录或缺是否调整 → 填写中；什么都没选 → 未填写。
- * 中药汤剂页面没有“无/有”：有记录 → 已完成；没有记录时，治疗方案整体已保存（zlfa.finish）视为“无” → 已完成，否则未填写。 */
+ * 中药汤剂：无/有（无「是否调整」）；旧数据没选无/有时，有记录 → 已完成，治疗方案整体已保存（zlfa.finish）视为“无”。
+ * 首次就诊不填「是否调整」，有记录即已完成。 */
 const ORDER = ['xiyao', 'zhongyao-yinpian', 'zhongchengyao', 'fei-yaowu'];
-const REQUIRED = ['xiyao', 'zhongchengyao', 'fei-yaowu'];
-const adjDone = a => !!(a && a.adjust) && (a.adjust !== '是' || (!!a.adjustment && !!a.reason));
+const REQUIRED = ['xiyao', 'zhongyao-yinpian', 'zhongchengyao', 'fei-yaowu'];
+const adjDone = a => !!(a && a.adjust) && (a.adjust !== '是' || (!!a.adjustment && !!a.reason && a.reason !== REASON_OTHER));
 const catState = (z, k) => {
   const c = KIND[k], n = z[c.key].length;
-  if (!c.hasKey) return n ? ['done', `已添加 ${n} 条`] : z.finish ? ['done', '无'] : ['none', '尚未添加'];
+  if (k === 'zhongyao-yinpian' && !z[c.hasKey] && !n && z.finish) return ['done', '无'];
   const use = z[c.hasKey] || (n ? '有' : '');
   if (use === '无') return ['done', '无'];
   if (!use) return ['none', '尚未选择无/有'];
   if (!n) return ['doing', '已选“有”，尚未添加记录'];
+  if (!c.adjKey && !c.catAdjKey || isBaseline()) return ['done', `已添加 ${n} 条`];
   const ok = c.catAdjKey
     ? XI_CATS.filter(cat => z[c.key].some(r => catOf(r) === cat)).every(cat => adjDone((z[c.catAdjKey] || {})[cat]))
     : adjDone(z[c.adjKey]);
@@ -78,6 +86,12 @@ const read = k => loadZ()[KIND[k].key];
 const el = (tag, text = '', cls = '') => { const n = document.createElement(tag); n.textContent = text; if (cls) n.className = cls; return n };
 const opts = (select, list, placeholder) => select.replaceChildren(new Option(placeholder, ''), ...list.map(v => new Option(v, v)));
 const radios = (holder, name, list) => { holder.replaceChildren(...list.map(v => { const l = el('label'), i = document.createElement('input'); i.type = 'radio'; i.name = name; i.value = v; l.append(i, el('span', v)); return l })) };
+/* 调整原因单选组后面追加「其他」的手动输入框（选中「其他」才显示） */
+const reasonOtherInput = (holder, name) => {
+  const i = document.createElement('input');
+  i.type = 'text'; i.name = name; i.className = 'control reason-other'; i.maxLength = 100; i.placeholder = '请输入其他调整原因'; i.hidden = true;
+  holder.append(i); return i;
+};
 /* 条件显示：隐藏时禁用并清空子区域内的输入 */
 const toggle = (box, show) => {
   if (!box) return;
@@ -145,15 +159,19 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
   XI_CATS.forEach((cat, ci) => {
     const recs = z0.xiyao.map((r, i) => [r, i]).filter(([r]) => catOf(r) === cat);
     const sec = el('section', '', 'xi-cat'); sec.append(el('h2', cat, 'block-title'));
-    if (recs.length) {
+    if (recs.length && isBaseline()) used.push([cat, ci, true]);
+    else if (recs.length) {
       used.push([cat, ci]);
       const g = el('fieldset', '', 'choice-group'); g.append(el('legend', '是否调整口服西药'));
       const yn = el('div'); radios(yn, `是否调整${ci}`, ['是', '否']); g.append(yn);
       const adj = el('div', '', 'adjust-details'); adj.id = `adjustDetails${ci}`; adj.hidden = true;
       [['调整内容', window.ADJUST.drug, `调整内容${ci}`], ['调整原因', window.ADJUST.reasons, `调整原因${ci}`]].forEach(([lg, list, name]) => {
         const f = el('fieldset', '', 'choice-group'), d = el('div'); f.append(el('legend', lg)); radios(d, name, list); f.append(d); adj.append(f);
+        if (lg === '调整原因') reasonOtherInput(f, `调整原因其他${ci}`);
       });
       sec.append(g, adj);
+    }
+    if (recs.length) {
       const ul = el('ul', '', 'records');
       recs.forEach(([v, i]) => { const a = el('a'); a.href = `add-xiyao.html?edit=${i}`; const t = el('span'); t.append(el('strong', titleOf(kind, v)), el('small', describe(kind, v))); a.append(t, el('span', '›', 'arrow')); const li = el('li'); li.append(a); ul.append(li) });
       sec.append(ul);
@@ -161,24 +179,37 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
     const add = el('a', '添加药品', 'secondary add-link'); add.href = `add-xiyao.html?category=${encodeURIComponent(cat)}`;
     sec.append(add); holder.append(sec);
   });
-  used.forEach(([cat, ci]) => { const a = catMap[cat] || {}; check(`是否调整${ci}`, a.adjust); check(`调整内容${ci}`, a.adjustment); check(`调整原因${ci}`, a.reason) });
+  const otherOf = ci => form.elements.namedItem(`调整原因其他${ci}`);
+  used.forEach(([cat, ci, noAdj]) => {
+    if (noAdj) return;
+    const a = catMap[cat] || {}, [r, text] = splitReason(a.reason);
+    check(`是否调整${ci}`, a.adjust); check(`调整内容${ci}`, a.adjustment); check(`调整原因${ci}`, r); otherOf(ci).value = text;
+  });
   const build = clearIfNone => {
     const z = loadZ(), use = checked('是否使用');
     z.hasXiyao = use;
     const m = {};
-    used.forEach(([cat, ci]) => { m[cat] = { adjust: checked(`是否调整${ci}`), adjustment: checked(`调整内容${ci}`), reason: checked(`调整原因${ci}`) } });
+    used.forEach(([cat, ci, noAdj]) => {
+      m[cat] = noAdj ? { adjust: '', adjustment: '', reason: '' }
+        : { adjust: checked(`是否调整${ci}`), adjustment: checked(`调整内容${ci}`), reason: joinReason(checked(`调整原因${ci}`), otherOf(ci).value) };
+    });
     z.xiyaoCategoryAdjust = m;
     if (clearIfNone && use === '无') z.xiyao = [];
     return applyAdjust(z);
   };
   const sync = () => {
     toggle(details, checked('是否使用') === '有');
-    used.forEach(([, ci]) => toggle(document.getElementById(`adjustDetails${ci}`), checked(`是否调整${ci}`) === '是'));
+    used.forEach(([, ci, noAdj]) => {
+      if (noAdj) return;
+      toggle(document.getElementById(`adjustDetails${ci}`), checked(`是否调整${ci}`) === '是');
+      const o = otherOf(ci), show = checked(`调整原因${ci}`) === REASON_OTHER; o.hidden = !show; o.disabled = !show; if (!show) o.value = '';
+    });
   };
   sync();
   /* 进度：是否使用 + 各已有记录分类的是否调整（选“是”再加调整内容/原因）；选“有”时“至少添加 1 条药品”另算一项 */
   FmsProgress.track(form, { extra: () => checked('是否使用') === '有' ? { total: 1, answered: z0.xiyao.length ? 1 : 0 } : {} });
   form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
+  form.addEventListener('input', e => { if (e.target.classList.contains('reason-other')) try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
     /* 非必填：未选择或未填完也可以保存返回 */
@@ -193,17 +224,36 @@ if (page.dataset.page === 'list') {
   document.getElementById('empty').hidden = items.length > 0;
   items.forEach((v, i) => { const a = el('a'); a.href = `add-${kind}.html?edit=${i}`; const t = el('span'); t.append(el('strong', titleOf(kind, v)), el('small', describe(kind, v))); a.append(t, el('span', '›', 'arrow')); const li = el('li'); li.append(a); list.append(li) });
   const form = document.getElementById('metaForm');
-  /* 中药汤剂没有“无/有”问题：进度按是否已添加记录（或治疗方案已保存视为“无”） */
   if (!form) { FmsProgress.set(catState(loadZ(), kind)[0] === 'done' ? 1 : 0, 1); return }
   const cfg = META[kind], ck = KIND[kind], z0 = loadZ(), error = document.getElementById('error');
+  /* 中药汤剂：只有「无/有」，没有「是否调整」 */
+  if (kind === 'zhongyao-yinpian') {
+    const details = document.getElementById('details');
+    const checkedUse = () => form.querySelector('[name="是否使用"]:checked')?.value || '';
+    const r = form.querySelector(`[name="是否使用"][value="${z0[ck.hasKey] || (items.length ? '有' : '')}"]`); if (r) r.checked = true;
+    const build = clearIfNone => { const z = loadZ(); z[ck.hasKey] = checkedUse(); if (clearIfNone && z[ck.hasKey] === '无') z[ck.key] = []; return applyAdjust(z) };
+    const sync = () => toggle(details, checkedUse() === '有');
+    sync();
+    FmsProgress.track(form, { extra: () => checkedUse() === '有' ? { total: 1, answered: items.length ? 1 : 0 } : {} });
+    form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
+    form.addEventListener('submit', e => {
+      e.preventDefault(); error.textContent = '';
+      FmsCase.save('zlfa', keepFinish(build(true)), { back: 'index.html', button: form.querySelector('button[type=submit]') });
+    });
+    return;
+  }
   const meta = Object.assign({ use: ck.hasKey ? z0[ck.hasKey] || '' : '' }, z0[ck.adjKey] || {});
   const details = document.getElementById('details'), adjust = document.getElementById('adjustDetails');
   radios(document.getElementById('adjustContent'), '调整内容', window.ADJUST[cfg.adjustType]);
   radios(document.getElementById('adjustReason'), '调整原因', window.ADJUST.reasons);
+  const reasonOther = reasonOtherInput(document.getElementById('adjustReason'), '调整原因其他');
+  /* 首次就诊：去掉「是否调整」整块（只在随诊里填写） */
+  if (isBaseline()) { form.querySelector('[name="是否调整"]')?.closest('fieldset')?.remove(); adjust?.remove() }
   const checked = n => form.querySelector(`[name="${n}"]:checked`)?.value || '';
   const check = (n, v) => { const r = v && form.querySelector(`[name="${n}"][value="${v}"]`); if (r) r.checked = true };
-  check('是否使用', meta.use); check('是否调整', meta.adjust); check('调整内容', meta.adjustment); check('调整原因', meta.reason);
-  const current = () => ({ use: cfg.hasUse ? checked('是否使用') : '', adjust: checked('是否调整'), adjustment: checked('调整内容'), reason: checked('调整原因') });
+  const [reason0, reasonText0] = splitReason(meta.reason);
+  check('是否使用', meta.use); check('是否调整', meta.adjust); check('调整内容', meta.adjustment); check('调整原因', reason0); reasonOther.value = reasonText0;
+  const current = () => ({ use: cfg.hasUse ? checked('是否使用') : '', adjust: checked('是否调整'), adjustment: checked('调整内容'), reason: joinReason(checked('调整原因'), reasonOther.value) });
   /* 当前选项写入 zlfa（类别级字段 + 复制到每条记录） */
   const build = (clearIfNone) => {
     const z = loadZ(), m = current();
@@ -214,13 +264,15 @@ if (page.dataset.page === 'list') {
   };
   const sync = () => {
     if (cfg.hasUse) toggle(details, checked('是否使用') === '有');
-    toggle(adjust, checked('是否调整') === '是');
+    if (adjust && adjust.isConnected) toggle(adjust, checked('是否调整') === '是');
+    const show = checked('调整原因') === REASON_OTHER; reasonOther.hidden = !show; reasonOther.disabled = !show; if (!show) reasonOther.value = '';
   };
   sync();
   /* 进度：是否使用、是否调整（选“是”再加调整内容/原因）；选“有”时“至少添加 1 条记录”另算一项 */
   FmsProgress.track(form, { extra: () => cfg.hasUse && checked('是否使用') === '有' ? { total: 1, answered: items.length ? 1 : 0 } : {} });
   /* 选项变化即写草稿（不提交），便于跳转到“添加”页面后返回不丢失 */
   form.addEventListener('change', () => { sync(); try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
+  reasonOther.addEventListener('input', () => { try { FmsCase.set('zlfa', keepFinish(build(false))) } catch {} });
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
     /* 非必填：未选择或未填完也可以保存返回 */
@@ -307,7 +359,16 @@ if (kind === 'zhongyao-yinpian') {
   const recipeBox = document.getElementById('recipeBox'), recipeChoices = document.getElementById('recipeChoices'), herbBox = document.getElementById('herbBox'), herbList = document.getElementById('herbList');
   radios(document.getElementById('syndromeChoices'), '中医证型', Object.keys(recipes));
   const renderRecipes = () => { const s = checked('中医证型'); radios(recipeChoices, '方剂', Object.keys(recipes[s] || {})); toggle(recipeBox, !!s); renderHerbs() };
-  const renderHerbs = () => { const herbs = recipes[checked('中医证型')]?.[checked('方剂')] || []; herbList.replaceChildren(...herbs.map(h => el('li', h))); herbBox.hidden = !herbs.length };
+  /* 方剂组成：每味药一个勾选框，默认全选，医生按实际加减（取消勾选）；保存时只存勾选的药物 */
+  const renderHerbs = (keep) => {
+    const herbs = recipes[checked('中医证型')]?.[checked('方剂')] || [];
+    herbList.replaceChildren(...herbs.map(h => {
+      const li = el('li'), label = el('label'), i = document.createElement('input');
+      i.type = 'checkbox'; i.name = 'herb'; i.value = h; i.checked = keep ? keep.includes(h) : true;
+      label.append(i, el('span', h)); li.append(label); return li;
+    }));
+    herbBox.hidden = !herbs.length;
+  };
   form.addEventListener('change', e => { if (e.target.name === '中医证型') renderRecipes(); if (e.target.name === '方剂') renderHerbs() });
   const supplement = field('supplement'), upload = document.getElementById('treatmentPhoto'), camera = document.getElementById('cameraPhoto'), preview = document.getElementById('photoPreview'), container = document.getElementById('photoContainer'), status = document.getElementById('photoStatus');
   let photoUrl = '', photoUploading = false;
@@ -315,7 +376,7 @@ if (kind === 'zhongyao-yinpian') {
   renderRecipes();
   if (editItem) {
     const r = form.querySelector(`[name="中医证型"][value="${editItem.syndrome}"]`); if (r) { r.checked = true; renderRecipes() }
-    const p = form.querySelector(`[name="方剂"][value="${editItem.recipe}"]`); if (p) { p.checked = true; renderHerbs() }
+    const p = form.querySelector(`[name="方剂"][value="${editItem.recipe}"]`); if (p) { p.checked = true; renderHerbs(Array.isArray(editItem.composition) ? editItem.composition : null) }
     supplement.value = editItem.prescription || ''; if (editItem.image && !/^data:/.test(editItem.image)) { photoUrl = editItem.image; showPhoto(editItem.image, '已上传处方图片') }
   }
   document.getElementById('choosePhoto').addEventListener('click', () => upload.click());
@@ -339,8 +400,10 @@ if (kind === 'zhongyao-yinpian') {
     const syndrome = checked('中医证型'), recipe = checked('方剂');
     if (!syndrome) { error.textContent = '请选择中医证型'; return }
     if (!recipe) { error.textContent = '请选择方剂'; return }
+    const herbs = [...form.querySelectorAll('[name="herb"]:checked')].map(i => i.value);
+    if (!herbs.length && !supplement.value.trim()) { error.textContent = '请至少勾选一味方剂组成药物，或填写补充药物'; return }
     /* image：上传接口返回的图片 URL */
-    save({ name: '中药汤剂', syndrome, recipe, composition: (recipes[syndrome][recipe] || []).slice(), prescription: supplement.value.trim(), image: !container.hidden ? photoUrl : '' });
+    save({ name: '中药汤剂', syndrome, recipe, composition: herbs, prescription: supplement.value.trim(), image: !container.hidden ? photoUrl : '' });
   });
   return;
 }

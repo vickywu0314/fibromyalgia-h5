@@ -215,3 +215,10 @@
 ### 病情评估滑块步长
 
 FIQR 各条目、疼痛评估（VAS、pain1–pain4）滑块步长由 0.1 改为 0.5（0、0.5、1 … 10）。字段与取值格式不变。
+
+### zlfa：中药汤剂「有/无」、方剂组成勾选、调整原因「其他」、首次就诊不填是否调整
+
+- `zlfa.hasZhongyaoYinpian`：**新增，需后端在「纤维肌痛-治疗方案」结构中增加该字段**。`"无"` / `"有"` / 空串，含义同 `hasXiyao`、`hasZhongchengyao`。选「无」时 `zhongyaoYinpian` 为空数组。
+- `zlfa.zhongyaoYinpian[].composition`：改为医生勾选的药物（默认全选，可取消勾选做加减）；原来固定为方剂的全部药物。字段类型不变（字符串数组）。
+- 调整原因 `reason`（`xiyaoAdjust` / `xiyaoCategoryAdjust` / `zhongchengyaoAdjust` / `feiYaowuAdjust` 及各条记录上的 `reason`）：选「其他」并填写时存为 `"其他：填写内容"`；字段不变。
+- 首次就诊（基线）页面不显示「是否调整」，`adjust` / `adjustment` / `reason` 为空串；随诊才填写。

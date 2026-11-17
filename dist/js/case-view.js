@@ -163,6 +163,7 @@ function renderCase(c, target) {
       n += records(s, '口服西药', z.xiyao, r => [r.name, [r.dose, r.unit].filter(has).join(''), r.frequency, r.route].filter(has).join('，'));
       n += rows(s, [['是否调整西药', adj(z.xiyaoAdjust)]]);
     }
+    if (z.hasZhongyaoYinpian === '无') n += rows(s, [['中药汤剂', '无']]);
     n += records(s, '中药汤剂', z.zhongyaoYinpian, r => [r.syndrome, r.recipe, join(r.composition), has(r.prescription) ? '补充：' + r.prescription : ''].filter(has).join('，'));
     images(s, '处方照片', (z.zhongyaoYinpian || []).map(r => r.image));
     if (z.hasZhongchengyao === '无') n += rows(s, [['口服中成药', '无']]);

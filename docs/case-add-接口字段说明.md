@@ -207,3 +207,11 @@
 ### jbxx.diseaseHistory：新增类别「其他」
 
 既往疾病史选择类别列表最后新增「其他」（`category: "qita"`，`categoryLabel: "其他"`），手动输入疾病名称（`name`）和病程（`years`，整数年）。结构与其他类别的记录相同。
+
+### zlfa.zhongchengyao[].instructions（口服中成药用法用量）
+
+本次治疗方案-口服中成药：选药后先选「用法用量」。选「用量同说明书」时 `instructions: "用量同说明书"`，`dose` / `unit` / `frequency` 为空串；选「其他」时 `instructions: "其他"`，并填写 `dose`、`unit`、`frequency`。旧记录没有该字段，有剂量 / 频次的按「其他」显示。
+
+### 病情评估滑块步长
+
+FIQR 各条目、疼痛评估（VAS、pain1–pain4）滑块步长由 0.1 改为 0.5（0、0.5、1 … 10）。字段与取值格式不变。

@@ -166,7 +166,7 @@ function renderCase(c, target) {
     n += records(s, '中药汤剂', z.zhongyaoYinpian, r => [r.syndrome, r.recipe, join(r.composition), has(r.prescription) ? '补充：' + r.prescription : ''].filter(has).join('，'));
     images(s, '处方照片', (z.zhongyaoYinpian || []).map(r => r.image));
     if (z.hasZhongchengyao === '无') n += rows(s, [['口服中成药', '无']]);
-    n += records(s, '口服中成药', z.zhongchengyao, r => [r.name, [r.dose, r.unit].filter(has).join(''), r.frequency].filter(has).join('，'));
+    n += records(s, '口服中成药', z.zhongchengyao, r => [r.name, r.instructions === '用量同说明书' ? '用量同说明书' : '', [r.dose, r.unit].filter(has).join(''), r.frequency].filter(has).join('，'));
     n += rows(s, [['是否调整中成药', adj(z.zhongchengyaoAdjust)]]);
     if (z.hasFeiYaowu === '无') n += rows(s, [['非药物疗法', '无']]);
     n += records(s, '非药物疗法', z.feiYaowu, r => [r.name, withUnit(r.duration, '分钟/次'), r.frequency].filter(has).join('，'));

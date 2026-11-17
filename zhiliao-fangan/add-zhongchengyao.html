@@ -4,7 +4,7 @@
 <h1>口服中成药</h1>
 <form id="planForm">
 <label class="field"><span class="field-title">药物</span><select class="control" name="name"></select></label><label class="field custom-field" id="customBox" hidden><span class="field-title">药物名称</span><input class="control" name="customName" maxlength="50" placeholder="请输入中成药名称"></label>
-<div class="details" id="details" hidden>
+<!-- 选药后先选用法用量：「用量同说明书」或「其他」；选「其他」才填单次剂量和频次（存 instructions 字段） --><label class="field" id="usageField" hidden><span class="field-title">用法用量</span><select class="control" name="usage"><option value="">请选择用法用量</option><option value="用量同说明书">用量同说明书</option><option value="其他">其他</option></select></label><div class="details" id="details" hidden>
 <label class="field"><span class="field-title">单次剂量</span><span class="dose-line"><select class="control" name="dose"></select><span class="unit" id="unit"></span></span></label>
 <label class="field"><span class="field-title">频次</span><select class="control" name="frequency"></select></label>
 </div>

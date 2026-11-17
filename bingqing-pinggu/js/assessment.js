@@ -24,8 +24,8 @@
   // 计分。每个函数接收 answers（name → value），返回 { score, result, ...维度 }。
   // ---------------------------------------------------------------------------
   var SCORERS = {
-    // VAS：range name="vas" 取值 0–10、0.1 一档，即疼痛 VAS 分值，score = vas（如 "7.3"）。
-    // pain1–pain4（24h 最重/最轻/平均/目前，0–10、0.1 一档）只放 answers。
+    // VAS：range name="vas" 取值 0–10、0.5 一档，即疼痛 VAS 分值，score = vas（如 "7.5"）。
+    // pain1–pain4（24h 最重/最轻/平均/目前，0–10、0.5 一档）只放 answers。
     // result 按页面说明分段：0 无痛；0.1–3 轻度；3.1–6.9 中度；7–9.9 重度；10 剧痛
     // （页面原文“4-7 中度、7-9 重度”在 7 分重叠，7 分归入重度）。
     vas: function (a) {
@@ -38,7 +38,7 @@
     //   功能 functionScore = 第 1 部分 9 题总和 / 3（0–30）
     //   整体影响 impactScore = 第 2 部分 2 题总和（0–20）
     //   症状 symptomScore = 第 3 部分标准 10 题（页面 fiqr_3_1 … fiqr_3_10）总和 / 2（0–50）
-    //   总分 = 三者之和（0–100），保留 1 位小数。条目按 0.1 一档作答，各分项也按 1 位小数取整，避免浮点误差。
+    //   总分 = 三者之和（0–100），保留 1 位小数。条目按 0.5 一档作答，各分项也按 1 位小数取整，避免浮点误差。
     // 页面症状部分 10 题 + 4 个细项：第 10 题“对噪音、明亮光线、异味和寒冷的敏感度”即标准 FIQR 第 10 题，
     // 10-1～10-4（fiqr_3_10_1 … fiqr_3_10_4）是它的拆分细项（噪音/光线/异味/寒冷），不计分，只存 answers。
     // severity（另加 key）：<39 轻度；39–<59 中度；≥59 重度（任务给定分级）。
@@ -392,7 +392,7 @@
   form.addEventListener('change', onEdit);
   // 点一下滑块（不拖动、值不变）也算作答
   form.addEventListener('click', function (e) { if (e.target && e.target.type === 'range') onEdit(e); });
-  // −/+ 微调（FIQR 0.1 一档）：按 data-delta 调整对应滑块并算作答；未作答时从当前位置开始调
+  // −/+ 微调（FIQR / VAS 0.5 一档）：按 data-delta 调整对应滑块并算作答；未作答时从当前位置开始调
   form.addEventListener('click', function (e) {
     var btn = e.target && e.target.closest && e.target.closest('.step-btn');
     if (!btn || viewMode()) return;

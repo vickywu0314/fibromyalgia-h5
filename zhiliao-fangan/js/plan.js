@@ -96,6 +96,7 @@ const META = {
 const describe = (k, v) => {
   if (k === 'zhongyao-yinpian') return [v.syndrome, v.prescription ? '补充：' + v.prescription : ''].filter(Boolean).join(' · ');
   if (k === 'fei-yaowu') return [v.duration ? `单次${v.duration}${v.unit || '分钟'}` : '', v.frequency].filter(Boolean).join('，');
+  if (v.instructions === '用量同说明书') return '用量同说明书';
   return [v.dose ? v.dose + (v.unit || '') : '', v.frequency].filter(Boolean).join('，');
 };
 const titleOf = (k, v) => k === 'zhongyao-yinpian' ? (v.recipe || v.name || '') : (v.customName || v.name || '');
@@ -407,13 +408,17 @@ const nameSel = field('name'), details = document.getElementById('details'), dos
 const isNonDrug = kind === 'fei-yaowu';
 const catalog = kind === 'zhongchengyao' ? window.PATENT_DRUGS : null;
 const custom = field('customName'), customBox = document.getElementById('customBox');
+// 口服中成药：用法用量「用量同说明书 / 其他」，选「其他」才填剂量和频次
+const usageSel = field('usage'), usageField = document.getElementById('usageField');
 opts(nameSel, isNonDrug ? window.NON_DRUG.names : catalog.map(d => d.name), isNonDrug ? '请选择非药物疗法' : '请选择药物');
 if (isNonDrug) { opts(doseSel, window.NON_DRUG.durations, '请选择单次时长'); opts(freqSel, window.NON_DRUG.freqs, '请选择频次'); unitEl.textContent = window.NON_DRUG.unit }
 const drugOf = n => catalog?.find(d => d.name === n);
 const renderDrug = () => {
   const n = nameSel.value;
   if (isNonDrug) { toggle(customBox, n === '其他'); toggle(details, !!n); return }
-  const d = drugOf(n); toggle(details, !!d);
+  const d = drugOf(n);
+  if (usageField) { toggle(usageField, !!d); toggle(details, !!d && usageSel.value === '其他') }
+  else toggle(details, !!d);
   // 口服中成药选「其他」：手动填写药物名称
   if (customBox) toggle(customBox, n === '其他');
   if (!d) return;
@@ -424,12 +429,15 @@ const renderDrug = () => {
   const route = field('route'); if (route) route.checked = true;
 };
 nameSel.addEventListener('change', renderDrug);
+if (usageSel) usageSel.addEventListener('change', () => toggle(details, !!drugOf(nameSel.value) && usageSel.value === '其他'));
 renderDrug();
 if (editItem) {
   const names = [...nameSel.options].map(o => o.value);
   if (isNonDrug && (editItem.customName || (editItem.name && !names.includes(editItem.name)))) { nameSel.value = '其他'; renderDrug(); custom.value = editItem.customName || editItem.name }
   else if (!isNonDrug && editItem.name && !names.includes(editItem.name)) { nameSel.value = '其他'; renderDrug(); custom.value = editItem.customName || editItem.name }
   else { nameSel.value = editItem.name || ''; renderDrug() }
+  // 回显用法用量：存过「用量同说明书」的直接选中；旧记录有剂量 / 频次的视为「其他」
+  if (usageSel) { usageSel.value = editItem.instructions === '用量同说明书' ? '用量同说明书' : (editItem.dose || editItem.frequency ? '其他' : ''); renderDrug() }
   doseSel.value = (isNonDrug ? editItem.duration : editItem.dose) || doseSel.value; freqSel.value = editItem.frequency || freqSel.value;
 }
 /* 保留编辑前记录上的其它字段（如 category/instructions），调整字段由 applyAdjust 统一覆盖 */
@@ -449,12 +457,20 @@ form.addEventListener('submit', e => {
   const d = drugOf(n);
   const customName = n === '其他' ? custom.value.trim() : '';
   if (n === '其他' && !customName) { error.textContent = '请填写药物名称'; return }
+  if (usageSel && !usageSel.value) { error.textContent = '请选择用法用量'; return }
+  if (usageSel && usageSel.value === '用量同说明书') {
+    save({
+      name: customName || n, customName, category: base.category || '', dose: '', unit: '', frequency: '',
+      spec: d.spec || '', route: d.route || '', instructions: '用量同说明书', adjust: '', adjustment: '', reason: ''
+    });
+    return;
+  }
   if (!doseSel.value || !freqSel.value) { error.textContent = '请选择单次剂量和频次'; return }
   /* name：选“其他”时取填写的名称，customName 同时保存该名称（非“其他”为空串） */
   save({
     name: customName || n, customName, category: base.category || '', dose: doseSel.value, unit: d.unit, frequency: freqSel.value,
     spec: d.spec || '', route: d.route || '',
-    instructions: base.instructions || '', adjust: '', adjustment: '', reason: ''
+    instructions: usageSel ? '其他' : (base.instructions || ''), adjust: '', adjustment: '', reason: ''
   });
 });
 })();

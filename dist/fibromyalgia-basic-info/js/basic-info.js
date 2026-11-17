@@ -182,11 +182,18 @@
   function syncConsent(){
     try { if (sessionStorage.getItem(CONSENT_READ)) { consentAgree.checked = true; sessionStorage.removeItem(CONSENT_READ); } } catch (e) {}
     if (signature) consentAgree.checked = true;
-    consentAgree.disabled = !!signature || readonly(); // 签名后要改同意状态，先「重新签字」
+    // 不禁用勾选框（禁用会显示成灰色，看起来像没勾）；已签名时取消勾选需确认并清除签名
+    consentAgree.disabled = readonly();
     sigPad.classList.toggle("locked", !consentAgree.checked && !signature);
     if (!signature && !drawn) sigHolder.textContent = consentAgree.checked ? "请在此处签字" : "请先勾选「我已阅读并同意」";
   }
-  consentAgree.addEventListener("change", syncConsent);
+  consentAgree.addEventListener("change", () => {
+    if (!consentAgree.checked && (signature || drawn)) {
+      if (!confirm("取消同意将清除已签的名字，确定取消吗？")) { consentAgree.checked = true; return; }
+      showSignature(""); sizeCanvas(); tracker.refresh();
+    }
+    syncConsent();
+  });
   // 去阅读页前先把本页已填内容写入草稿，返回时不丢
   document.getElementById("consentDoc").addEventListener("click", () => { try { FmsCase.set("jbxx", collect(), true); } catch (e) {} });
   sigCanvas.addEventListener("pointerdown", e => {

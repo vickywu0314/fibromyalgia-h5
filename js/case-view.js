@@ -61,7 +61,7 @@ function renderCase(c, target) {
       ['饮酒史', j.drinking === '经常有' ? ['经常有', withUnit(j.drinkingYears, '年'), ...(has(j.baijiuAmount) || has(j.beerAmount) || has(j.wineAmount)
         ? [['白酒', j.baijiuAmount], ['啤酒', j.beerAmount], ['红酒', j.wineAmount]].filter(([t]) => (j.drinkTypes || []).includes(t)).map(([t, v]) => has(v) ? t + ' ' + v + 'ml/天' : t)
         : [join(j.drinkTypes || j.drinkType), withUnit(j.drinkAmount, 'ml/天')])].filter(has).join('，') : j.drinking],
-      ['周身疼痛发病时间', j.painOnsetDate], ['是否曾确诊', j.diagnosed === '是' ? ['是', j.diagnosisDate, j.hospitalLevel && '确诊医疗机构 ' + j.hospitalLevel].filter(has).join('，') : j.diagnosed],
+      ['周身疼痛发病时间', j.painOnsetDate], ['是否曾确诊', j.diagnosed],
       ['电子签字', j.signature ? '已签字' : '']
     ]);
     const fs = j.fs || {}, w = j.work || {}, b = j.bodyComposition || {}, t = j.tipi || {};

@@ -36,7 +36,6 @@
     U.toggle(document.getElementById("smokingDetail"), checked("smoking") === "经常有");
     U.toggle(document.getElementById("drinkingDetail"), checked("drinking") === "经常有");
     // 是否曾确诊：选「是」才出现确诊时间、确诊医疗机构级别
-    U.toggle(document.getElementById("diagnosedDetail"), checked("diagnosed") === "是");
     // 民族：选「其他」才出现填写框
     U.toggle(document.getElementById("nationOtherWrap"), checked("nationType") === "其他");
     // 饮酒史：每种酒勾选后才出现「每天用量」，取消勾选时清空
@@ -295,8 +294,9 @@
       // 与病史病情页共用的 jbxx 字段；未选「是」时确诊时间、机构级别写空
       painOnsetDate: d.painOnsetDate || "",
       diagnosed: d.diagnosed || "",
-      diagnosisDate: d.diagnosed === "是" ? (d.diagnosisDate || "") : "",
-      hospitalLevel: d.diagnosed === "是" ? (d.hospitalLevel || "") : "",
+      // 确诊时间、确诊医疗机构级别已去掉，提交空串
+      diagnosisDate: "",
+      hospitalLevel: "",
       signature: currentSignature()
     };
     // drinkAmount（原结构体字段）保留为三种酒每天用量之和，都没填时为空串

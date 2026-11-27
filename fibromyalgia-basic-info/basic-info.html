@@ -152,7 +152,7 @@
           </div>
         </fieldset>
 
-        <!-- 与病史病情页同一组字段（jbxx.painOnsetDate / diagnosed / diagnosisDate / hospitalLevel），两处填写互相回显 -->
+        <!-- jbxx.painOnsetDate / diagnosed；按需求去掉了确诊时间、确诊医疗机构级别（diagnosisDate / hospitalLevel 提交空串） -->
         <div class="field">
           <label for="painOnsetDate">周身疼痛发病时间</label>
           <input id="painOnsetDate" name="painOnsetDate" type="date">
@@ -163,22 +163,6 @@
           <div class="choices">
             <label><input type="radio" name="diagnosed" value="是"> 是</label>
             <label><input type="radio" name="diagnosed" value="否"> 否</label>
-          </div>
-          <div id="diagnosedDetail" class="conditional" hidden>
-            <div>
-              <p class="sub-label">确诊时间</p>
-              <input id="diagnosisDate" name="diagnosisDate" type="date" aria-label="确诊时间">
-            </div>
-            <div>
-              <p class="sub-label">确诊医疗机构级别</p>
-              <select id="hospitalLevel" name="hospitalLevel" aria-label="确诊医疗机构级别">
-                <option value="">请选择</option>
-                <option value="1级">1级</option>
-                <option value="2级">2级</option>
-                <option value="3级">3级</option>
-                <option value="无级别">无级别</option>
-              </select>
-            </div>
           </div>
         </fieldset>
       </section>

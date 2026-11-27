@@ -4,13 +4,8 @@
 <form id="entryForm" novalidate>
 <fieldset class="choice-group"><legend class="sr-only">是否使用口服中成药</legend><label><input type="radio" name="hasEntry" value="无">无</label><label><input type="radio" name="hasEntry" value="有">有</label></fieldset>
 <div id="details" hidden>
-<!-- 中成药：可从药品库中搜索选择，也可直接手动输入名称；所有中成药用量 1~5 片/粒、频次 日1/2/3次 --><div class="field drug-search"><label class="field-label" for="zcyName">中成药药物</label><input class="control" id="zcyName" name="name" type="search" autocomplete="off" maxlength="50" placeholder="搜索或输入中成药名称" aria-autocomplete="list" aria-controls="zcyList"><ul class="drug-suggest" id="zcyList" role="listbox" hidden></ul><p class="drug-hint">可从列表中选择；列表中没有的，输入名称后点「手动输入」</p></div>
-<div class="item-detail" id="itemDetail" hidden>
-<label class="field"><span class="field-label">频次</span><select class="control" name="frequency"></select></label>
-<label class="field"><span class="field-label">用量</span><span class="form-row"><select class="control" name="dose"></select><span class="unit" id="doseUnit">片/粒</span></span></label>
-<label class="field"><span class="field-label">开始时间</span><input class="control" type="date" name="startDate" aria-label="开始时间"></label>
-<label class="field"><span class="field-label">结束时间</span><input class="control" type="date" name="endDate" aria-label="结束时间"></label>
-</div>
+<!-- 中成药：可从药品库中搜索选择，也可直接手动输入名称 --><div class="field drug-search"><label class="field-label" for="zcyName">中成药药物</label><input class="control" id="zcyName" name="name" type="search" autocomplete="off" maxlength="50" placeholder="搜索或输入中成药名称" aria-autocomplete="list" aria-controls="zcyList"><ul class="drug-suggest" id="zcyList" role="listbox" hidden></ul><p class="drug-hint">可从列表中选择；列表中没有的，输入名称后点「手动输入」</p></div>
+<!-- 只选或输入中成药名称，不再填频次、用量、开始/结束时间 -->
 </div>
 <div class="form-actions"><button type="submit" class="primary">保存</button><p class="hint" id="message" role="alert"></p></div>
 </form></main><script src="../js/fms-api.js"></script><script src="../js/fms-case.js"></script><script src="../js/fms-select.js"></script><script src="../js/fms-progress.js"></script><script src="./js/store.js"></script><script src="./js/drug-data.js"></script><script src="./js/entry-form.js"></script></body></html>

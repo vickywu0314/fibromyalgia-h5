@@ -1,10 +1,10 @@
 /* 本病治疗史 - 新增/编辑表单（西药 / 中药汤剂 / 非药物疗法 / 中成药 共用）
-   结构（按新版 PDF）：无 / 有 →
-     口服西药：与本次治疗方案西药一致——药物分类 → 药品名称 → 剂量(mg) → 频次（目录见 ../zhiliao-fangan/js/catalog.js）；
-              「其他」手填药品名称 + 用量(mg) + 频次；非甾体抗炎药只选药品；开始日期；是否沿用至今：是 / 否 → [结束日期, 停用原因]
-     中药汤剂：开始日期；是否沿用至今：是 / 否 → [结束日期, 停用原因]
-     非药物疗法：名称（其他→名称/具体治疗）→ 单次时长(分钟)、频次；开始日期；是否沿用至今 → [结束日期, 停用原因]
-     口服中成药：药品（可从药品库搜索选择，也可手动输入名称）→ 频次(日1/2/3次)、用量(1~5 片/粒)、开始时间、结束时间（无“是否沿用至今/停用原因”）
+   结构：无 / 有 →
+     口服西药：只有 普瑞巴林 / 度洛西汀 / 阿米替林 → 剂量(mg)、频次（取本次治疗方案目录 ../zhiliao-fangan/js/catalog.js 对应药品）；
+              开始日期；是否沿用至今：是 / 否 → [结束日期, 停用原因]
+     中药汤剂：只选「有/无」，没有记录
+     非药物疗法：只选名称（其他→填写名称）
+     口服中成药：只选名称（可从药品库搜索选择，也可手动输入）
    数据写入病例草稿 jbxx.treatmentHistory.<类别数组>，“无/有”写 has<类别>（见 store.js）。
    记录字段：name, dose, unit(固定“片/粒”), frequency, startDate, ongoing, endDate, reason, duration(非药物单次时长), durationUnit；
    西药同时写 medication（=name，对应结构体 medication）。
@@ -24,42 +24,33 @@
   var submitBtn = form.querySelector('button[type="submit"]');
   var nameField = kind === 'xiyao' ? 'medication' : 'name';
   var list = kind === 'zhongchengyao' ? D.ZHONGCHENGYAO : null;
-  // 口服西药：按药物分类选药（与本次治疗方案共用目录）
-  var WC = window.WESTERN_CATALOG || {}, WO = window.WESTERN_OTHER || { unit: 'mg', freqs: [] };
+  // 口服西药：只有 3 种药，名称用简称；剂量、频次取本次治疗方案目录里对应的药品
+  var WC = window.WESTERN_CATALOG || {};
+  var XY_NAMES = ['普瑞巴林', '度洛西汀', '阿米替林'];
+  function catalogItem(label) {
+    var found = null;
+    Object.keys(WC).forEach(function (c) { (WC[c] || []).forEach(function (d) { if (!found && d.name.indexOf(label) !== -1) found = { item: d, category: c }; }); });
+    return found;
+  }
+  // 旧记录可能是全称（如「普瑞巴林胶囊」），按包含的简称对应回来
+  function xyLabelOf(name) { for (var i = 0; i < XY_NAMES.length; i++) if (String(name || '').indexOf(XY_NAMES[i]) !== -1) return XY_NAMES[i]; return ''; }
   var xy = kind === 'xiyao' ? {
-    cat: '', drug: '',
+    drug: '',
     wrap: function (id) { return document.getElementById(id); },
-    item: function () {
-      var arr = WC[els.category.value] || [];
-      for (var i = 0; i < arr.length; i++) if (arr[i].name === els.medication.value) return arr[i];
-      return null;
-    }
+    item: function () { var f = catalogItem(els.medication.value); return f ? f.item : null; }
   } : null;
   function refreshXiyao() {
-    var cat = els.category.value, other = cat === '其他';
-    if (xy.cat !== cat) {
-      xy.cat = cat; xy.drug = '';
-      setOptions(els.medication, (WC[cat] || []).map(function (d) { return d.name; }), '请选择药品');
-    }
-    toggle(xy.wrap('nameWrap'), !!cat && !other);
-    toggle(xy.wrap('customWrap'), other);
-    toggle(xy.wrap('otherDoseWrap'), other);
-    var item = other ? null : xy.item();
-    var drugKey = other ? '其他' : (item ? item.name : '');
+    var item = xy.item(), drugKey = item ? els.medication.value : '';
     if (xy.drug !== drugKey) {
       xy.drug = drugKey;
       if (item) {
         setOptions(els.dose, item.doses, '请选择剂量');
         setOptions(els.frequency, item.freqs, '请选择频次');
         text('doseUnit', item.unit || 'mg');
-      } else if (other) setOptions(els.frequency, WO.freqs, '请选择频次');
+      }
     }
-    var showDose = !!(item && item.doses.length), showFreq = other || !!(item && item.freqs.length);
-    toggle(xy.wrap('doseWrap'), showDose);
-    toggle(xy.wrap('freqWrap'), showFreq);
-    // 只有一个选项（如助眠药 3mg / 晚1次）时直接带出
-    if (showDose && item.doses.length === 1 && !els.dose.value) els.dose.value = item.doses[0];
-    if (item && item.freqs.length === 1 && !els.frequency.value) els.frequency.value = item.freqs[0];
+    toggle(xy.wrap('doseWrap'), !!(item && item.doses.length));
+    toggle(xy.wrap('freqWrap'), !!(item && item.freqs.length));
   }
   var builtFor = null;
 
@@ -122,7 +113,7 @@
       if (!details.hidden) refreshXiyao();
     } else if (list) {
       var item = findItem(els[nameField].value);
-      if (item) buildDrug(item);
+      if (item && els.frequency) buildDrug(item); // 口服中成药已不填频次、用量
       else if (kind !== 'zhongchengyao') builtFor = null;
       toggle(itemDetail, !!item);
     } else if (kind === 'fei-yaowu-liaofa') {
@@ -198,12 +189,8 @@
     });
     input.addEventListener('blur', function () { setTimeout(function () { suggest.hidden = true; input.value = input.value.trim(); refresh(); }, 120); });
   }
-  if (xy) setOptions(els.category, Object.keys(WC), '请选择药物分类');
-  if (kind === 'fei-yaowu-liaofa') {
-    setOptions(els.name, D.FEI_YAOWU.names, '请选择非药物名称');
-    setOptions(els.duration, D.FEI_YAOWU.durations, '请选择单次时长');
-    setOptions(els.frequency, D.FEI_YAOWU.freqs, '请选择频次');
-  }
+  if (xy) setOptions(els.medication, XY_NAMES, '请选择药品');
+  if (kind === 'fei-yaowu-liaofa') setOptions(els.name, D.FEI_YAOWU.names, '请选择非药物名称');
   if (els.reason) setOptions(els.reason, D.STOP_REASONS, '请选择停用原因');
 
   var items = S.items(kind);
@@ -217,13 +204,8 @@
     els.hasEntry.value = '有';
     refresh();
     if (xy) {
-      // 口服西药：按记录的分类回显；旧记录没有分类时按药名在目录中查找，找不到按「其他」回显
-      var xname = rec.medication || rec.name || '', xcat = rec.category && WC[rec.category] ? rec.category : '';
-      if (!xcat) Object.keys(WC).forEach(function (c) { if (!xcat && WC[c].some(function (d) { return d.name === xname; })) xcat = c; });
-      if (!xcat && xname) xcat = '其他';
-      els.category.value = xcat; refresh();
-      if (xcat === '其他') { els.customName.value = xname; refresh(); els.otherDose.value = rec.dose || ''; }
-      else { els.medication.value = xname; refresh(); }
+      // 口服西药：旧记录的全称按简称回显；3 种以外的旧药名无法回显，需重新选择
+      els.medication.value = xyLabelOf(rec.medication || rec.name); refresh();
     } else if (els[nameField]) {
       var nm = rec.name || rec.medication || '';
       if (kind === 'fei-yaowu-liaofa' && nm && D.FEI_YAOWU.names.indexOf(nm) < 0) {
@@ -236,12 +218,12 @@
       refresh();
     }
     ['dose', 'frequency', 'duration', 'startDate', 'ongoing'].forEach(function (f) {
-      if (xy && f === 'dose' && els.category.value === '其他') return;
+      // 剂量、频次、开始日期、是否沿用至今：表单里有这一项才回显
       if (els[f] && rec[f]) els[f].value = rec[f];
     });
     refresh();
     if (!els.ongoing) {
-      if (rec.endDate) els.endDate.value = rec.endDate;
+      if (rec.endDate && els.endDate) els.endDate.value = rec.endDate;
     } else if (rec.ongoing === '否') {
       if (rec.endDate) els.endDate.value = rec.endDate;
       if (rec.reason) els.reason.value = rec.reason;
@@ -280,6 +262,8 @@
     message.textContent = '';
     var has = els.hasEntry.value;
     if (!has) { message.textContent = '请选择无或有'; return; }
+    // 中药汤剂只记「有/无」
+    if (S.KINDS[kind].hasOnly) { S.saveKind(kind, [], has, submitBtn); return; }
     if (has === '无') {
       if (items.length && !confirm('选择“无”将清空已添加的' + items.length + '条记录，确定吗？')) return;
       items = [];
@@ -288,26 +272,14 @@
     }
     var data = {};
     if (xy) {
-      var cat = els.category.value;
-      if (!cat) { message.textContent = '请选择药物分类'; return; }
-      data.category = cat;
-      if (cat === '其他') {
-        var cn = els.customName.value.trim();
-        if (!cn) { message.textContent = '请填写药品名称'; return; }
-        if (!els.otherDose.value || !els.frequency.value) { message.textContent = '请填写用量并选择频次'; return; }
-        data.name = data.medication = cn;
-        data.dose = els.otherDose.value; data.unit = WO.unit || 'mg'; data.frequency = els.frequency.value;
-      } else {
-        var it = xy.item();
-        if (!it) { message.textContent = '请选择药品'; return; }
-        if ((it.doses.length && !els.dose.value) || (it.freqs.length && !els.frequency.value)) { message.textContent = '请选择剂量和频次'; return; }
-        data.name = data.medication = it.name;
-        data.dose = it.doses.length ? els.dose.value : '';
-        data.unit = it.doses.length ? (it.unit || 'mg') : '';
-        data.frequency = it.freqs.length ? els.frequency.value : '';
-      }
-    } else if (kind === 'zhongyao-tangji') {
-      data.name = edit >= 0 && items[edit].name ? items[edit].name : '汤剂' + (items.length + 1);
+      var label = els.medication.value, found = catalogItem(label), it = found && found.item;
+      if (!it) { message.textContent = '请选择药品'; return; }
+      if ((it.doses.length && !els.dose.value) || (it.freqs.length && !els.frequency.value)) { message.textContent = '请选择剂量和频次'; return; }
+      data.name = data.medication = label;
+      data.category = found.category;
+      data.dose = it.doses.length ? els.dose.value : '';
+      data.unit = it.doses.length ? (it.unit || 'mg') : '';
+      data.frequency = it.freqs.length ? els.frequency.value : '';
     } else {
       var nm = String(els[nameField].value || '').trim();
       if (!nm) { message.textContent = kind === 'fei-yaowu-liaofa' ? '请选择非药物名称' : kind === 'zhongchengyao' ? '请选择或输入中成药名称' : '请选择药品'; return; }
@@ -316,28 +288,17 @@
           nm = els.customName.value.trim();
           if (!nm) { message.textContent = '请填写其他非药物疗法的名称（具体治疗）'; return; }
         }
-        if (!els.duration.value || !els.frequency.value) { message.textContent = '请选择单次时长和频次'; return; }
-        data.name = nm;
-        data.duration = els.duration.value;
-        data.durationUnit = D.FEI_YAOWU.durationUnit;
-        data.frequency = els.frequency.value;
+        data.name = nm; // 非药物疗法只记名称
       } else {
-        var item = findItem(nm);
-        if (!els.frequency.value || !els.dose.value) { message.textContent = '请选择频次和用量'; return; }
-        data.name = nm;
-        if (kind === 'xiyao') data.medication = nm;
-        data.frequency = els.frequency.value;
-        data.dose = els.dose.value;
-        data.unit = item.unit;
+        data.name = nm; // 口服中成药只记名称
       }
     }
-    data.startDate = els.startDate.value;
+    // 只有口服西药还有开始日期、是否沿用至今、结束日期、停用原因
+    if (els.startDate) data.startDate = els.startDate.value;
     if (els.ongoing) {
       data.ongoing = els.ongoing.value;
       data.endDate = data.ongoing === '否' ? els.endDate.value : '';
       data.reason = data.ongoing === '否' ? els.reason.value : '';
-    } else {
-      data.endDate = els.endDate.value; // 中成药：开始时间 / 结束时间
     }
     if (data.startDate && data.endDate && data.endDate < data.startDate) { message.textContent = '结束日期不能早于开始日期'; return; }
     if (edit >= 0) items[edit] = data;

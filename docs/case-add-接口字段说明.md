@@ -222,3 +222,11 @@ FIQR 各条目、疼痛评估（VAS、pain1–pain4）滑块步长由 0.1 改为
 - `zlfa.zhongyaoYinpian[].composition`：改为医生勾选的药物（默认全选，可取消勾选做加减）；原来固定为方剂的全部药物。字段类型不变（字符串数组）。
 - 调整原因 `reason`（`xiyaoAdjust` / `xiyaoCategoryAdjust` / `zhongchengyaoAdjust` / `feiYaowuAdjust` 及各条记录上的 `reason`）：选「其他」并填写时存为 `"其他：填写内容"`；字段不变。
 - 首次就诊（基线）页面不显示「是否调整」，`adjust` / `adjustment` / `reason` 为空串；随诊才填写。
+
+### 基本信息：去掉确诊时间、确诊医疗机构级别；本病治疗史简化（2026-11-27）
+
+- `jbxx.diagnosisDate`、`jbxx.hospitalLevel`：页面已去掉，始终提交空串；`jbxx.diagnosed`（是/否）保留。
+- `jbxx.treatmentHistory`（本病治疗史），字段不变，只是填写的内容减少：
+  - 口服西药 `xiyao[]`：药品只有「普瑞巴林 / 度洛西汀 / 阿米替林」（`name`、`medication` 为这三个名称之一），仍有 `dose`、`unit`、`frequency`、`startDate`、`ongoing`、`endDate`、`reason`，`category` 为该药在目录中的分类。
+  - 中药汤剂：只填 `hasZhongyaoTangji`（有/无），`zhongyaoTangji` 为空数组。
+  - 非药物疗法 `feiYaowuLiaofa[]`、口服中成药 `zhongchengyao[]`：每条只有 `name`。

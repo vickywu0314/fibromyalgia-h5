@@ -72,6 +72,7 @@
 
   // 子模块入口：显示完成状态（未填写 / 填写中 / 已完成），点击直接跳对应 html
   //   普通子模块：jbxx.<key> 对象，finish=true 为已完成，有其他已填内容为填写中
+  //   （2026-11-28「合并药物」入口已在 basic-info.html 中注释掉，相关逻辑保留）
   //   合并疾病 / 合并药物：jbxx.<key> 是数组，完成标记分别为 jbxx.diseaseHistoryFinish / concomitantMedicationFinish；
   //   其「无/有」等附属字段（jbxx 下名称含该 key 的字段，如 hasDiseaseHistory）有值也算填写中
   const rows = document.querySelectorAll(".menu-row");

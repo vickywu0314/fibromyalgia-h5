@@ -14,7 +14,7 @@ window.NativeBridge.pageUrls = window.NativeBridge.pageUrls || {
   fs: "fs.html",
   treatmentHistory: "../benbing-zhiliaoshi/benbing-zhiliaoshi.html",
   diseaseHistory: "../jiwang-bingshi/index.html",
-  concomitantMedication: "../hebing-yaowu/index.html"
+  // concomitantMedication: "../hebing-yaowu/index.html" // 2026-11-28 已去掉「合并药物」入口（见 basic-info.html 注释）
 };
 window.NativeBridge.openPage = function(page){
   var url = (window.NativeBridge.pageUrls || {})[page];

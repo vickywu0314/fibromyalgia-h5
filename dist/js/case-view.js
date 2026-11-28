@@ -83,7 +83,7 @@ function renderCase(c, target) {
     n += records(s, '本病治疗史 · 非药物疗法', th.feiYaowuLiaofa, r => [r.name, withUnit(r.duration, '分钟/次'), r.frequency, has(r.startDate) ? r.startDate + ' 开始' : '', stopText(r)].filter(has).join('，'));
     n += records(s, '本病治疗史 · 中成药', th.zhongchengyao, drugLine);
     n += records(s, '既往疾病史', j.diseaseHistory, r => [r.categoryLabel, r.name, withUnit(r.years, '年'), r.longTermMedication && '长期用药干预：' + r.longTermMedication, r.surgery && '手术：' + r.surgery, r.radioChemotherapy && '放疗/化疗：' + r.radioChemotherapy, has(r.diagnosisDate) ? '诊断 ' + r.diagnosisDate : ''].filter(has).join('，'));
-    n += records(s, '合并药物', j.concomitantMedication, drugLine);
+    // n += records(s, '合并药物', j.concomitantMedication, drugLine); // 2026-11-28 已去掉「合并药物」模块，不再显示
     if (!n) empty(s);
   }
 

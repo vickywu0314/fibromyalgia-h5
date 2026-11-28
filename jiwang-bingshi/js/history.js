@@ -1,4 +1,5 @@
-/* 合并疾病：记录存于病例草稿 jbxx.diseaseHistory（数组，每条 {category, categoryLabel, name}；按新版 PDF 只有疾病名称，无病程/诊断时间）；
+/* 既往疾病史列表页（新增/编辑在 add.html，见 js/disease-form.js；choose.html 与各类别旧页面已跳转到 add.html）。
+   记录存于病例草稿 jbxx.diseaseHistory（数组，每条 {category, categoryLabel, name}；按新版 PDF 只有疾病名称，无病程/诊断时间）；
    类别：风湿性疾病 + 其他系统疾病（呼吸/消化/循环/内分泌和代谢/肾病/骨科/生殖/精神心理/慢性重叠疼痛）+ 最后一项「其他」（qita，手动输入疾病名称），各类“其他”需填写疾病名称。
    列表页“保存并返回”写 jbxx.diseaseHistoryFinish = true（基本信息页入口据此显示完成状态）。 */
 (function(){
@@ -13,7 +14,7 @@
  if(view==='list'){
   var list=document.getElementById('records');
   renderList=function(){list.innerHTML='';document.getElementById('empty').hidden=records.length>0;
-  records.forEach(function(record,index){var li=document.createElement('li'),link=document.createElement('a'),text=document.createElement('span'),name=document.createElement('strong'),info=document.createElement('small'),arrow=document.createElement('em');link.href=(CATEGORIES.indexOf(record.category)>=0?record.category+'.html?edit='+index:'choose.html');name.textContent=record.categoryLabel||record.name;info.textContent=[record.name||'',record.years!==''&&record.years!=null?'病程 '+record.years+' 年':''].filter(Boolean).join(' · ');arrow.textContent='›';arrow.setAttribute('aria-hidden','true');text.append(name,info);link.append(text,arrow);li.appendChild(link);list.appendChild(li);});};
+  records.forEach(function(record,index){var li=document.createElement('li'),link=document.createElement('a'),text=document.createElement('span'),name=document.createElement('strong'),info=document.createElement('small'),arrow=document.createElement('em');link.href='add.html?edit='+index;name.textContent=record.categoryLabel||record.name;info.textContent=[record.name||'',record.years!==''&&record.years!=null?'病程 '+record.years+' 年':'',record.longTermMedication?'长期用药干预：'+record.longTermMedication:'',record.surgery?'手术：'+record.surgery:'',record.radioChemotherapy?'放疗/化疗：'+record.radioChemotherapy:''].filter(Boolean).join(' · ');arrow.textContent='›';arrow.setAttribute('aria-hidden','true');text.append(name,info);link.append(text,arrow);li.appendChild(link);list.appendChild(li);});};
   renderList();
   document.getElementById('back').addEventListener('click',function(){
    FmsCase.save('jbxx',{diseaseHistory:records,diseaseHistoryFinish:true},{merge:true,back:BACK,button:this});

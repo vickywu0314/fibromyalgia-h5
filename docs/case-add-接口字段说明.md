@@ -230,3 +230,19 @@ FIQR 各条目、疼痛评估（VAS、pain1–pain4）滑块步长由 0.1 改为
   - 口服西药 `xiyao[]`：药品只有「普瑞巴林 / 度洛西汀 / 阿米替林」（`name`、`medication` 为这三个名称之一），仍有 `dose`、`unit`、`frequency`、`startDate`、`ongoing`、`endDate`、`reason`，`category` 为该药在目录中的分类。
   - 中药汤剂：只填 `hasZhongyaoTangji`（有/无），`zhongyaoTangji` 为空数组。
   - 非药物疗法 `feiYaowuLiaofa[]`、口服中成药 `zhongchengyao[]`：每条只有 `name`。
+
+### jbxx.diseaseHistory[]：既往疾病史改版（2026-11-28）
+
+页面改为一页填写：风湿性疾病 / 其他系统疾病（下拉选系统）→ 疾病 → 病程（年）→ 是否长期用药干预（肿瘤为是否手术、是否放疗/化疗）。
+
+每条记录：
+
+| 字段 | 类型 | 说明 |
+|---|---|---|
+| `category` | string | 分类编码：`fengshi` 风湿性疾病、`xinnao` 心脑血管/呼吸系统疾病、`xiaohua` 消化系统疾病、`neifenmi` 内分泌和代谢性疾病、`jingshen` 精神疾病、`miniao` 泌尿与生殖系统、`shenjing` 神经系统疾病、`zhongliu` 肿瘤、`qita` 其他（旧编码 huxi/xunhuan/xinli/shengzhi/shen/guke/tengtong 的老数据仍可读） |
+| `categoryLabel` | string | 分类名称 |
+| `name` | string | 疾病名称；选「其他」或肿瘤/其他分类时为手动输入的名称（肿瘤为「肿瘤名称/部位」） |
+| `years` | integer | 病程（年） |
+| `longTermMedication` | string | **新增，需后端在「纤维肌痛-既往疾病史条目」中增加**。是否长期用药干预：`"是"` / `"否"`；肿瘤为空串 |
+| `surgery` | string | **新增，需后端增加**。是否手术（仅肿瘤）：`"是"` / `"否"`；其他分类为空串 |
+| `radioChemotherapy` | string | **新增，需后端增加**。是否放疗/化疗（仅肿瘤）：`"是"` / `"否"`；其他分类为空串 |

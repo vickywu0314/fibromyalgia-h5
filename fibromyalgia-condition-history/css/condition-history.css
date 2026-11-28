@@ -2,3 +2,5 @@
 .entry-side{display:flex;align-items:center;gap:8px;flex:none}.entry-status{display:inline-flex;align-items:center;min-height:20px;padding:2px 8px;border-radius:10px;font-size:12px;color:#858b94;background:#f1f2f4;white-space:nowrap}.entry-status.doing{color:#b26a00;background:#fff4e0}.entry-status.done{color:#1677b8;background:#eaf5fc}.progress span{transition:width .2s}
 .branch>.parent{padding-left:54px;font-weight:500}.menstrual-item{margin-top:4px}.menstrual-details .sub-radios{display:flex;flex-direction:column;padding-left:28px}.menstrual-details .sub-radios label{display:flex;align-items:center;min-height:40px}@media(max-width:380px){.branch>.parent{padding-left:44px}}
 #menstrualSection[hidden]{display:none}
+
+.optional-tag{margin-left:4px;font-size:13px;font-weight:400;color:#7a818b}

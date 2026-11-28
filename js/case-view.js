@@ -91,7 +91,7 @@ function renderCase(c, target) {
   {
     const s = section('病史病情'), q = c.bsbq || {};
     const n = rows(s, [
-      ['发病诱因', q.onsetTriggers], ['加重诱因', q.aggravatingTriggers], ['肌肉疼痛性质', q.painNature], ['全身症状', q.systemic],
+      ['发病诱因', q.onsetTriggers], ['加重诱因', q.aggravatingTriggers], ['肌肉疼痛性质', q.painNature],
       ['大便', q.stool], ['小便', q.urine], ['舌色', q.tongueColor], ['舌形', q.tongueShape], ['苔色', q.coatColor], ['苔质', q.coatShape],
       ['月经情况', q.periodTiming || q.periodColor || q.periodAmount || q.dysmenorrhea ? [q.menstrualStage, q.periodTiming && '经期 ' + q.periodTiming, q.periodColor && '经色 ' + q.periodColor, q.periodAmount && '经量 ' + q.periodAmount, q.dysmenorrhea && '痛经 ' + q.dysmenorrhea].filter(has).join('，') : q.menstrualStage]
     ]);
@@ -101,7 +101,8 @@ function renderCase(c, target) {
   // ---------- 证候判断 ----------
   {
     const s = section('证候判断'), z = c.zhpd || {};
-    if (!rows(s, [['主证', z.mainSyndrome], ['是否有兼证', z.hasSecondary], ['兼证', z.secondarySyndrome || z.secondarySyndromes]])) empty(s);
+    // 相应症状（原病史病情-全身症状，存 bsbq.systemic）
+    if (!rows(s, [['主证', z.mainSyndrome], ['是否有兼证', z.hasSecondary], ['兼证', z.secondarySyndrome || z.secondarySyndromes], ['相应症状', (c.bsbq || {}).systemic]])) empty(s);
   }
 
   // ---------- 辅助检查 ----------

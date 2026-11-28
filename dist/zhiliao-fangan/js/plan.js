@@ -29,8 +29,16 @@ const loadZ = () => {
   return z;
 };
 /* 西药药物分类（顺序同 PDF）；旧记录没有分类的归入“其他” */
-const XI_CATS = ['改善纤维肌痛综合征病情药物', '改善焦虑、抑郁药物', '助眠药', '非甾体抗炎类药物', '肌松药', '其他'];
-const catOf = r => XI_CATS.includes(r && r.category) ? r.category : '其他';
+const XI_CATS = ['纤维肌痛药物', '心理科药物', '睡眠科药物', '其他'];
+/* 旧分类名 → 新分类；阿米替林移到纤维肌痛药物；非甾体抗炎药、肌松药（已去掉）归入「其他」 */
+const XI_LEGACY = { '改善纤维肌痛综合征病情药物': '纤维肌痛药物', '改善焦虑、抑郁药物': '心理科药物', '助眠药': '睡眠科药物' };
+const catOf = r => {
+  if (r && /阿米替林/.test(r.name || '') && (r.category === '改善焦虑、抑郁药物' || r.category === '心理科药物')) return '纤维肌痛药物';
+  const c = r && (XI_LEGACY[r.category] || r.category);
+  // 纤维肌痛药物只保留三种，旧记录里的其它药（如加巴喷丁）归入「其他」
+  if (c === '纤维肌痛药物' && !/普瑞巴林|度洛西汀|阿米替林/.test(r.name || '')) return '其他';
+  return XI_CATS.includes(c) ? c : '其他';
+};
 const pickAdj = a => ({ adjust: (a && a.adjust) || '', adjustment: (a && a.adjustment) || '', reason: (a && a.reason) || '' });
 /* 西药：按分类复制到记录，并生成 xiyaoAdjust 汇总 */
 const applyXiyaoAdjust = z => {
@@ -356,27 +364,47 @@ if (del) {
 
 if (kind === 'zhongyao-yinpian') {
   const recipes = window.DECOCTIONS || {}, checked = n => form.querySelector(`[name="${n}"]:checked`)?.value || '';
+  const checkedAll = n => [...form.querySelectorAll(`[name="${n}"]:checked`)].map(i => i.value);
   const recipeBox = document.getElementById('recipeBox'), recipeChoices = document.getElementById('recipeChoices'), herbBox = document.getElementById('herbBox'), herbList = document.getElementById('herbList');
   radios(document.getElementById('syndromeChoices'), '中医证型', Object.keys(recipes));
-  const renderRecipes = () => { const s = checked('中医证型'); radios(recipeChoices, '方剂', Object.keys(recipes[s] || {})); toggle(recipeBox, !!s); renderHerbs() };
-  /* 方剂组成：每味药一个勾选框，默认全选，医生按实际加减（取消勾选）；保存时只存勾选的药物 */
-  const renderHerbs = (keep) => {
-    const herbs = recipes[checked('中医证型')]?.[checked('方剂')] || [];
-    herbList.replaceChildren(...herbs.map(h => {
-      const li = el('li'), label = el('label'), i = document.createElement('input');
-      i.type = 'checkbox'; i.name = 'herb'; i.value = h; i.checked = keep ? keep.includes(h) : true;
-      label.append(i, el('span', h)); li.append(label); return li;
+  /* 方剂：多选（复选框）；只有一个方剂时默认勾选 */
+  const renderRecipes = (keepRecipes, keepHerbs) => {
+    const s = recipes[checked('中医证型')];
+    recipeChoices.replaceChildren(...(s ? s.recipes : []).map(v => {
+      const l = el('label'), i = document.createElement('input');
+      i.type = 'checkbox'; i.name = '方剂'; i.value = v; i.checked = keepRecipes ? keepRecipes.includes(v) : s.recipes.length === 1;
+      l.append(i, el('span', v)); return l;
     }));
-    herbBox.hidden = !herbs.length;
+    toggle(recipeBox, !!s);
+    renderHerbs(keepHerbs);
   };
-  form.addEventListener('change', e => { if (e.target.name === '中医证型') renderRecipes(); if (e.target.name === '方剂') renderHerbs() });
+  /* 药物组成：按证型统一列出（不分方剂），主药默认全选、附加分组默认不选，医生按实际勾选；保存时只存勾选的药物 */
+  const herbItem = (h, on) => {
+    const li = el('li'), label = el('label'), i = document.createElement('input');
+    i.type = 'checkbox'; i.name = 'herb'; i.value = h; i.checked = on;
+    label.append(i, el('span', h)); li.append(label); return li;
+  };
+  const renderHerbs = (keep) => {
+    const s = recipes[checked('中医证型')], nodes = [];
+    if (s) {
+      nodes.push(...s.herbs.map(h => herbItem(h, keep ? keep.includes(h) : true)));
+      (s.groups || []).forEach(g => {
+        nodes.push(el('li', g.label + '：', 'herb-group'));
+        nodes.push(...g.herbs.map(h => herbItem(h, !!(keep && keep.includes(h)))));
+      });
+    }
+    herbList.replaceChildren(...nodes);
+    herbBox.hidden = !s;
+  };
+  form.addEventListener('change', e => { if (e.target.name === '中医证型') renderRecipes() });
   const supplement = field('supplement'), upload = document.getElementById('treatmentPhoto'), camera = document.getElementById('cameraPhoto'), preview = document.getElementById('photoPreview'), container = document.getElementById('photoContainer'), status = document.getElementById('photoStatus');
   let photoUrl = '', photoUploading = false;
   const showPhoto = (src, message) => { preview.src = src; container.hidden = false; status.textContent = message };
   renderRecipes();
   if (editItem) {
-    const r = form.querySelector(`[name="中医证型"][value="${editItem.syndrome}"]`); if (r) { r.checked = true; renderRecipes() }
-    const p = form.querySelector(`[name="方剂"][value="${editItem.recipe}"]`); if (p) { p.checked = true; renderHerbs(Array.isArray(editItem.composition) ? editItem.composition : null) }
+    // recipe 多选时用「、」连接存为字符串（「偏于阴虚者，佐以左归丸」内部是中文逗号，不受影响）
+    const r = form.querySelector(`[name="中医证型"][value="${editItem.syndrome}"]`);
+    if (r) { r.checked = true; renderRecipes(String(editItem.recipe || '').split('、'), Array.isArray(editItem.composition) ? editItem.composition : null) }
     supplement.value = editItem.prescription || ''; if (editItem.image && !/^data:/.test(editItem.image)) { photoUrl = editItem.image; showPhoto(editItem.image, '已上传处方图片') }
   }
   document.getElementById('choosePhoto').addEventListener('click', () => upload.click());
@@ -397,9 +425,9 @@ if (kind === 'zhongyao-yinpian') {
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
     if (photoUploading) { error.textContent = '图片还在上传，请稍候'; return }
-    const syndrome = checked('中医证型'), recipe = checked('方剂');
+    const syndrome = checked('中医证型'), recipe = checkedAll('方剂').join('、');
     if (!syndrome) { error.textContent = '请选择中医证型'; return }
-    if (!recipe) { error.textContent = '请选择方剂'; return }
+    if (!recipe) { error.textContent = '请至少选择一个方剂'; return }
     const herbs = [...form.querySelectorAll('[name="herb"]:checked')].map(i => i.value);
     if (!herbs.length && !supplement.value.trim()) { error.textContent = '请至少勾选一味方剂组成药物，或填写补充药物'; return }
     /* image：上传接口返回的图片 URL */
@@ -416,8 +444,11 @@ if (kind === 'xiyao') {
   const box = id => document.getElementById(id);
   opts(catSel, Object.keys(CAT), '请选择药物分类');
   const drugOf = () => (CAT[catSel.value] || []).find(d => d.name === nameSel.value);
+  /* 手填药品：分类选「其他」，或心理科/睡眠科药物里选了药品「其他」 */
+  const isCustom = () => catSel.value === '其他' || !!(drugOf() && drugOf().custom);
   const renderDrug = () => {
-    const other = catSel.value === '其他', d = other ? null : drugOf();
+    const other = isCustom(), d = other ? null : drugOf();
+    toggle(box('customField'), other);
     toggle(box('otherDoseField'), other);
     const doses = d ? d.doses : [], freqs = other ? OTHER.freqs : d ? d.freqs : [];
     toggle(box('doseField'), doses.length > 0);
@@ -429,7 +460,7 @@ if (kind === 'xiyao') {
     const c = catSel.value, other = c === '其他';
     toggle(details, !!c);
     if (!c) return;
-    toggle(box('nameField'), !other); toggle(box('customField'), other);
+    toggle(box('nameField'), !other);
     if (!other) opts(nameSel, CAT[c].map(d => d.name), '请选择药品');
     renderDrug();
   };
@@ -438,17 +469,25 @@ if (kind === 'xiyao') {
   if (preset && CAT[preset]) catSel.value = preset;
   renderCat();
   if (editItem) {
-    if (catSel.value === '其他') { custom.value = editItem.name || ''; renderDrug(); otherDose.value = editItem.dose || '' }
-    else { nameSel.value = editItem.name || ''; renderDrug(); doseSel.value = editItem.dose || doseSel.value }
+    const list = CAT[catSel.value] || [], hit = list.some(d => d.name === editItem.name && !d.custom);
+    // 不在目录里的药（旧数据或手填）：本分类有「其他」就选「其他」并回填名称，否则改到分类「其他」
+    if (catSel.value !== '其他' && !hit) {
+      if (list.some(d => d.custom)) nameSel.value = '其他'; else { catSel.value = '其他'; renderCat() }
+    } else if (catSel.value !== '其他') nameSel.value = editItem.name || '';
+    renderDrug();
+    if (isCustom()) { custom.value = editItem.name || ''; otherDose.value = editItem.dose || '' }
+    else doseSel.value = editItem.dose || doseSel.value;
     freqSel.value = editItem.frequency || freqSel.value;
   }
   const base = editItem && editItem.name ? editItem : {};
   form.addEventListener('submit', e => {
     e.preventDefault(); error.textContent = '';
-    const c = catSel.value, other = c === '其他';
+    const c = catSel.value;
     if (!c) { error.textContent = '请选择药物分类'; return }
+    if (c !== '其他' && !nameSel.value) { error.textContent = '请选择药品'; return }
+    const other = isCustom();
     const name = other ? custom.value.trim() : nameSel.value;
-    if (!name) { error.textContent = other ? '请填写药品名称' : '请选择药品'; return }
+    if (!name) { error.textContent = '请填写药品名称'; return }
     const d = other ? null : drugOf();
     let dose = '', unit = '';
     if (other) {

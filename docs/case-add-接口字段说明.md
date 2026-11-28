@@ -123,7 +123,7 @@
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | `hasXiyao / hasZhongchengyao / hasFeiYaowu` | string | 「无/有」。选「无」时对应列表为空 |
-| `xiyao[].category` | string | 药物分类：改善纤维肌痛综合征病情药物 / 改善焦虑、抑郁药物 / 助眠药 / 非甾体抗炎类药物 / 肌松药 / 其他。选「其他」时 `name` 为手填药品名称、`dose` 为手填用量、`unit` 为 mg |
+| `xiyao[].category` | string | 药物分类：纤维肌痛药物（普瑞巴林、度洛西汀、阿米替林）/ 心理科药物 / 睡眠科药物 / 其他。分类「其他」或心理科、睡眠科里选药品「其他」时，`name` 为手填药品名称、`dose` 为手填用量、`unit` 为 mg。旧分类名（改善纤维肌痛综合征病情药物 / 改善焦虑、抑郁药物 / 助眠药）前端自动映射到新分类，非甾体抗炎类药物、肌松药归入「其他」 |
 | `xiyao[].dose / unit / frequency` | string | 剂量、单位（mg；氟哌噻吨美利曲片为「片」）、频次。非甾体抗炎类药物 PDF 只有药名，三者为空串 |
 | `xiyaoCategoryAdjust` | `{[药物分类]: {adjust, adjustment, reason}}` | 西药按药物分类各回答一次「是否调整西药」（只含有药品的分类）。同样的值复制到该分类每条记录的 `adjust / adjustment / reason` 上 |
 | `xiyaoAdjust` | `{adjust, adjustment, reason}` | 西药各分类的汇总：任一分类「是」即为「是」，全部「否」为「否」；`adjustment / reason` 为各「是」分类的「分类：值」，以「；」分隔 |
@@ -132,7 +132,7 @@
 | `zhongchengyao[].name / dose / unit / frequency` | string | 药物取自 RA 中成药药品库（15 种）。其中通络开痹片、元胡止痛滴丸、金匮肾气丸、大活络丸、舒眠胶囊：`dose` 为 `"1"`~`"5"`，`unit` 为「片/粒」，`frequency` 可选 日1次/日2次/日3次；其余按原规格 |
 | `zhongchengyao[].customName` | string | **新增**：口服中成药选「其他」时填写的药物名称；此时 `name` 也是这个名称，用量 1~5 片/粒、频次日1~3次（非「其他」为空串） |
 | `feiYaowu[].customName` | string | 非药物疗法选「其他」时填写的名称；此时 `name` 也是这个名称 |
-| `zhongyaoYinpian[]` | object | 中药汤剂（key 沿用 zhongyaoYinpian，`name` 固定为「中药汤剂」）。`syndrome` 主要中医证型，`recipe` 方剂名，`composition` 方剂组成（string[]），`prescription` 补充药物（分号隔开），`image` 拍照上传的图片 |
+| `zhongyaoYinpian[]` | object | 中药汤剂（key 沿用 zhongyaoYinpian，`name` 固定为「中药汤剂」）。`syndrome` 主要中医证型，`recipe` 方剂名（可多选，多个用「、」连接），`composition` 药物组成（string[]，按证型统一列出，医生勾选），`prescription` 补充药物（分号隔开），`image` 拍照上传的图片 |
 
 ## 三、结构体里有、但现在不提交的字段
 

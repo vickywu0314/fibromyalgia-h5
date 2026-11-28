@@ -19,3 +19,5 @@
 .herb-list.herb-checks input{flex:none;width:18px;height:18px;margin:0;accent-color:#168bdd}
 .choice-group input.reason-other{display:block;width:100%;height:auto;min-height:44px;margin:8px 0 0;padding:9px 12px;font-size:15px}
 .choice-group input.reason-other[hidden]{display:none}
+.herb-list.herb-checks li.herb-group{grid-column:1/-1;margin-top:8px;font-size:14px;font-weight:600;color:#1565a8}
+#recipeChoices label{display:flex}

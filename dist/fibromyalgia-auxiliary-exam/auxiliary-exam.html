@@ -14,50 +14,57 @@
   <form id="examForm">
     <h1>检验</h1>
 
-    <!-- 每组右侧“未查”与该组数值并列：勾选“未查”后隐藏并清空该组数值 -->
-    <section class="exam-section">
-      <div class="section-title"><h2>血常规</h2><label class="badge-toggle"><input type="checkbox" name="cbc_notDone" value="未查" data-toggle-off="cbc_notDoneBody">未查</label></div>
-      <div id="cbc_notDoneBody">
-      <div class="item"><h3>白细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_wbc"><span>×10^9/L</span></div></div>
-      <div class="item"><h3>红细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_rbc"><span>×10^12/L</span></div></div>
-      <div class="item"><h3>血红蛋白</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_hgb"><span>g/L</span></div></div>
-      <div class="item"><h3>血小板</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_plt"><span>×10^9/L</span></div></div>
+    <!-- 2026-11-28 按需求：每组 未查 / 大致正常 / 异常（<组>_status），选「异常」才展开该组项目，填写异常的项目即可（选填）。
+         生化改为肝肾功（肝功能、肾功能分别选）；血脂去掉载脂蛋白A、载脂蛋白B。 -->
+    <section class="exam-section" data-group="cbc">
+      <div class="section-title"><h2>血常规</h2></div>
+      <div class="radios inline group-status"><label><input type="radio" name="cbc_status" value="未查">未查</label><label><input type="radio" name="cbc_status" value="大致正常">大致正常</label><label><input type="radio" name="cbc_status" value="异常">异常</label></div>
+      <div class="abnormal-body" id="cbc_abnormal" hidden><p class="abnormal-tip">请填写异常的项目，正常的可以不填</p>
+      <div class="item"><h3>白细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_wbc"><span>×10^9/L</span></div></div><div class="item"><h3>红细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_rbc"><span>×10^12/L</span></div></div><div class="item"><h3>血红蛋白</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_hgb"><span>g/L</span></div></div><div class="item"><h3>血小板</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cbc_plt"><span>×10^9/L</span></div></div>
       </div>
     </section>
 
-    <section class="exam-section">
-      <div class="section-title"><h2>尿常规</h2><label class="badge-toggle"><input type="checkbox" name="urine_notDone" value="未查" data-toggle-off="urine_notDoneBody">未查</label></div>
-      <div id="urine_notDoneBody">
-      <div class="item"><h3>白细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_wbc"><span>leu/uL</span></div></div>
-      <div class="item"><h3>红细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_rbc"><span>/uL</span></div></div>
-      <div class="item"><h3>尿蛋白</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_protein"><span>g/L</span></div></div>
-      <div class="item"><h3>尿潜血</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_occult"><span>ery/uL</span></div></div>
+    <section class="exam-section" data-group="urine">
+      <div class="section-title"><h2>尿常规</h2></div>
+      <div class="radios inline group-status"><label><input type="radio" name="urine_status" value="未查">未查</label><label><input type="radio" name="urine_status" value="大致正常">大致正常</label><label><input type="radio" name="urine_status" value="异常">异常</label></div>
+      <div class="abnormal-body" id="urine_abnormal" hidden><p class="abnormal-tip">请填写异常的项目，正常的可以不填</p>
+      <div class="item"><h3>白细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_wbc"><span>leu/uL</span></div></div><div class="item"><h3>红细胞</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_rbc"><span>/uL</span></div></div><div class="item"><h3>尿蛋白</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_protein"><span>g/L</span></div></div><div class="item"><h3>尿潜血</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="urine_occult"><span>ery/uL</span></div></div>
       </div>
     </section>
 
-    <section class="exam-section">
-      <div class="section-title"><h2>便常规+便潜血</h2></div>
-      <div class="item"><h3>便外观性</h3><div class="radios"><label><input type="radio" name="stool_appearance" value="黏液便">黏液便</label><label><input type="radio" name="stool_appearance" value="脓血便">脓血便</label><label><input type="radio" name="stool_appearance" value="黑便">黑便</label><label><input type="radio" name="stool_appearance" value="鲜红血便">鲜红血便</label><label><input type="radio" name="stool_appearance" value="陶土样便">陶土样便</label><label><input type="radio" name="stool_appearance" value="正常">正常</label><label><input type="radio" name="stool_appearance" value="未查">未查</label></div></div>
-      <div class="item"><h3>白细胞</h3><div class="radios"><label><input type="radio" name="stool_wbc_status" value="正常">正常</label><label><input type="radio" name="stool_wbc_status" value="数值">数值</label><div class="value sub-value" data-when="stool_wbc_status=数值" hidden><input type="number" step="any" inputmode="decimal" name="stool_wbc_value"><span>/ul</span></div><label><input type="radio" name="stool_wbc_status" value="未查">未查</label></div></div>
-      <div class="item"><h3>红细胞</h3><div class="radios"><label><input type="radio" name="stool_rbc_status" value="正常">正常</label><label><input type="radio" name="stool_rbc_status" value="数值">数值</label><div class="value sub-value" data-when="stool_rbc_status=数值" hidden><input type="number" step="any" inputmode="decimal" name="stool_rbc_value"><span>/ul</span></div><label><input type="radio" name="stool_rbc_status" value="未查">未查</label></div></div>
-      <div class="item"><h3>便潜血</h3><div class="radios inline"><label><input type="radio" name="stool_occult" value="阴性">阴性</label><label><input type="radio" name="stool_occult" value="阳性">阳性</label><label><input type="radio" name="stool_occult" value="未查">未查</label></div></div>
+    <section class="exam-section" data-group="stool">
+      <div class="section-title"><h2>便常规+潜血</h2></div>
+      <div class="radios inline group-status"><label><input type="radio" name="stool_status" value="未查">未查</label><label><input type="radio" name="stool_status" value="大致正常">大致正常</label><label><input type="radio" name="stool_status" value="异常">异常</label></div>
+      <div class="abnormal-body" id="stool_abnormal" hidden><p class="abnormal-tip">请填写异常的项目，正常的可以不填</p>
+      <div class="item"><h3>便外观性</h3><div class="radios"><label><input type="radio" name="stool_appearance" value="黏液便">黏液便</label><label><input type="radio" name="stool_appearance" value="脓血便">脓血便</label><label><input type="radio" name="stool_appearance" value="黑便">黑便</label><label><input type="radio" name="stool_appearance" value="鲜红血便">鲜红血便</label><label><input type="radio" name="stool_appearance" value="陶土样便">陶土样便</label><label><input type="radio" name="stool_appearance" value="正常">正常</label></div></div>
+      <div class="item"><h3>白细胞</h3><div class="radios"><label><input type="radio" name="stool_wbc_status" value="正常">正常</label><label><input type="radio" name="stool_wbc_status" value="数值">数值</label><div class="value sub-value" data-when="stool_wbc_status=数值" hidden><input type="number" step="any" inputmode="decimal" name="stool_wbc_value"><span>/ul</span></div></div></div>
+      <div class="item"><h3>红细胞</h3><div class="radios"><label><input type="radio" name="stool_rbc_status" value="正常">正常</label><label><input type="radio" name="stool_rbc_status" value="数值">数值</label><div class="value sub-value" data-when="stool_rbc_status=数值" hidden><input type="number" step="any" inputmode="decimal" name="stool_rbc_value"><span>/ul</span></div></div></div>
+      <div class="item"><h3>便潜血</h3><div class="radios inline"><label><input type="radio" name="stool_occult" value="阴性">阴性</label><label><input type="radio" name="stool_occult" value="阳性">阳性</label></div></div>
+      </div>
     </section>
 
-    <section class="exam-section">
-      <div class="section-title"><h2>生化</h2></div>
-      <h2 class="subhead">肝功能</h2>
-      <div class="item"><h3>ALT</h3><div class="radios inline"><label><input type="radio" name="alt_status" value="未查">未查</label><label><input type="radio" name="alt_status" value="正常">正常</label><label><input type="radio" name="alt_status" value="异常">异常</label></div><div class="value" data-when="alt_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="alt_value"><span>U/L</span></div></div>
-      <div class="item"><h3>AST</h3><div class="radios inline"><label><input type="radio" name="ast_status" value="未查">未查</label><label><input type="radio" name="ast_status" value="正常">正常</label><label><input type="radio" name="ast_status" value="异常">异常</label></div><div class="value" data-when="ast_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="ast_value"><span>U/L</span></div></div>
-      <h2 class="subhead">肾功能</h2>
-      <div class="item"><h3>BUN</h3><div class="radios inline"><label><input type="radio" name="bun_status" value="未查">未查</label><label><input type="radio" name="bun_status" value="正常">正常</label><label><input type="radio" name="bun_status" value="异常">异常</label></div><div class="value" data-when="bun_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="bun_value"><span>mmol/L</span></div></div>
-      <div class="item"><h3>Cr</h3><div class="radios inline"><label><input type="radio" name="cr_status" value="未查">未查</label><label><input type="radio" name="cr_status" value="正常">正常</label><label><input type="radio" name="cr_status" value="异常">异常</label></div><div class="value" data-when="cr_status=异常" hidden><input type="number" step="any" inputmode="decimal" name="cr_value"><span>umol/L</span></div></div>
-      <h2 class="subhead">血脂</h2>
-      <div class="item lipid"><div class="section-title"><h3>胆固醇</h3><label class="badge-toggle"><input type="checkbox" name="cholesterol_notDone" value="未查" data-lipid="cholesterol">未查</label></div><div class="value" id="cholesterol_notDoneBody"><input type="number" step="any" inputmode="decimal" name="cholesterol"><span>mmol/L</span></div></div>
-      <div class="item lipid"><div class="section-title"><h3>甘油三酯</h3><label class="badge-toggle"><input type="checkbox" name="triglyceride_notDone" value="未查" data-lipid="triglyceride">未查</label></div><div class="value" id="triglyceride_notDoneBody"><input type="number" step="any" inputmode="decimal" name="triglyceride"><span>mmol/L</span></div></div>
-      <div class="item lipid"><div class="section-title"><h3>低密度脂蛋白胆固醇</h3><label class="badge-toggle"><input type="checkbox" name="ldl_notDone" value="未查" data-lipid="ldl">未查</label></div><div class="value" id="ldl_notDoneBody"><input type="number" step="any" inputmode="decimal" name="ldl"><span>mmol/L</span></div></div>
-      <div class="item lipid"><div class="section-title"><h3>高密度脂蛋白胆固醇</h3><label class="badge-toggle"><input type="checkbox" name="hdl_notDone" value="未查" data-lipid="hdl">未查</label></div><div class="value" id="hdl_notDoneBody"><input type="number" step="any" inputmode="decimal" name="hdl"><span>mmol/L</span></div></div>
-      <div class="item lipid"><div class="section-title"><h3>载脂蛋白B</h3><label class="badge-toggle"><input type="checkbox" name="apob_notDone" value="未查" data-lipid="apob">未查</label></div><div class="value" id="apob_notDoneBody"><input type="number" step="any" inputmode="decimal" name="apob"><span>g/L</span></div></div>
-      <div class="item lipid"><div class="section-title"><h3>载脂蛋白A</h3><label class="badge-toggle"><input type="checkbox" name="apoa_notDone" value="未查" data-lipid="apoa">未查</label></div><div class="value" id="apoa_notDoneBody"><input type="number" step="any" inputmode="decimal" name="apoa"><span>g/L</span></div></div>
+    <h2 class="group-title">肝肾功</h2>
+    <section class="exam-section sub-exam" data-group="liver">
+      <div class="section-title"><h2>肝功能</h2></div>
+      <div class="radios inline group-status"><label><input type="radio" name="liver_status" value="未查">未查</label><label><input type="radio" name="liver_status" value="大致正常">大致正常</label><label><input type="radio" name="liver_status" value="异常">异常</label></div>
+      <div class="abnormal-body" id="liver_abnormal" hidden><p class="abnormal-tip">请填写异常的项目，正常的可以不填</p>
+      <div class="item"><h3>ALT</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="alt_value"><span>U/L</span></div></div><div class="item"><h3>AST</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="ast_value"><span>U/L</span></div></div>
+      </div>
+    </section>
+    <section class="exam-section sub-exam" data-group="kidney">
+      <div class="section-title"><h2>肾功能</h2></div>
+      <div class="radios inline group-status"><label><input type="radio" name="kidney_status" value="未查">未查</label><label><input type="radio" name="kidney_status" value="大致正常">大致正常</label><label><input type="radio" name="kidney_status" value="异常">异常</label></div>
+      <div class="abnormal-body" id="kidney_abnormal" hidden><p class="abnormal-tip">请填写异常的项目，正常的可以不填</p>
+      <div class="item"><h3>BUN</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="bun_value"><span>mmol/L</span></div></div><div class="item"><h3>Cr</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cr_value"><span>umol/L</span></div></div>
+      </div>
+    </section>
+
+    <section class="exam-section" data-group="lipid">
+      <div class="section-title"><h2>血脂</h2></div>
+      <div class="radios inline group-status"><label><input type="radio" name="lipid_status" value="未查">未查</label><label><input type="radio" name="lipid_status" value="大致正常">大致正常</label><label><input type="radio" name="lipid_status" value="异常">异常</label></div>
+      <div class="abnormal-body" id="lipid_abnormal" hidden><p class="abnormal-tip">请填写异常的项目，正常的可以不填</p>
+      <div class="item"><h3>胆固醇</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="cholesterol"><span>mmol/L</span></div></div><div class="item"><h3>甘油三酯</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="triglyceride"><span>mmol/L</span></div></div><div class="item"><h3>低密度脂蛋白胆固醇</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="ldl"><span>mmol/L</span></div></div><div class="item"><h3>高密度脂蛋白胆固醇</h3><div class="value"><input type="number" step="any" inputmode="decimal" name="hdl"><span>mmol/L</span></div></div>
+      </div>
     </section>
 
     <section class="exam-section uploads">

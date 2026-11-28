@@ -15,6 +15,7 @@
 
     <!-- 顺序与选项按产品原型：全身症状 → 二便 → 舌象 → 月经情况。
          周身疼痛发病时间、是否曾确诊已移到基本信息页；发病诱因、加重诱因、肌肉疼痛性质原型中没有，已去掉。 -->
+    <!-- 2026-11-28 按需求「全身症状」移到证候判断页（主证/兼证后面跟随相应症状），此处注释保留。
     <section class="section">
       <h2>1.全身症状</h2>
 
@@ -64,9 +65,10 @@
         </div>
       </div>
     </section>
+    -->
 
     <section class="section">
-      <h2>2.二便</h2>
+      <h2>1.二便<small class="optional-tag">（选填）</small></h2>
       <h3>大便</h3>
       <div class="radios">
         <label><input type="radio" name="stool" value="稀溏">稀溏</label>
@@ -88,53 +90,53 @@
     </section>
 
     <section class="section">
-      <h2>3.舌象</h2>
+      <h2>2.舌象<small class="optional-tag">（每项可多选）</small></h2>
       <h3>舌质</h3>
       <h4>舌色</h4>
       <div class="radios">
-        <label><input type="radio" name="tongueColor" value="淡红">淡红</label>
-        <label><input type="radio" name="tongueColor" value="淡白">淡白</label>
-        <label><input type="radio" name="tongueColor" value="红">红</label>
-        <label><input type="radio" name="tongueColor" value="绛">绛</label>
-        <label><input type="radio" name="tongueColor" value="紫">紫</label>
-        <label><input type="radio" name="tongueColor" value="暗">暗</label>
+        <label><input type="checkbox" name="tongueColor" value="淡红">淡红</label>
+        <label><input type="checkbox" name="tongueColor" value="淡白">淡白</label>
+        <label><input type="checkbox" name="tongueColor" value="红">红</label>
+        <label><input type="checkbox" name="tongueColor" value="绛">绛</label>
+        <label><input type="checkbox" name="tongueColor" value="紫">紫</label>
+        <label><input type="checkbox" name="tongueColor" value="暗">暗</label>
       </div>
       <h4>舌形</h4>
       <div class="radios">
-        <label><input type="radio" name="tongueShape" value="苍老">苍老</label>
-        <label><input type="radio" name="tongueShape" value="娇嫩">娇嫩</label>
-        <label><input type="radio" name="tongueShape" value="胖大">胖大</label>
-        <label><input type="radio" name="tongueShape" value="瘦薄">瘦薄</label>
-        <label><input type="radio" name="tongueShape" value="芒刺">芒刺</label>
-        <label><input type="radio" name="tongueShape" value="裂纹">裂纹</label>
-        <label><input type="radio" name="tongueShape" value="齿痕">齿痕</label>
-        <label><input type="radio" name="tongueShape" value="正常">正常</label>
+        <label><input type="checkbox" name="tongueShape" value="苍老">苍老</label>
+        <label><input type="checkbox" name="tongueShape" value="娇嫩">娇嫩</label>
+        <label><input type="checkbox" name="tongueShape" value="胖大">胖大</label>
+        <label><input type="checkbox" name="tongueShape" value="瘦薄">瘦薄</label>
+        <label><input type="checkbox" name="tongueShape" value="芒刺">芒刺</label>
+        <label><input type="checkbox" name="tongueShape" value="裂纹">裂纹</label>
+        <label><input type="checkbox" name="tongueShape" value="齿痕">齿痕</label>
+        <label><input type="checkbox" name="tongueShape" value="正常" data-exclusive>正常</label>
       </div>
       <h3>舌苔</h3>
       <h4>苔色</h4>
       <div class="radios">
-        <label><input type="radio" name="coatColor" value="白">白</label>
-        <label><input type="radio" name="coatColor" value="黄">黄</label>
-        <label><input type="radio" name="coatColor" value="灰">灰</label>
-        <label><input type="radio" name="coatColor" value="黑">黑</label>
-        <label><input type="radio" name="coatColor" value="黄白相间">黄白相间</label>
+        <label><input type="checkbox" name="coatColor" value="白">白</label>
+        <label><input type="checkbox" name="coatColor" value="黄">黄</label>
+        <label><input type="checkbox" name="coatColor" value="灰">灰</label>
+        <label><input type="checkbox" name="coatColor" value="黑">黑</label>
+        <label><input type="checkbox" name="coatColor" value="黄白相间">黄白相间</label>
       </div>
       <h4>苔质</h4>
       <div class="radios">
-        <label><input type="radio" name="coatShape" value="厚">厚</label>
-        <label><input type="radio" name="coatShape" value="薄">薄</label>
-        <label><input type="radio" name="coatShape" value="润">润</label>
-        <label><input type="radio" name="coatShape" value="滑">滑</label>
-        <label><input type="radio" name="coatShape" value="燥">燥</label>
-        <label><input type="radio" name="coatShape" value="腐">腐</label>
-        <label><input type="radio" name="coatShape" value="腻">腻</label>
-        <label><input type="radio" name="coatShape" value="剥">剥</label>
-        <label><input type="radio" name="coatShape" value="无">无</label>
+        <label><input type="checkbox" name="coatShape" value="厚">厚</label>
+        <label><input type="checkbox" name="coatShape" value="薄">薄</label>
+        <label><input type="checkbox" name="coatShape" value="润">润</label>
+        <label><input type="checkbox" name="coatShape" value="滑">滑</label>
+        <label><input type="checkbox" name="coatShape" value="燥">燥</label>
+        <label><input type="checkbox" name="coatShape" value="腐">腐</label>
+        <label><input type="checkbox" name="coatShape" value="腻">腻</label>
+        <label><input type="checkbox" name="coatShape" value="剥">剥</label>
+        <label><input type="checkbox" name="coatShape" value="无" data-exclusive>无</label>
       </div>
     </section>
 
     <section class="section" id="menstrualSection">
-      <h2>4.月经情况</h2>
+      <h2>3.月经情况</h2>
       <div class="radios">
         <label><input type="radio" name="menstrualStage" value="绝经期">绝经期</label>
         <label><input type="radio" name="menstrualStage" value="围绝经期">围绝经期</label>

@@ -5,13 +5,17 @@
  // 按产品原型：全身症状、二便、舌象、月经情况，全部写 bsbq。
  // 「周身疼痛发病时间 / 是否确诊」已移到基本信息页（jbxx），本页不再读写。
  // 原型去掉了发病诱因、加重诱因、肌肉疼痛性质：本页不再填写，草稿 / 旧数据里已有的值原样保留，不清空。
- const ARRAY_FIELDS=['systemic'];
+ // 2026-11-28「全身症状」已移到证候判断页（仍存 bsbq.systemic，由证候判断页写入），本页不再读写，保留原值
+ const ARRAY_FIELDS=[];
  // 月经情况：menstrualStage 单选（绝经期/围绝经期/育龄期）；经期/经色/经量/痛经 仅「育龄期」时填写，其他分期清空
  const MENSTRUAL_SUB=['periodTiming','periodColor','periodAmount','dysmenorrhea'];
  const MENSTRUAL_FIELDS=['menstrualStage'].concat(MENSTRUAL_SUB);
  // 多选但后端字段为字符串：多项用「、」连接提交，回显时拆开
-const JOINED_FIELDS=['urine'];
-const TEXT_FIELDS=['stool','tongueColor','tongueShape','coatColor','coatShape'].concat(MENSTRUAL_FIELDS);
+// 舌象 4 项（舌色/舌形/苔色/苔质）也改为多选，同样用「、」连接
+const JOINED_FIELDS=['urine','tongueColor','tongueShape','coatColor','coatShape'];
+const TEXT_FIELDS=['stool'].concat(MENSTRUAL_FIELDS);
+// 选填：二便（大便、小便）不计入进度
+const OPTIONAL=['stool','urine'];
 
  // 性别：取病例草稿 jbxx.gender（男/女）；没有时按 18 位身份证第 17 位推出（奇男偶女）；都没有视为未知
  function patientGender(){
@@ -128,7 +132,7 @@ const TEXT_FIELDS=['stool','tongueColor','tongueShape','coatColor','coatShape'].
 
  // 进度：每个 name 算一题（含「育龄期」时的经期等子题；分组勾选框没有 name，不计入），男性不含月经情况
  fill();
- progress=FmsProgress.track(form);
+ progress=FmsProgress.track(form,{optional:OPTIONAL});
  refresh();
  syncParents();
 

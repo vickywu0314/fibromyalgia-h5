@@ -13,7 +13,10 @@
   var BQPG_EXTRA = ['csi', 'tpc', 'fs'];
   // 病情评估全部 12 项（3 项 + 9 个量表）都完成时 bqpg.finish = true
   var BQPG_ALL = BQPG_EXTRA.concat(BQPG_SCALES);
-  function bqpgDone(b) { return BQPG_ALL.every(function (k) { return !!(b && b[k] && b[k].finish); }); }
+  // 选填项：压痛点 TPC、神经病理性疼痛评估 painDETECT、PROMIS-29+2，不计入病情评估是否完成
+  var BQPG_OPTIONAL = ['tpc', 'painDetect', 'promis29'];
+  var BQPG_REQUIRED = BQPG_ALL.filter(function (k) { return BQPG_OPTIONAL.indexOf(k) === -1; });
+  function bqpgDone(b) { return BQPG_REQUIRED.every(function (k) { return !!(b && b[k] && b[k].finish); }); }
 
   function today() {
     var d = new Date();
@@ -480,7 +483,7 @@
   window.addEventListener('pageshow', function (e) { if (e.persisted) renderOverall(); });
 
   window.FmsCase = {
-    KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES, BQPG_EXTRA: BQPG_EXTRA, BQPG_ALL: BQPG_ALL,
+    KEY: KEY, API: API, PARTS: PARTS, PART_NAMES: PART_NAMES, BQPG_SCALES: BQPG_SCALES, BQPG_EXTRA: BQPG_EXTRA, BQPG_ALL: BQPG_ALL, BQPG_OPTIONAL: BQPG_OPTIONAL, BQPG_REQUIRED: BQPG_REQUIRED,
     load: load, fetchCase: fetchCase, get: get, set: set, submit: submit, save: save, syncAll: syncAll, isSynced: isSynced, hasData: hasData,
     startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios,

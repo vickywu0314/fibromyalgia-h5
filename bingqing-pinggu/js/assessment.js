@@ -197,6 +197,7 @@
   // ---------------------------------------------------------------------------
   var menu = document.querySelector('.menu');
   if (menu) {
+    var SHOW_SCORE = ['csi', 'fs', 'tpc'];
     var renderList = function () {
       var done = 0;
       var total = 0;
@@ -205,7 +206,8 @@
         var extra = link.dataset.key;
         var key = extra || KEY_MAP[name];
         if (!key) return;
-        total++;
+        var optional = FmsCase.BQPG_OPTIONAL.indexOf(key) !== -1;
+        if (!optional) total++;
         var badge = link.querySelector('em.status');
         if (!badge) {
           badge = document.createElement('em');
@@ -220,11 +222,10 @@
         // CSI / TPC / FS 没有 answered/total：按是否已保存、是否填了内容判断
         var st = extra ? { state: d && d.finish ? 'done' : (FmsCase.hasData(d) ? 'partial' : 'empty') } : scaleState(d);
         if (st.state === 'done') {
-          done++;
+          if (!optional) done++;
           text = '✓ 已完成';
-          if (d.score !== '' && d.score != null) text += ' · ' + d.score + '分';
-          // PCS 的 result（是/否）按需求不在列表显示，仍随数据提交
-          if (d.result && key !== 'pcs') text += ' · ' + d.result;
+          // 按需求只有 CSI-9、FS、TPC 显示总分；其余量表只显示「已完成」（分数/结果仍随数据提交）
+          if (SHOW_SCORE.indexOf(key) !== -1 && d.score !== '' && d.score != null) text += ' · ' + d.score + '分';
         } else if (st.state === 'partial') {
           text = extra ? '填写中' : '已填 ' + st.answered + (st.total ? '/' + st.total : '');
         } else text = '未填写';
@@ -237,7 +238,7 @@
     renderList();
     window.addEventListener('pageshow', renderList);
     // 「保存并返回」：提交病情评估（bqpg）当前数据后回到患者资料页；不要求全部填完，
-    // 13 项都完成时 bqpg.finish 由 FmsCase 自动置为 true
+    // 10 项必填（TPC / painDETECT / PROMIS-29+2 选填）都完成时 bqpg.finish 由 FmsCase 自动置为 true
     var saveAll = document.getElementById('saveAll');
     if (saveAll) saveAll.addEventListener('click', function () {
       if (viewMode()) { location.href = '../patient-detail.html'; return; }

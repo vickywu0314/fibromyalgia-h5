@@ -23,3 +23,10 @@ h1{margin:0 0 14px;font-size:18px;font-weight:600;line-height:1.5}
 .question legend{float:left}
 .question legend+*{clear:both}
 .question+.question{padding-top:24px}
+
+/* 证型后面跟随的相应症状 */
+.symptoms{margin:0 0 8px 30px;padding:8px 12px;border-radius:8px;background:#f7f9fb}
+.symptoms[hidden]{display:none}
+.symptoms-tip{margin:0 0 4px;font-size:13px;color:#7a818b}
+.symptoms label{display:flex;align-items:center;gap:10px;min-height:40px;font-size:15px}
+.symptoms input{width:18px;height:18px;margin:0;flex:none;accent-color:#168bdd}

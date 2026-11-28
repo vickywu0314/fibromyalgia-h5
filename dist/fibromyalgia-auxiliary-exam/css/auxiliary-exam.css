@@ -5,3 +5,13 @@
 
 /* 各检查之间：分隔线上下留出统一间距 */
 .exam-section{padding:22px 0 20px}
+
+/* 2026-11-28 改版：每组 未查 / 大致正常 / 异常，异常展开项目 */
+.group-status{margin:10px 0 0;padding-left:0;gap:28px}
+.abnormal-body{margin-top:8px;padding:6px 12px 2px;border-radius:8px;background:#f7f9fb}
+.abnormal-body[hidden]{display:none}
+.abnormal-tip{margin:6px 0 0;font-size:13px;color:#7a818b}
+.abnormal-body .item{padding:12px 0}
+.group-title{font-size:16px;font-weight:600;margin:22px 0 0}
+.exam-section.sub-exam{padding-top:14px}
+.exam-section.sub-exam .section-title h2{font-size:15px;font-weight:500;color:#333}

@@ -37,6 +37,57 @@ if (viewing) {
   visitDate.disabled = true;
 }
 
+// 载入上次随访：仅新增/编辑随诊时（非查看记录），且该患者此前已有随诊记录（即第二次及以上随访）才显示
+const PREFILL_PARTS = ['bsbq', 'zhpd', 'fzjc', 'bqpg', 'zlfa', 'blsj'];
+if (isFollowUp && !viewing && draft.patientId != null) (async () => {
+  try {
+    const doctorId = FmsApi.getDoctorId();
+    if (!doctorId) return;
+    const result = await FmsApi.get('/api/fms/patient/followup/list', { pageNo: 1, pageSize: 100, patientId: draft.patientId, doctorId, researchType: 12 });
+    const d = result && result.data;
+    const rows = [d, d?.list, d?.records, d?.rows, result?.list].find(Array.isArray) || [];
+    const pickV = (o, keys) => { for (const k of keys) if (o && o[k] != null && o[k] !== '') return o[k]; return ''; };
+    const idOf = r => pickV(r, ['caseId', 'id', 'followupId']);
+    const dateOf = r => String(pickV(r, ['visitDate', 'followupDate', 'followUpDate', 'createTime', 'createdAt'])).slice(0, 10);
+    const cmp = (a, b) => dateOf(a).localeCompare(dateOf(b)) || String(idOf(a)).localeCompare(String(idOf(b)), undefined, { numeric: true });
+    const sorted = rows.slice().sort(cmp);
+    const baselineId = sorted.length ? String(idOf(sorted[0])) : '';
+    // 与随访记录页一致：最早一条为基线，其余为随诊（后端返回 visitType 时以后端为准）
+    const visits = sorted.filter(r => (pickV(r, ['visitType']) || (String(idOf(r)) === baselineId ? '基线' : '随诊')) === '随诊' && String(idOf(r)) !== String(draft.id ?? ''));
+    if (!visits.length) return;
+    const cur = draft.visitDate || '';
+    const prev = visits.filter(r => !cur || !dateOf(r) || dateOf(r) <= cur).pop() || visits[visits.length - 1];
+    prefillBar.hidden = false;
+    loadPrev.onclick = async () => {
+      const cur = FmsCase.load();
+      const filled = PREFILL_PARTS.some(p => FmsCase.hasData(Object.assign({}, cur[p], { finish: undefined })));
+      if (filled && !confirm('载入后将用上次随访（' + (dateOf(prev) || '') + '）的内容覆盖本次已填写的内容，确定载入吗？')) return;
+      loadPrev.disabled = true; loadPrev.textContent = '正在载入…';
+      try {
+        const c = await FmsCase.fetchCase({ caseId: idOf(prev), patientId: draft.patientId });
+        FmsCase.prefillFrom(c, PREFILL_PARTS);
+        location.reload();
+      } catch (e) {
+        FmsCase.toast(e.message || '上次随访加载失败');
+        loadPrev.disabled = false; loadPrev.textContent = '载入上次随访';
+      }
+    };
+  } catch (e) { /* 列表取不到时不显示按钮 */ }
+})();
+// 提示条：停留到保存为止，或载入 60 秒后自动收起，撤回按钮随之消失
+{
+  const left = viewing ? 0 : FmsCase.prefillUndoLeft();
+  if (left > 0) {
+    prefillTip.hidden = false;
+    const timer = setTimeout(() => { prefillTip.hidden = true; }, left);
+    undoPrefill.onclick = () => {
+      clearTimeout(timer);
+      if (FmsCase.undoPrefill()) { FmsCase.toast('已撤回'); setTimeout(() => location.reload(), 300); }
+      else { prefillTip.hidden = true; FmsCase.toast('已超过可撤回时间'); }
+    };
+  }
+}
+
 const modules = [...document.querySelectorAll('.module[data-part]')];
 let done = 0;
 // 预填字段（新增患者 / 随诊时自动带入）不算医生已经开始填写

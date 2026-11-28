@@ -167,6 +167,8 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
   XI_CATS.forEach((cat, ci) => {
     const recs = z0.xiyao.map((r, i) => [r, i]).filter(([r]) => catOf(r) === cat);
     const sec = el('section', '', 'xi-cat'); sec.append(el('h2', cat, 'block-title'));
+    /* 按需求：是否调整口服西药 / 调整内容 / 调整原因 放在该分类的药物列表（及添加药品）下方 */
+    const adjustNodes = [];
     if (recs.length && isBaseline()) used.push([cat, ci, true]);
     else if (recs.length) {
       used.push([cat, ci]);
@@ -177,7 +179,7 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
         const f = el('fieldset', '', 'choice-group'), d = el('div'); f.append(el('legend', lg)); radios(d, name, list); f.append(d); adj.append(f);
         if (lg === '调整原因') reasonOtherInput(f, `调整原因其他${ci}`);
       });
-      sec.append(g, adj);
+      adjustNodes.push(g, adj);
     }
     if (recs.length) {
       const ul = el('ul', '', 'records');
@@ -185,7 +187,7 @@ if (page.dataset.page === 'list' && kind === 'xiyao') {
       sec.append(ul);
     } else sec.append(el('p', '暂无数据', 'empty'));
     const add = el('a', '添加药品', 'secondary add-link'); add.href = `add-xiyao.html?category=${encodeURIComponent(cat)}`;
-    sec.append(add); holder.append(sec);
+    sec.append(add, ...adjustNodes); holder.append(sec);
   });
   const otherOf = ci => form.elements.namedItem(`调整原因其他${ci}`);
   used.forEach(([cat, ci, noAdj]) => {

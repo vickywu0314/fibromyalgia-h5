@@ -250,7 +250,51 @@
     pickIds(c, result);
     write(c);
     if (PARTS.indexOf(part) !== -1) markUnsynced(part, false);
+    ss(UNDO_KEY, null); // 已保存过，「载入上次随访」不能再撤回
     return result;
+  }
+
+  /* ---------- 载入上次随访：把上一次随诊的临床模块复制到当前草稿，可撤回（保存前 / 60 秒内） ---------- */
+  var UNDO_KEY = 'fms_prefill_undo';
+  var UNDO_MS = 60000;
+  // 复制时去掉另一条病例的 id 类字段，避免提交时更新到上次的记录
+  function stripIds(v) {
+    if (Array.isArray(v)) return v.map(stripIds);
+    if (!v || typeof v !== 'object') return v;
+    var o = {};
+    Object.keys(v).forEach(function (k) { if (!/^(id|caseId|patientCaseId|fmsCaseId|createTime|updateTime)$/.test(k)) o[k] = stripIds(v[k]); });
+    return o;
+  }
+  // prev：fetchCase 取到的上次病例；parts：要复制的模块（随诊不含基本信息 jbxx）
+  function prefillFrom(prev, parts) {
+    var c = load();
+    ss(UNDO_KEY, JSON.stringify({ token: caseToken(), at: Date.now(), draft: c, unsynced: unsynced() }));
+    parts.forEach(function (p) {
+      var v = prev && prev[p] && typeof prev[p] === 'object' ? stripIds(JSON.parse(JSON.stringify(prev[p]))) : { finish: false };
+      c[p] = v;
+      // 复制来的内容尚未提交：标记为待提交，医生核对后保存（或完成录入时）一并提交
+      markUnsynced(p, hasData(v));
+    });
+    write(c);
+    return c;
+  }
+  // 当前病例可撤回的载入记录（过期、已保存或换了病例则为 null）；返回剩余毫秒数
+  function prefillUndoLeft() {
+    var s = null;
+    try { s = JSON.parse(ss(UNDO_KEY) || 'null'); } catch (e) {}
+    if (!s || s.token !== caseToken()) return 0;
+    var left = UNDO_MS - (Date.now() - s.at);
+    if (left <= 0) { ss(UNDO_KEY, null); return 0; }
+    return left;
+  }
+  function undoPrefill() {
+    var s = null;
+    try { s = JSON.parse(ss(UNDO_KEY) || 'null'); } catch (e) {}
+    ss(UNDO_KEY, null);
+    if (!s || s.token !== caseToken() || !s.draft) return false;
+    write(s.draft);
+    try { localStorage.setItem(UNSYNCED_KEY, JSON.stringify(s.unsynced || [])); } catch (e) {}
+    return true;
   }
 
   // 完成录入：各模块保存时已提交；这里只把仍有未提交改动的模块按各自的 part 补交
@@ -488,6 +532,7 @@
     startNew: startNew, startFollowUp: startFollowUp, loadCase: loadCase, clear: clear, toast: toast,
     formData: formData, fillForm: fillForm, sumRadios: sumRadios,
     isViewMode: isViewMode, isViewingRecord: isViewingRecord, setMode: setMode,
-    overall: overall, renderOverall: renderOverall
+    overall: overall, renderOverall: renderOverall,
+    prefillFrom: prefillFrom, prefillUndoLeft: prefillUndoLeft, undoPrefill: undoPrefill
   };
 })();

@@ -90,7 +90,25 @@
     hit.setAttribute('aria-label', select.getAttribute('aria-label') || (select.closest('label') && select.closest('label').querySelector('.field-title') || {}).textContent || '请选择');
     select.tabIndex = -1;
     wrap.appendChild(hit);
-    hit.addEventListener('click', function (e) {
+    // 外面包着 <label> 时，浏览器（尤其 Safari / iOS WebView）会把点在标签上的点击转给原生 <select>，
+    // 同时弹出系统选择框，出现两个下拉。拦下标签的默认转发：点在本组件上照常打开列表；
+    // 点在标签文字上也只打开本组件的列表。标签里的其他输入框（如另一个下拉、文本框）不受影响。
+    var label = select.closest('label');
+    if (label && !label.dataset.fselGuard) {
+      label.dataset.fselGuard = '1';
+      label.addEventListener('click', function (e) {
+        var t = e.target;
+        // 用事件派发时的路径判断：点选项后列表已被移除，target 已不在页面里，不能用 closest
+        var path = e.composedPath ? e.composedPath() : [];
+        var inOwn = path.some(function (n) { return n.classList && n.classList.contains('fsel'); }) || !t.isConnected;
+        if (!inOwn && t.closest && t.closest('input,textarea,button,a')) return; // 点的是标签里别的控件
+        e.preventDefault();
+        if (!inOwn) {
+          var first = label.querySelector('.fsel-hit');
+          if (first && !first.disabled) first.click();
+        }
+      });
+    }    hit.addEventListener('click', function (e) {
       e.preventDefault();
       if (select.disabled) return;
       open(wrap, select, hit);

@@ -29,6 +29,7 @@
   var XY_NAMES = ['普瑞巴林', '度洛西汀', '阿米替林'];
   function catalogItem(label) {
     var found = null;
+    if (!label) return null; // 未选药品（空串）时不能匹配到任何药
     Object.keys(WC).forEach(function (c) { (WC[c] || []).forEach(function (d) { if (!found && d.name.indexOf(label) !== -1) found = { item: d, category: c }; }); });
     return found;
   }

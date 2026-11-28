@@ -45,7 +45,8 @@
     syncOther();
     if(ev.includes("其他"))f.elements.adverseEventOther.value=data.adverseEventOther||"";
     ["startDate","endDate","otherMeasures","adverseEventDetails"].forEach(k=>{f.elements[k].value=data[k]||""});
-    f.elements.saeCategory.value=data.saeCategory||"";
+    // SAE类别模块已注释隐藏
+    // f.elements.saeCategory.value=data.saeCategory||"";
     f.elements.drugMeasure.value=data.drugMeasure||"";
     syncDates();
   };
@@ -62,7 +63,9 @@
       adverseEventOther:on&&!f.elements.adverseEventOther.disabled?String(f.elements.adverseEventOther.value||"").trim():"",
       startDate:val("startDate"),
       endDate:val("endDate"),
-      saeCategory:val("saeCategory"),
+      // SAE类别模块已注释隐藏，字段保留为空串
+      // saeCategory:val("saeCategory"),
+      saeCategory:"",
       drugMeasure:val("drugMeasure"),
       otherMeasures:val("otherMeasures"),
       adverseEventDetails:val("adverseEventDetails")

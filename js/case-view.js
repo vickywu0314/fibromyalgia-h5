@@ -187,7 +187,7 @@ function renderCase(c, target) {
     const s = section('不良反应'), a = c.blsj || {};
     const n = a.hasAdverseEvent === '无' ? rows(s, [['不良反应', '无']]) : rows(s, [
       ['不良反应', a.hasAdverseEvent], ['症状', (a.adverseEvents || []).map(x => x === '其他' && has(a.adverseEventOther) ? '其他（' + a.adverseEventOther + '）' : x)], ['发生日期', a.startDate], ['结束日期', a.endDate],
-      ['SAE 类别', a.saeCategory], ['相关措施', a.drugMeasure], ['其他措施', a.otherMeasures], ['不良事件详情', a.adverseEventDetails]
+      /* ['SAE 类别', a.saeCategory], SAE类别模块已注释隐藏 */ ['相关措施', a.drugMeasure], ['其他措施', a.otherMeasures], ['不良事件详情', a.adverseEventDetails]
     ]);
     if (!n) empty(s);
   }

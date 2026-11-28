@@ -37,43 +37,65 @@ if (viewing) {
   visitDate.disabled = true;
 }
 
-// 载入上次随访：仅新增/编辑随诊时（非查看记录），且该患者此前已有随诊记录（即第二次及以上随访）才显示
+/* ---------- 载入上次随访（入口在 App 导航栏） ----------
+ * 条件：新增/编辑随诊（非查看记录），且该患者此前已有随诊记录（即第二次及以上随访）。
+ * 给 App 调用：
+ *   window.fmsCanLoadPrevious()  → true / false（是否显示导航栏按钮；还在查询时为 false，查完会主动通知）
+ *   window.fmsLoadPrevious()     → 'loading' / 'unavailable' / 'busy'（点按钮时调用，载入、提示条、撤回都由 H5 处理）
+ * H5 主动通知 App（查询完成时，按钮是否显示）：
+ *   Android：WenwenClass.onLoadPreviousState(true/false)
+ *   iOS：window.webkit.messageHandlers.loadPreviousState.postMessage({ visible: true/false })
+ */
 const PREFILL_PARTS = ['bsbq', 'zhpd', 'fzjc', 'bqpg', 'zlfa', 'blsj'];
-if (isFollowUp && !viewing && draft.patientId != null) (async () => {
+let prevVisit = null, prevLoading = false;
+function notifyLoadPrevious(visible) {
+  try { const a = window.WenwenClass; if (a && typeof a.onLoadPreviousState === 'function') a.onLoadPreviousState(visible); } catch (e) {}
+  try { const h = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.loadPreviousState; if (h) h.postMessage({ visible }); } catch (e) {}
+}
+const prevReady = (async () => {
+  if (!(isFollowUp && !viewing && draft.patientId != null)) return null;
   try {
     const doctorId = FmsApi.getDoctorId();
-    if (!doctorId) return;
+    if (!doctorId) return null;
     const result = await FmsApi.get('/api/fms/patient/followup/list', { pageNo: 1, pageSize: 100, patientId: draft.patientId, doctorId, researchType: 12 });
     const d = result && result.data;
     const rows = [d, d?.list, d?.records, d?.rows, result?.list].find(Array.isArray) || [];
     const pickV = (o, keys) => { for (const k of keys) if (o && o[k] != null && o[k] !== '') return o[k]; return ''; };
     const idOf = r => pickV(r, ['caseId', 'id', 'followupId']);
     const dateOf = r => String(pickV(r, ['visitDate', 'followupDate', 'followUpDate', 'createTime', 'createdAt'])).slice(0, 10);
-    const cmp = (a, b) => dateOf(a).localeCompare(dateOf(b)) || String(idOf(a)).localeCompare(String(idOf(b)), undefined, { numeric: true });
-    const sorted = rows.slice().sort(cmp);
+    const sorted = rows.slice().sort((a, b) => dateOf(a).localeCompare(dateOf(b)) || String(idOf(a)).localeCompare(String(idOf(b)), undefined, { numeric: true }));
     const baselineId = sorted.length ? String(idOf(sorted[0])) : '';
     // 与随访记录页一致：最早一条为基线，其余为随诊（后端返回 visitType 时以后端为准）
     const visits = sorted.filter(r => (pickV(r, ['visitType']) || (String(idOf(r)) === baselineId ? '基线' : '随诊')) === '随诊' && String(idOf(r)) !== String(draft.id ?? ''));
-    if (!visits.length) return;
+    if (!visits.length) return null;
     const cur = draft.visitDate || '';
-    const prev = visits.filter(r => !cur || !dateOf(r) || dateOf(r) <= cur).pop() || visits[visits.length - 1];
-    prefillBar.hidden = false;
-    loadPrev.onclick = async () => {
+    const r = visits.filter(v => !cur || !dateOf(v) || dateOf(v) <= cur).pop() || visits[visits.length - 1];
+    return { caseId: idOf(r), date: dateOf(r) };
+  } catch (e) { return null; } // 列表取不到时不显示
+})().then(v => { prevVisit = v; notifyLoadPrevious(!!v); return v; });
+
+window.fmsCanLoadPrevious = () => !!prevVisit;
+window.fmsLoadPrevious = () => {
+  if (prevLoading) return 'busy';
+  if (!(isFollowUp && !viewing)) { FmsCase.toast('只有第二次及以上随访可以载入上次随访'); return 'unavailable'; }
+  prevLoading = true;
+  (async () => {
+    try {
+      const prev = await prevReady;
+      if (!prev) { FmsCase.toast('该患者没有上次随访记录'); return; }
       const cur = FmsCase.load();
       const filled = PREFILL_PARTS.some(p => FmsCase.hasData(Object.assign({}, cur[p], { finish: undefined })));
-      if (filled && !confirm('载入后将用上次随访（' + (dateOf(prev) || '') + '）的内容覆盖本次已填写的内容，确定载入吗？')) return;
-      loadPrev.disabled = true; loadPrev.textContent = '正在载入…';
-      try {
-        const c = await FmsCase.fetchCase({ caseId: idOf(prev), patientId: draft.patientId });
-        FmsCase.prefillFrom(c, PREFILL_PARTS);
-        location.reload();
-      } catch (e) {
-        FmsCase.toast(e.message || '上次随访加载失败');
-        loadPrev.disabled = false; loadPrev.textContent = '载入上次随访';
-      }
-    };
-  } catch (e) { /* 列表取不到时不显示按钮 */ }
-})();
+      if (filled && !confirm('载入后将用上次随访（' + (prev.date || '') + '）的内容覆盖本次已填写的内容，确定载入吗？')) return;
+      FmsCase.toast('正在载入上次随访…');
+      const c = await FmsCase.fetchCase({ caseId: prev.caseId, patientId: draft.patientId });
+      FmsCase.prefillFrom(c, PREFILL_PARTS);
+      location.reload();
+    } catch (e) {
+      FmsCase.toast(e.message || '上次随访加载失败');
+    } finally { prevLoading = false; }
+  })();
+  return 'loading';
+};
 // 提示条：停留到保存为止，或载入 60 秒后自动收起，撤回按钮随之消失
 {
   const left = viewing ? 0 : FmsCase.prefillUndoLeft();

@@ -114,14 +114,20 @@ function renderCase(c, target) {
     const bio = (label, key, unit) => [label, f[key + '_status'] === '异常' ? '异常 ' + withUnit(f[key + '_value'], ' ' + unit) : f[key + '_status']];
     const lipid = (label, key, unit) => [label, f[key + '_status'] === '未查' ? '未查' : withUnit(f[key], ' ' + unit)];
     let n = 0;
+    // 2026-11-28 改版：每组 未查 / 大致正常 / 异常（<组>_status）；异常时列出填写的项目
     const groups = [
-      ['血常规', [lab('白细胞', 'cbc_wbc', '×10^9/L'), lab('红细胞', 'cbc_rbc', '×10^12/L'), lab('血红蛋白', 'cbc_hgb', 'g/L'), lab('血小板', 'cbc_plt', '×10^9/L')]],
-      ['尿常规', [lab('白细胞', 'urine_wbc', 'leu/uL'), lab('红细胞', 'urine_rbc', '/uL'), lab('尿蛋白', 'urine_protein', 'g/L'), lab('尿潜血', 'urine_occult', 'ery/uL')]],
-      ['便常规+便潜血', [['便外观性', f.stool_appearance], stoolCell('白细胞', 'stool_wbc'), stoolCell('红细胞', 'stool_rbc'), ['便潜血', f.stool_occult]]],
-      ['生化', [bio('ALT', 'alt', 'U/L'), bio('AST', 'ast', 'U/L'), bio('BUN', 'bun', 'mmol/L'), bio('Cr', 'cr', 'umol/L')]],
-      ['血脂', [lipid('胆固醇', 'cholesterol', 'mmol/L'), lipid('甘油三酯', 'triglyceride', 'mmol/L'), lipid('低密度脂蛋白胆固醇', 'ldl', 'mmol/L'), lipid('高密度脂蛋白胆固醇', 'hdl', 'mmol/L'), lipid('载脂蛋白B', 'apob', 'g/L'), lipid('载脂蛋白A', 'apoa', 'g/L')]],
-      ['心电图', [['结果', f.ecg]]]
-    ];
+      ['血常规', f.cbc_status, [lab('白细胞', 'cbc_wbc', '×10^9/L'), lab('红细胞', 'cbc_rbc', '×10^12/L'), lab('血红蛋白', 'cbc_hgb', 'g/L'), lab('血小板', 'cbc_plt', '×10^9/L')]],
+      ['尿常规', f.urine_status, [lab('白细胞', 'urine_wbc', 'leu/uL'), lab('红细胞', 'urine_rbc', '/uL'), lab('尿蛋白', 'urine_protein', 'g/L'), lab('尿潜血', 'urine_occult', 'ery/uL')]],
+      ['便常规+潜血', f.stool_status, [['便外观性', f.stool_appearance], stoolCell('白细胞', 'stool_wbc'), stoolCell('红细胞', 'stool_rbc'), ['便潜血', f.stool_occult]]],
+      ['肝功能', f.liver_status, [bio('ALT', 'alt', 'U/L'), bio('AST', 'ast', 'U/L')]],
+      ['肾功能', f.kidney_status, [bio('BUN', 'bun', 'mmol/L'), bio('Cr', 'cr', 'umol/L')]],
+      ['血脂', f.lipid_status, [lipid('胆固醇', 'cholesterol', 'mmol/L'), lipid('甘油三酯', 'triglyceride', 'mmol/L'), lipid('低密度脂蛋白胆固醇', 'ldl', 'mmol/L'), lipid('高密度脂蛋白胆固醇', 'hdl', 'mmol/L')]],
+      ['心电图', '', [['结果', f.ecg]]]
+    ].map(([title, status, list]) => {
+      if (status === '未查' || status === '大致正常') return [title, [['结果', status]]];
+      if (status === '异常') return [title, [['结果', '异常']].concat(list.filter(([, v]) => has(v) && !['已查', '正常', '阴性', '未查'].includes(v)))];
+      return [title, list]; // 旧数据：按原有项目显示
+    });
     groups.forEach(([title, list]) => { if (list.some(([, v]) => has(v))) { sub(s, title); n += rows(s, list); } });
     images(s, '检验报告', [].concat(f.labReportImages || [], f.lab_report_url || []));
     images(s, '心电图报告', [].concat(f.ecgReportImages || [], f.ecg_report_url || []));
